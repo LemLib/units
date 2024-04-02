@@ -1,2 +1,2 @@
 # units
-A lightweight C++ units library targeting use in competitive robotics
+A lightweight units library for PROS
