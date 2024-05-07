@@ -58,17 +58,19 @@ template <isQuantity T> class Vector2D {
             return (*this);
         }
 
-        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R dot(Vector2D<Q>& other) { return (x * other.x) + (y * other.y); }
+        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R dot(Vector2D<Q>& other) { return (x * other.getX()) + (y * other.getY()); }
+
+        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R cross(Vector2D<Q>& other) { return (x * other.getY()) - (y * other.getX()); }
 
         Angle theta() { return atan2(y, x); }
 
         T magnitude() { return sqrt(square(x) + square(y)); }
 
-        Vector2D<T> vectorTo(Vector2D<T>& other) { return Vector2D<T>(other.x - x, other.y - y); }
+        Vector2D<T> vectorTo(Vector2D<T>& other) { return Vector2D<T>(other.getX() - x, other.getY() - y); }
 
-        Angle angleTo(Vector2D<T>& other) { return atan2(other.y - y, other.x - x); }
+        Angle angleTo(Vector2D<T>& other) { return atan2(other.getY() - y, other.getX() - x); }
 
-        T distance(Vector2D<T>& other) { return sqrt(square(x - other.x, 2) + square(y - other.y, 2)); }
+        T distance(Vector2D<T>& other) { return sqrt(square(x - other.getX(), 2) + square(y - other.getY(), 2)); }
 
         Vector2D<T> normalize() {
             T m = magnitude();

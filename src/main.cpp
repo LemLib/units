@@ -25,11 +25,7 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
-
 	pros::lcd::register_btn1_cb(on_center_button);
-	units::Vector2D<Length> R(1_m, 2_m);
-	units::Vector2D<Force> F(12_n,15_n);
-	Torque torque = R.dot(F);
 }
 
 /**
