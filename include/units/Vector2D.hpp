@@ -7,7 +7,7 @@ namespace units {
 static inline Angle constrainAngle(Angle in) { return mod(in, 1_rot); }
 
 template <isQuantity T> class Vector2D {
-    private:
+    protected:
         T x, y;
     public:
         Vector2D() : x(0.0), y(0.0) {}
@@ -26,23 +26,23 @@ template <isQuantity T> class Vector2D {
 
         T getY() { return y; }
 
-        Vector2D<T> operator+(Vector2D<T>& other) { return Vector2D<T>(x + other.x, y + other.y); }
+        Vector2D<T> operator+(Vector2D<T>& other) { return Vector2D<T>(x + other.getX(), y + other.getY()); }
 
-        Vector2D<T> operator-(Vector2D<T>& other) { return Vector2D<T>(x - other.x, y - other.y); }
+        Vector2D<T> operator-(Vector2D<T>& other) { return Vector2D<T>(x - other.getX(), y - other.getY()); }
 
         Vector2D<T> operator*(double factor) { return Vector2D<T>(x * factor, y * factor); }
 
         Vector2D<T> operator/(double factor) { return Vector2D<T>(x / factor, y / factor); }
 
         Vector2D<T>& operator+=(Vector2D<T>& other) {
-            x += other.x;
-            y += other.y;
+            x += other.getX();
+            y += other.getY();
             return (*this);
         }
 
         Vector2D<T>& operator-=(Vector2D<T>& other) {
-            x -= other.x;
-            y -= other.y;
+            x -= other.getx();
+            y -= other.getY();
             return (*this);
         }
 
@@ -58,7 +58,7 @@ template <isQuantity T> class Vector2D {
             return (*this);
         }
 
-        double dot(Vector2D<T>& other) { return ((x * other.x) + (y * other.y)).getValue(); }
+        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R dot(Vector2D<Q>& other) { return (x * other.x) + (y * other.y); }
 
         Angle theta() { return atan2(y, x); }
 

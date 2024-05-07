@@ -44,7 +44,9 @@ template <TYPENAMES> class Quantity {
 template <TYPENAMES> void quantityChecker(Quantity<DIMS> q) {}
 
 template <typename Q>
-concept isQuantity = requires { std::declval<Q>(); };
+concept isQuantity = requires (Q q) {
+    quantityChecker(q);
+};
 
 template <isQuantity Q1, isQuantity Q2> using QMultiplication =
     Quantity<std::ratio_add<decltype(Q1::dim.mass), decltype(Q2::dim.mass)>,
