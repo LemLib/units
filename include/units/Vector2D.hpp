@@ -1,10 +1,8 @@
 #pragma once
 
-#include "units/units.hpp"
+#include "units/Angle.hpp"
 
 namespace units {
-
-static inline Angle constrainAngle(Angle in) { return mod(in, 1_rot); }
 
 template <isQuantity T> class Vector2D {
     protected:
@@ -16,7 +14,7 @@ template <isQuantity T> class Vector2D {
 
         static Vector2D fromPolar(Angle t, T m) {
             m = m.abs();
-            t = constrainAngle(t);
+            t = constrainAngle360(t);
             return Vector2D<T>(m * cos(t), m * sin(t));
         }
 
