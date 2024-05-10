@@ -20,6 +20,7 @@ template <TYPENAMES> struct Dimensions {
 };
 
 template <TYPENAMES> class Quantity {
+    protected:
         double value;
     public:
         struct Dimensions<DIMS> dim;

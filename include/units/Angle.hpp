@@ -3,7 +3,9 @@
 
 class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> {
     public:
-        double convertCompass(Angle quantity) { return ((Angle(M_PI_2) - (*this)) / quantity).val(); }
+        constexpr Angle(const double d) { value = d; }
+
+        constexpr double convertCompass(const Angle quantity) { return ((Angle(M_PI_2) - (*this)) / quantity).val(); }
 };
 
 constexpr Angle rad = Angle(1.0);
