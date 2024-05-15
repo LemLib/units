@@ -11,7 +11,6 @@
 #define TYPENAMES typename Mass, typename Length, typename Time, typename Current, typename Angle
 #define DIMS Mass, Length, Time, Current, Angle
 
-
 template <TYPENAMES> class Quantity {
     protected:
         double value;
@@ -44,12 +43,10 @@ template <TYPENAMES> void quantityChecker(Quantity<DIMS> q) {}
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
-template <isQuantity Q1, isQuantity Q2> using QMultiplication =
-    Quantity<std::ratio_add<typename Q1::mass, typename Q2::mass>,
-             std::ratio_add<typename Q1::length, typename Q2::length>,
-             std::ratio_add<typename Q1::time, typename Q2::time>,
-             std::ratio_add<typename Q1::current, typename Q2::current>,
-             std::ratio_add<typename Q1::angle, typename Q2::angle>>;
+template <isQuantity Q1, isQuantity Q2> using QMultiplication = Quantity<
+    std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
+    std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
+    std::ratio_add<typename Q1::angle, typename Q2::angle>>;
 
 template <isQuantity Q1, isQuantity Q2> using QDivision =
     Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
@@ -107,12 +104,16 @@ template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { r
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.val() << "_" << #suffix;                                                                        \
         return os;                                                                                                     \
-    }
+    }                                                                                                                  \
+    constexpr inline Name from_##suffix(double value) { return Name(value); }                                            \
+    constexpr inline double to_##suffix(Name quantity) { return quantity.val(); }
 
 #define NEW_QUANTITY_VALUE(Name, suffix, val)                                                                          \
     constexpr Name suffix = val;                                                                                       \
-    constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * val; }           \
-    constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * val; }
+    constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * val; }                 \
+    constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * val; }          \
+    constexpr inline Name from_##suffix(double value) { return value * val; }                                        \
+    constexpr inline double to_##suffix(Name quantity) { return quantity.convert(val); }
 
 NEW_QUANTITY(Number, num, 0, 0, 0, 0, 0)
 NEW_QUANTITY_VALUE(Number, percent, num / 100.0);
@@ -138,7 +139,7 @@ NEW_QUANTITY_VALUE(Length, mi, ft * 5280)
 NEW_QUANTITY_VALUE(Length, tiles, 600 * mm)
 
 NEW_QUANTITY(Area, m2, 0, 2, 0, 0, 0)
-NEW_QUANTITY_VALUE(Area, in2, in * in)
+NEW_QUANTITY_VALUE(Area, in2, in* in)
 
 NEW_QUANTITY(LinearVelocity, mps, 0, 1, -1, 0, 0)
 NEW_QUANTITY_VALUE(LinearVelocity, cmps, cm / sec)
