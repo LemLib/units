@@ -105,14 +105,14 @@ template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { r
         os << quantity.val() << "_" << #suffix;                                                                        \
         return os;                                                                                                     \
     }                                                                                                                  \
-    constexpr inline Name from_##suffix(double value) { return Name(value); }                                            \
+    constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.val(); }
 
 #define NEW_QUANTITY_VALUE(Name, suffix, val)                                                                          \
     constexpr Name suffix = val;                                                                                       \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * val; }                 \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * val; }          \
-    constexpr inline Name from_##suffix(double value) { return value * val; }                                        \
+    constexpr inline Name from_##suffix(double value) { return value * val; }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(val); }
 
 NEW_QUANTITY(Number, num, 0, 0, 0, 0, 0)

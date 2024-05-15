@@ -21,6 +21,7 @@ NEW_QUANTITY(AngularJerk, radps3, 0, 0, -3, 0, 1)
 NEW_QUANTITY_VALUE(AngularJerk, rps3, rot / sec / sec / sec)
 NEW_QUANTITY_VALUE(AngularJerk, rpm3, rot / min / min / min)
 
+// Angle declaration operators
 constexpr Angle operator""_stDeg(long double value) { return static_cast<double>(value) * deg; }
 
 constexpr Angle operator""_stDeg(unsigned long long value) { return static_cast<double>(value) * deg; }
@@ -37,6 +38,7 @@ constexpr Angle operator""_cRad(long double value) { return Angle(static_cast<do
 
 constexpr Angle operator""_cRad(unsigned long long value) { return Angle(static_cast<double>(value)); }
 
+// Angle functions
 namespace units {
 constexpr Number sin(const Angle& rhs) { return Number(std::sin(rhs.val())); }
 
@@ -61,3 +63,20 @@ static inline Angle constrainAngle180(Angle in) {
     return in < Angle(0) ? in + 180 * deg : in - 180 * deg;
 }
 } // namespace units
+
+// Angle to/from operators
+constexpr inline Angle from_sRad(double value) { return Angle(value); }
+
+constexpr inline double to_sRad(Angle quantity) { return quantity.val(); }
+
+constexpr inline Angle from_sdeg(double value) { return value * deg; }
+
+constexpr inline double to_sDeg(Angle quantity) { return quantity.convert(deg); }
+
+constexpr inline Angle from_cRad(double value) { return 90 * deg - Angle(value); }
+
+constexpr inline double to_cRad(Angle quantity) { return quantity.val(); }
+
+constexpr inline Angle from_cdeg(double value) { return (90 - value) * deg; }
+
+constexpr inline double to_cDeg(Angle quantity) { return (90 * deg - quantity).convert(deg); }
