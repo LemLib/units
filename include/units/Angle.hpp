@@ -1,12 +1,7 @@
 #pragma once
 #include "units/units.hpp"
 
-class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>> {
-    public:
-        constexpr Angle(const double d) { value = d; }
-
-        constexpr double convertCompass(const Angle quantity) { return ((Angle(M_PI_2) - (*this)) / quantity).val(); }
-};
+using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>;
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
