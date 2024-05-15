@@ -11,19 +11,16 @@
 #define TYPENAMES typename Mass, typename Length, typename Time, typename Current, typename Angle
 #define DIMS Mass, Length, Time, Current, Angle
 
-template <TYPENAMES> struct Dimensions {
-        Mass mass;
-        Length length;
-        Time time;
-        Current current;
-        Angle angle;
-};
 
 template <TYPENAMES> class Quantity {
     protected:
         double value;
     public:
-        struct Dimensions<DIMS> dim;
+        typedef Mass mass;
+        typedef Length length;
+        typedef Time time;
+        typedef Current current;
+        typedef Angle angle;
 
         constexpr Quantity() : value(0) {}
 
@@ -48,28 +45,28 @@ template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 template <isQuantity Q1, isQuantity Q2> using QMultiplication =
-    Quantity<std::ratio_add<decltype(Q1::dim.mass), decltype(Q2::dim.mass)>,
-             std::ratio_add<decltype(Q1::dim.length), decltype(Q2::dim.length)>,
-             std::ratio_add<decltype(Q1::dim.time), decltype(Q2::dim.time)>,
-             std::ratio_add<decltype(Q1::dim.current), decltype(Q2::dim.current)>,
-             std::ratio_add<decltype(Q1::dim.angle), decltype(Q2::dim.angle)>>;
+    Quantity<std::ratio_add<typename Q1::mass, typename Q2::mass>,
+             std::ratio_add<typename Q1::length, typename Q2::length>,
+             std::ratio_add<typename Q1::time, typename Q2::time>,
+             std::ratio_add<typename Q1::current, typename Q2::current>,
+             std::ratio_add<typename Q1::angle, typename Q2::angle>>;
 
 template <isQuantity Q1, isQuantity Q2> using QDivision =
-    Quantity<std::ratio_subtract<decltype(Q1::dim.mass), decltype(Q2::dim.mass)>,
-             std::ratio_subtract<decltype(Q1::dim.length), decltype(Q2::dim.length)>,
-             std::ratio_subtract<decltype(Q1::dim.time), decltype(Q2::dim.time)>,
-             std::ratio_subtract<decltype(Q1::dim.current), decltype(Q2::dim.current)>,
-             std::ratio_subtract<decltype(Q1::dim.angle), decltype(Q2::dim.angle)>>;
+    Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
+             std::ratio_subtract<typename Q1::length, typename Q2::length>,
+             std::ratio_subtract<typename Q1::time, typename Q2::time>,
+             std::ratio_subtract<typename Q1::current, typename Q2::current>,
+             std::ratio_subtract<typename Q1::angle, typename Q2::angle>>;
 
 template <isQuantity Q, typename factor> using QPower =
-    Quantity<std::ratio_multiply<decltype(Q::dim.mass), factor>, std::ratio_multiply<decltype(Q::dim.length), factor>,
-             std::ratio_multiply<decltype(Q::dim.time), factor>, std::ratio_multiply<decltype(Q::dim.current), factor>,
-             std::ratio_multiply<decltype(Q::dim.angle), factor>>;
+    Quantity<std::ratio_multiply<typename Q::mass, factor>, std::ratio_multiply<typename Q::length, factor>,
+             std::ratio_multiply<typename Q::time, factor>, std::ratio_multiply<typename Q::current, factor>,
+             std::ratio_multiply<typename Q::angle, factor>>;
 
 template <isQuantity Q, typename quotient> using QRoot =
-    Quantity<std::ratio_divide<decltype(Q::dim.mass), quotient>, std::ratio_divide<decltype(Q::dim.length), quotient>,
-             std::ratio_divide<decltype(Q::dim.time), quotient>, std::ratio_divide<decltype(Q::dim.current), quotient>,
-             std::ratio_divide<decltype(Q::dim.angle), quotient>>;
+    Quantity<std::ratio_divide<typename Q::mass, quotient>, std::ratio_divide<typename Q::length, quotient>,
+             std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
+             std::ratio_divide<typename Q::angle, quotient>>;
 
 template <isQuantity Q> constexpr Q operator+(Q lhs, Q rhs) { return Q(lhs.val() + rhs.val()); }
 
@@ -141,13 +138,13 @@ NEW_QUANTITY_VALUE(Length, mi, ft * 5280)
 NEW_QUANTITY_VALUE(Length, tiles, 600 * mm)
 
 NEW_QUANTITY(Area, m2, 0, 2, 0, 0, 0)
+NEW_QUANTITY_VALUE(Area, in2, in * in)
 
 NEW_QUANTITY(LinearVelocity, mps, 0, 1, -1, 0, 0)
 NEW_QUANTITY_VALUE(LinearVelocity, cmps, cm / sec)
 NEW_QUANTITY_VALUE(LinearVelocity, inps, in / sec)
 NEW_QUANTITY_VALUE(LinearVelocity, miph, mi / hr)
 NEW_QUANTITY_VALUE(LinearVelocity, kmph, km / hr)
-
 
 NEW_QUANTITY(LinearAcceleration, mps2, 0, 1, -2, 0, 0)
 NEW_QUANTITY_VALUE(LinearAcceleration, cmps2, cm / sec / sec)
