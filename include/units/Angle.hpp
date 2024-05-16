@@ -42,9 +42,9 @@ constexpr Angle operator""_cRad(unsigned long long value) { return Angle(static_
 namespace units {
 constexpr Number sin(const Angle& rhs) { return Number(std::sin(rhs.val())); }
 
-constexpr Number cos(Angle& rhs) { return Number(std::cos(rhs.val())); }
+constexpr Number cos(const Angle& rhs) { return Number(std::cos(rhs.val())); }
 
-constexpr Number tan(Angle& rhs) { return Number(std::tan(rhs.val())); }
+constexpr Number tan(const Angle& rhs) { return Number(std::tan(rhs.val())); }
 
 template <isQuantity Q> constexpr Angle asin(const Q& rhs) { return Angle(std::asin(rhs.val())); }
 
