@@ -25,6 +25,8 @@ template <TYPENAMES> class Quantity {
 
         constexpr Quantity(double value) : value(value) {}
 
+        constexpr Quantity(Quantity<DIMS> const& other) : value(other.value) {}
+
         constexpr double val() const { return value; }
 
         constexpr double convert(Quantity<DIMS> quantity) { return value / quantity.value; }
