@@ -39,7 +39,7 @@ template <isQuantity T> class Vector2D {
         }
 
         Vector2D<T>& operator-=(Vector2D<T>& other) {
-            x -= other.getx();
+            x -= other.getX();
             y -= other.getY();
             return (*this);
         }
@@ -68,7 +68,7 @@ template <isQuantity T> class Vector2D {
 
         Angle angleTo(Vector2D<T>& other) { return atan2(other.getY() - y, other.getX() - x); }
 
-        T distance(Vector2D<T>& other) { return sqrt(square(x - other.getX(), 2) + square(y - other.getY(), 2)); }
+        T distanceTo(Vector2D<T>& other) { return sqrt(square(x - other.getX(), 2) + square(y - other.getY(), 2)); }
 
         Vector2D<T> normalize() {
             T m = magnitude();
