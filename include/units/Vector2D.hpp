@@ -56,9 +56,13 @@ template <isQuantity T> class Vector2D {
             return (*this);
         }
 
-        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R dot(Vector2D<Q>& other) { return (x * other.getX()) + (y * other.getY()); }
+        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R dot(Vector2D<Q>& other) {
+            return (x * other.getX()) + (y * other.getY());
+        }
 
-        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R cross(Vector2D<Q>& other) { return (x * other.getY()) - (y * other.getX()); }
+        template <isQuantity Q, isQuantity R = QMultiplication<T, Q>> R cross(Vector2D<Q>& other) {
+            return (x * other.getY()) - (y * other.getX());
+        }
 
         Angle theta() { return atan2(y, x); }
 

@@ -14,6 +14,5 @@ class Pose : public V2Position {
         Pose(Length nx, Length ny, Angle nh) : V2Position(nx, ny), theta(nh) {}
 
         Angle getTheta() { return theta; }
-
 };
-}  // namespace units
+} // namespace units

@@ -40,10 +40,8 @@ template <TYPENAMES> class Quantity {
         constexpr void operator/=(double dividend) { value /= dividend; }
 
         constexpr void operator=(const double& rhs) {
-            static_assert(std::ratio_equal<mass, std::ratio<0>>() &&
-                              std::ratio_equal<length, std::ratio<0>>() &&
-                              std::ratio_equal<time, std::ratio<0>>() &&
-                              std::ratio_equal<current, std::ratio<0>>() &&
+            static_assert(std::ratio_equal<mass, std::ratio<0>>() && std::ratio_equal<length, std::ratio<0>>() &&
+                              std::ratio_equal<time, std::ratio<0>>() && std::ratio_equal<current, std::ratio<0>>() &&
                               std::ratio_equal<angle, std::ratio<0>>(),
                           "Tried to assign a double directly to a non-number unit type");
             value = rhs;
