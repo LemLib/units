@@ -1,3 +1,5 @@
+#pragma once
+
 #include "units/Vector2D.hpp"
 
 namespace units {
