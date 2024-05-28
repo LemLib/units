@@ -24,6 +24,10 @@ template <isQuantity T> class Vector2D {
 
         T getY() { return y; }
 
+        void setX(T nx) { x = nx; }
+
+        void setY(T ny) { y = ny; }
+
         Vector2D<T> operator+(Vector2D<T>& other) { return Vector2D<T>(x + other.getX(), y + other.getY()); }
 
         Vector2D<T> operator-(Vector2D<T>& other) { return Vector2D<T>(x - other.getX(), y - other.getY()); }
