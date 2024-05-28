@@ -3,7 +3,6 @@
 #include "units/Angle.hpp"
 
 namespace units {
-
 template <isQuantity T> class Vector2D {
     protected:
         T x, y;
