@@ -1,4 +1,5 @@
 #pragma once
+
 #include "units/units.hpp"
 
 using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>;
@@ -69,7 +70,7 @@ constexpr inline Angle from_sRad(double value) { return Angle(value); }
 
 constexpr inline double to_sRad(Angle quantity) { return quantity.val(); }
 
-constexpr inline Angle from_sdeg(double value) { return value * deg; }
+constexpr inline Angle from_sDeg(double value) { return value * deg; }
 
 constexpr inline double to_sDeg(Angle quantity) { return quantity.convert(deg); }
 
@@ -77,6 +78,6 @@ constexpr inline Angle from_cRad(double value) { return 90 * deg - Angle(value);
 
 constexpr inline double to_cRad(Angle quantity) { return quantity.val(); }
 
-constexpr inline Angle from_cdeg(double value) { return (90 - value) * deg; }
+constexpr inline Angle from_cDeg(double value) { return (90 - value) * deg; }
 
 constexpr inline double to_cDeg(Angle quantity) { return (90 * deg - quantity).convert(deg); }
