@@ -110,6 +110,11 @@ template <TYPENAMES> void quantityChecker(Quantity<DIMS> q) {}
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
+template<isQuantity Q1, isQuantity Q2>
+constexpr inline Q1 unit_cast(Q2 quantity) {
+    return Q1(quantity.val());
+}
+
 template <isQuantity Q1, isQuantity Q2> using QMultiplication = Quantity<
     std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
     std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
