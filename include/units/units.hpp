@@ -320,7 +320,7 @@ template <isQuantity Q> constexpr Q round(const Q& lhs, const Q& rhs) {
 // mostly useful for velocities
 template <isQuantity Q>
 Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>
-to_linear(
+toLinear(
     Quantity<
     typename Q::mass, 
     typename Q::length, 
@@ -342,7 +342,7 @@ to_linear(
 // mostly useful for velocities
 template <isQuantity Q>
 Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>
-to_angular(
+toAngular(
     Quantity<
     typename Q::mass, 
     typename Q::length, 

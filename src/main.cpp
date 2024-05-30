@@ -35,8 +35,8 @@ void initialize() {
     to_cDeg(a.theta());
 
     Length x = unit_cast<Length>(num);
-    Angle y = to_angular<Length>(x, 2_cm);
-    Length z = to_linear<Angle>(y, 2_cm);
+    Angle y = toAngular<Length>(x, 2_cm);
+    Length z = toLinear<Angle>(y, 2_cm);
 }
 
 /**
