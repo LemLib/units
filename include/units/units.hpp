@@ -284,6 +284,10 @@ NEW_METRIC_PREFIXES(Resistance, ohm)
 NEW_QUANTITY(Conductance, siemen, -1, -2, 3, 2, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(Conductance, siemen);
 
+NEW_QUANTITY(Luminosity, candela, 0, 0, 0, 0, 0, 0, 1, 0);
+
+NEW_QUANTITY(Moles, mol, 0, 0, 0, 0, 0, 0, 0, 1);
+
 namespace units {
 template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.val())); }
 
