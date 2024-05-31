@@ -35,14 +35,14 @@ template <TYPENAMES> class Quantity {
          *
          * This constructor initializes the value to 0
          */
-        constexpr Quantity() : value(0) {}
+        explicit constexpr Quantity() : value(0) {}
 
         /**
          * @brief construct a new Quantity object
          *
          * @param value the value to initialize the quantity with
          */
-        constexpr Quantity(double value) : value(value) {}
+        explicit constexpr Quantity(double value) : value(value) {}
 
         /**
          * @brief construct a new Quantity object
