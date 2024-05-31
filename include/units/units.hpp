@@ -10,8 +10,10 @@
 #endif
 
 // define typenames
-#define TYPENAMES typename Mass, typename Length, typename Time, typename Current, typename Angle
-#define DIMS Mass, Length, Time, Current, Angle
+#define TYPENAMES                                                                                                      \
+    typename Mass, typename Length, typename Time, typename Current, typename Angle, typename Temperature,             \
+        typename Luminosity, typename Moles
+#define DIMS Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles
 
 /**
  * @brief Quantity class
@@ -29,6 +31,9 @@ template <TYPENAMES> class Quantity {
         typedef Time time; /** time unit type */
         typedef Current current; /** current unit type */
         typedef Angle angle; /** angle unit type */
+        typedef Temperature temperature; /** temperature unit type */
+        typedef Luminosity luminosity; /** luminosity unit type */
+        typedef Moles moles; /** moles unit type */
 
         /**
          * @brief construct a new Quantity object
@@ -97,7 +102,9 @@ template <TYPENAMES> class Quantity {
         constexpr void operator=(const double& rhs) {
             static_assert(std::ratio_equal<mass, std::ratio<0>>() && std::ratio_equal<length, std::ratio<0>>() &&
                               std::ratio_equal<time, std::ratio<0>>() && std::ratio_equal<current, std::ratio<0>>() &&
-                              std::ratio_equal<angle, std::ratio<0>>(),
+                              std::ratio_equal<angle, std::ratio<0>>() &&
+                              std::ratio_equal<temperature, std::ratio<0>>() &&
+                              std::ratio_equal<luminosity, std::ratio<0>>() && std::ratio_equal<moles, std::ratio<0>>(),
                           "Tried to assign a double directly to a non-number unit type");
             value = rhs;
         }
@@ -113,24 +120,32 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
 template <isQuantity Q1, isQuantity Q2> using QMultiplication = Quantity<
     std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
     std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
-    std::ratio_add<typename Q1::angle, typename Q2::angle>>;
+    std::ratio_add<typename Q1::angle, typename Q2::angle>,
+    std::ratio_add<typename Q1::temperature, typename Q2::temperature>,
+    std::ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
+    std::ratio_add<typename Q1::moles, typename Q2::moles>>;
 
 template <isQuantity Q1, isQuantity Q2> using QDivision =
     Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
              std::ratio_subtract<typename Q1::length, typename Q2::length>,
              std::ratio_subtract<typename Q1::time, typename Q2::time>,
              std::ratio_subtract<typename Q1::current, typename Q2::current>,
-             std::ratio_subtract<typename Q1::angle, typename Q2::angle>>;
+             std::ratio_subtract<typename Q1::angle, typename Q2::angle>,
+             std::ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
+             std::ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
+             std::ratio_subtract<typename Q1::moles, typename Q2::moles>>;
 
 template <isQuantity Q, typename factor> using QPower =
     Quantity<std::ratio_multiply<typename Q::mass, factor>, std::ratio_multiply<typename Q::length, factor>,
              std::ratio_multiply<typename Q::time, factor>, std::ratio_multiply<typename Q::current, factor>,
-             std::ratio_multiply<typename Q::angle, factor>>;
+             std::ratio_multiply<typename Q::angle, factor>, std::ratio_multiply<typename Q::temperature, factor>,
+             std::ratio_multiply<typename Q::luminosity, factor>, std::ratio_multiply<typename Q::moles, factor>>;
 
 template <isQuantity Q, typename quotient> using QRoot =
     Quantity<std::ratio_divide<typename Q::mass, quotient>, std::ratio_divide<typename Q::length, quotient>,
              std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
-             std::ratio_divide<typename Q::angle, quotient>>;
+             std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
+             std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>;
 
 template <isQuantity Q> constexpr Q operator+(Q lhs, Q rhs) { return Q(lhs.val() + rhs.val()); }
 
@@ -163,8 +178,9 @@ template <isQuantity Q> constexpr bool operator<(const Q& lhs, const Q& rhs) { r
 
 template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { return (lhs.val() > rhs.val()); }
 
-#define NEW_QUANTITY(Name, suffix, m, l, t, c, a)                                                                      \
-    using Name = Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<c>, std::ratio<a>>;                  \
+#define NEW_QUANTITY(Name, suffix, m, l, t, i, a, o, j, n)                                                             \
+    using Name = Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,    \
+                          std::ratio<j>, std::ratio<n>>;                                                               \
     constexpr Name suffix = Name(1.0);                                                                                 \
     constexpr Name operator""_##suffix(long double value) { return Name(static_cast<double>(value)); }                 \
     constexpr Name operator""_##suffix(unsigned long long value) { return Name(static_cast<double>(value)); }          \
@@ -182,69 +198,91 @@ template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { r
     constexpr inline Name from_##suffix(double value) { return value * val; }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(val); }
 
-NEW_QUANTITY(Number, num, 0, 0, 0, 0, 0)
+#define NEW_METRIC_PREFIXES(Name, base)                                                                                \
+    NEW_QUANTITY_VALUE(Name, T##base, base * 1E12)                                                                     \
+    NEW_QUANTITY_VALUE(Name, G##base, base * 1E9)                                                                      \
+    NEW_QUANTITY_VALUE(Name, M##base, base * 1E6)                                                                      \
+    NEW_QUANTITY_VALUE(Name, k##base, base * 1E3)                                                                      \
+    NEW_QUANTITY_VALUE(Name, c##base, base / 1E2)                                                                      \
+    NEW_QUANTITY_VALUE(Name, m##base, base / 1E3)                                                                      \
+    NEW_QUANTITY_VALUE(Name, u##base, base / 1E6)                                                                      \
+    NEW_QUANTITY_VALUE(Name, n##base, base / 1E9)
+
+NEW_QUANTITY(Number, num, 0, 0, 0, 0, 0, 0, 0, 0)
 NEW_QUANTITY_VALUE(Number, percent, num / 100.0);
 
-NEW_QUANTITY(Mass, kg, 1, 0, 0, 0, 0)
+NEW_QUANTITY(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
 NEW_QUANTITY_VALUE(Mass, g, kg / 1000)
 NEW_QUANTITY_VALUE(Mass, lb, g * 453.6)
 
-NEW_QUANTITY(Time, sec, 0, 0, 1, 0, 0)
-NEW_QUANTITY_VALUE(Time, ms, sec / 1000)
+NEW_QUANTITY(Time, sec, 0, 0, 1, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Time, sec)
 NEW_QUANTITY_VALUE(Time, min, sec * 60)
 NEW_QUANTITY_VALUE(Time, hr, min * 60)
 NEW_QUANTITY_VALUE(Time, day, hr * 24)
 
-NEW_QUANTITY(Length, m, 0, 1, 0, 0, 0)
-NEW_QUANTITY_VALUE(Length, mm, m / 1000)
-NEW_QUANTITY_VALUE(Length, cm, m / 100)
-NEW_QUANTITY_VALUE(Length, km, m * 1000)
+NEW_QUANTITY(Length, m, 0, 1, 0, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Length, m)
 NEW_QUANTITY_VALUE(Length, in, cm * 2.54)
 NEW_QUANTITY_VALUE(Length, ft, in * 12)
 NEW_QUANTITY_VALUE(Length, yd, ft * 3)
 NEW_QUANTITY_VALUE(Length, mi, ft * 5280)
-NEW_QUANTITY_VALUE(Length, tiles, 600 * mm)
+NEW_QUANTITY_VALUE(Length, tile, 600 * mm)
 
-NEW_QUANTITY(Area, m2, 0, 2, 0, 0, 0)
+NEW_QUANTITY(Area, m2, 0, 2, 0, 0, 0, 0, 0, 0)
+NEW_QUANTITY_VALUE(Area, Tm2, Tm* Tm);
+NEW_QUANTITY_VALUE(Area, Gm2, Gm* Gm);
+NEW_QUANTITY_VALUE(Area, Mm2, Mm* Mm);
+NEW_QUANTITY_VALUE(Area, km2, km* km);
+NEW_QUANTITY_VALUE(Area, cm2, cm* cm);
+NEW_QUANTITY_VALUE(Area, mm2, mm* mm);
+NEW_QUANTITY_VALUE(Area, um2, um* um);
+NEW_QUANTITY_VALUE(Area, nm2, nm* nm);
 NEW_QUANTITY_VALUE(Area, in2, in* in)
 
-NEW_QUANTITY(LinearVelocity, mps, 0, 1, -1, 0, 0)
-NEW_QUANTITY_VALUE(LinearVelocity, cmps, cm / sec)
+NEW_QUANTITY(LinearVelocity, mps, 0, 1, -1, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearVelocity, mps);
+NEW_QUANTITY_VALUE(LinearVelocity, mph, m / hr)
+NEW_METRIC_PREFIXES(LinearVelocity, mph)
 NEW_QUANTITY_VALUE(LinearVelocity, inps, in / sec)
 NEW_QUANTITY_VALUE(LinearVelocity, miph, mi / hr)
-NEW_QUANTITY_VALUE(LinearVelocity, kmph, km / hr)
 
-NEW_QUANTITY(LinearAcceleration, mps2, 0, 1, -2, 0, 0)
-NEW_QUANTITY_VALUE(LinearAcceleration, cmps2, cm / sec / sec)
+NEW_QUANTITY(LinearAcceleration, mps2, 0, 1, -2, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearAcceleration, mps2)
+NEW_QUANTITY_VALUE(LinearAcceleration, mph2, m / hr / hr)
+NEW_METRIC_PREFIXES(LinearAcceleration, mph2)
 NEW_QUANTITY_VALUE(LinearAcceleration, inps2, in / sec / sec)
 NEW_QUANTITY_VALUE(LinearAcceleration, miph2, mi / hr / hr)
-NEW_QUANTITY_VALUE(LinearAcceleration, kmph2, km / hr / hr)
 
-NEW_QUANTITY(LinearJerk, mps3, 0, 1, -3, 0, 0)
-NEW_QUANTITY_VALUE(LinearJerk, cmps3, cm / (sec * sec * sec))
+NEW_QUANTITY(LinearJerk, mps3, 0, 1, -3, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearJerk, mps3)
+NEW_QUANTITY_VALUE(LinearJerk, mph3, m / (hr * hr * hr))
+NEW_METRIC_PREFIXES(LinearJerk, mph3)
 NEW_QUANTITY_VALUE(LinearJerk, inps3, in / (sec * sec * sec))
 NEW_QUANTITY_VALUE(LinearJerk, miph3, mi / (hr * hr * hr))
-NEW_QUANTITY_VALUE(LinearJerk, kmph3, km / (hr * hr * hr))
 
-NEW_QUANTITY(Curvature, radpm, 0, -1, 0, 0, 0);
+NEW_QUANTITY(Curvature, radpm, 0, -1, 0, 0, 0, 0, 0, 0);
 
-NEW_QUANTITY(Inertia, kgm2, 1, 2, 0, 0, 0)
+NEW_QUANTITY(Inertia, kgm2, 1, 2, 0, 0, 0, 0, 0, 0)
 
-NEW_QUANTITY(Force, n, 1, 1, -2, 0, 0)
+NEW_QUANTITY(Force, N, 1, 1, -2, 0, 0, 0, 0, 0)
 
-NEW_QUANTITY(Torque, nm, 1, 2, -2, 0, 0)
+NEW_QUANTITY(Torque, Nm, 1, 2, -2, 0, 0, 0, 0, 0)
 
-NEW_QUANTITY(Power, watt, 1, 2, -3, 0, 0)
+NEW_QUANTITY(Power, watt, 1, 2, -3, 0, 0, 0, 0, 0)
 
-NEW_QUANTITY(Current, amp, 0, 0, 0, 1, 0)
+NEW_QUANTITY(Current, amp, 0, 0, 0, 1, 0, 0, 0, 0)
 
-NEW_QUANTITY(Charge, coulomb, 0, 0, 1, 1, 0)
+NEW_QUANTITY(Charge, coulomb, 0, 0, 1, 1, 0, 0, 0, 0)
 
-NEW_QUANTITY(Voltage, volt, 1, 2, -3, -1, 0)
+NEW_QUANTITY(Voltage, volt, 1, 2, -3, -1, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Voltage, volt);
 
-NEW_QUANTITY(Resistance, ohm, 1, 2, -3, -2, 0)
+NEW_QUANTITY(Resistance, ohm, 1, 2, -3, -2, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Resistance, ohm)
 
-NEW_QUANTITY(Conductance, siemen, -1, -2, 3, 2, 0)
+NEW_QUANTITY(Conductance, siemen, -1, -2, 3, 2, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Conductance, siemen);
 
 namespace units {
 template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.val())); }
