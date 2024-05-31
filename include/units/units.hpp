@@ -110,6 +110,9 @@ template <TYPENAMES> void quantityChecker(Quantity<DIMS> q) {}
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
+// Un(type)safely coerce the a unit into a different unit
+template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.val()); }
+
 template <isQuantity Q1, isQuantity Q2> using QMultiplication = Quantity<
     std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
     std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
@@ -309,3 +312,25 @@ template <isQuantity Q> constexpr Q round(const Q& lhs, const Q& rhs) {
     return Q(std::round(lhs.val() / rhs.val()) * rhs.val());
 }
 } // namespace units
+
+// Convert an angular unit `Q` to a linear unit correctly;
+// mostly useful for velocities
+template <isQuantity Q>
+Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length> toLinear(
+    Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle> angular,
+    Length diameter) {
+    return unit_cast<
+        Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>>(
+        angular * (diameter / 2.0));
+}
+
+// Convert an linear unit `Q` to a angular unit correctly;
+// mostly useful for velocities
+template <isQuantity Q>
+Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length> toAngular(
+    Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle> linear,
+    Length diameter) {
+    return unit_cast<
+        Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>>(
+        linear / (diameter / 2.0));
+}

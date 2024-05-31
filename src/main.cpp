@@ -33,6 +33,10 @@ void initialize() {
     num = 0.0;
     a.theta().convert(deg);
     to_cDeg(a.theta());
+
+    Length x = unit_cast<Length>(num);
+    Angle y = toAngular<Length>(x, 2_cm);
+    Length z = toLinear<Angle>(y, 2_cm);
 }
 
 /**
