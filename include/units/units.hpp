@@ -357,22 +357,26 @@ template <isQuantity Q> constexpr Q round(const Q& lhs, const Q& rhs) {
 
 // Convert an angular unit `Q` to a linear unit correctly;
 // mostly useful for velocities
-template <isQuantity Q>
-Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length> toLinear(
-    Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle> angular,
-    Length diameter) {
-    return unit_cast<
-        Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>>(
+template <isQuantity Q> Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
+                                 typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>
+toLinear(Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle,
+                  typename Q::temperature, typename Q::luminosity, typename Q::moles>
+             angular,
+         Length diameter) {
+    return unit_cast<Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
+                              typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>>(
         angular * (diameter / 2.0));
 }
 
 // Convert an linear unit `Q` to a angular unit correctly;
 // mostly useful for velocities
-template <isQuantity Q>
-Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length> toAngular(
-    Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle> linear,
-    Length diameter) {
-    return unit_cast<
-        Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length>>(
+template <isQuantity Q> Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
+                                 typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>
+toAngular(Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle,
+                   typename Q::temperature, typename Q::luminosity, typename Q::moles>
+              linear,
+          Length diameter) {
+    return unit_cast<Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
+                              typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>>(
         linear / (diameter / 2.0));
 }
