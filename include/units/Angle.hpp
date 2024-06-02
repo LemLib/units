@@ -2,23 +2,24 @@
 
 #include "units/units.hpp"
 
-using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>>;
+using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>;
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
 constexpr Angle rot = Angle(M_TWOPI);
 
-NEW_QUANTITY(AngularVelocity, radps, 0, 0, -1, 0, 1)
+NEW_QUANTITY(AngularVelocity, radps, 0, 0, -1, 0, 1, 0, 0, 0)
 NEW_QUANTITY_VALUE(AngularVelocity, degps, deg / sec)
 NEW_QUANTITY_VALUE(AngularVelocity, rps, rot / sec)
 NEW_QUANTITY_VALUE(AngularVelocity, rpm, rot / min)
 
-NEW_QUANTITY(AngularAcceleration, radps2, 0, 0, -2, 0, 1)
+NEW_QUANTITY(AngularAcceleration, radps2, 0, 0, -2, 0, 1, 0, 0, 0)
 NEW_QUANTITY_VALUE(AngularAcceleration, degps2, deg / sec / sec)
 NEW_QUANTITY_VALUE(AngularAcceleration, rps2, rot / sec / sec)
 NEW_QUANTITY_VALUE(AngularAcceleration, rpm2, rot / min / min)
 
-NEW_QUANTITY(AngularJerk, radps3, 0, 0, -3, 0, 1)
+NEW_QUANTITY(AngularJerk, radps3, 0, 0, -3, 0, 1, 0, 0, 0)
 NEW_QUANTITY_VALUE(AngularJerk, rps3, rot / sec / sec / sec)
 NEW_QUANTITY_VALUE(AngularJerk, rpm3, rot / min / min / min)
 
