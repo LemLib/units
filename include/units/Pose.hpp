@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Angle.hpp"
-#include "units.hpp"
 #include "units/Vector2D.hpp"
 
 namespace units {
