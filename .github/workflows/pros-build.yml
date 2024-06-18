@@ -17,7 +17,7 @@ jobs:
 
       - name: Run LemLib/pros-build
         id: build-template
-        uses: LemLib/pros-build
+        uses: LemLib/pros-build@v2.0.1
         with:
           copy_readme_and_license_to_include: true
           lib_folder_name: units
