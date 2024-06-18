@@ -32,13 +32,13 @@ constexpr Angle operator""_stRad(long double value) { return Angle(static_cast<d
 
 constexpr Angle operator""_stRad(unsigned long long value) { return Angle(static_cast<double>(value)); }
 
-constexpr Angle operator""_cDeg(long double value) { return static_cast<double>(value) * deg; }
+constexpr Angle operator""_cDeg(long double value) { return 90_stDeg - static_cast<double>(value) * deg; }
 
-constexpr Angle operator""_cDeg(unsigned long long value) { return static_cast<double>(value) * deg; }
+constexpr Angle operator""_cDeg(unsigned long long value) { return 90_stDeg - static_cast<double>(value) * deg; }
 
-constexpr Angle operator""_cRad(long double value) { return Angle(static_cast<double>(value)); }
+constexpr Angle operator""_cRad(long double value) { return 90_stDeg - Angle(static_cast<double>(value)); }
 
-constexpr Angle operator""_cRad(unsigned long long value) { return Angle(static_cast<double>(value)); }
+constexpr Angle operator""_cRad(unsigned long long value) { return 90_stDeg - Angle(static_cast<double>(value)); }
 
 // Angle functions
 namespace units {
