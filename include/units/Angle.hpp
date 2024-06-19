@@ -49,20 +49,20 @@ constexpr Angle operator""_cRad(unsigned long long value) { return 90_stDeg - An
 
 // Angle functions
 namespace units {
-constexpr Number sin(const Angle& rhs) { return Number(std::sin(rhs.val())); }
+constexpr Number sin(const Angle& rhs) { return Number(std::sin(rhs.internal())); }
 
-constexpr Number cos(const Angle& rhs) { return Number(std::cos(rhs.val())); }
+constexpr Number cos(const Angle& rhs) { return Number(std::cos(rhs.internal())); }
 
-constexpr Number tan(const Angle& rhs) { return Number(std::tan(rhs.val())); }
+constexpr Number tan(const Angle& rhs) { return Number(std::tan(rhs.internal())); }
 
-template <isQuantity Q> constexpr Angle asin(const Q& rhs) { return Angle(std::asin(rhs.val())); }
+template <isQuantity Q> constexpr Angle asin(const Q& rhs) { return Angle(std::asin(rhs.internal())); }
 
-template <isQuantity Q> constexpr Angle acos(const Q& rhs) { return Angle(std::acos(rhs.val())); }
+template <isQuantity Q> constexpr Angle acos(const Q& rhs) { return Angle(std::acos(rhs.internal())); }
 
-template <isQuantity Q> constexpr Angle atan(const Q& rhs) { return Angle(std::atan(rhs.val())); }
+template <isQuantity Q> constexpr Angle atan(const Q& rhs) { return Angle(std::atan(rhs.internal())); }
 
 template <isQuantity Q> constexpr Angle atan2(const Q& lhs, const Q& rhs) {
-    return Angle(std::atan2(lhs.val(), rhs.val()));
+    return Angle(std::atan2(lhs.internal(), rhs.internal()));
 }
 
 static inline Angle constrainAngle360(Angle in) { return mod(in, rot); }
@@ -76,7 +76,7 @@ static inline Angle constrainAngle180(Angle in) {
 // Angle to/from operators
 constexpr inline Angle from_sRad(double value) { return Angle(value); }
 
-constexpr inline double to_sRad(Angle quantity) { return quantity.val(); }
+constexpr inline double to_sRad(Angle quantity) { return quantity.internal(); }
 
 constexpr inline Angle from_sDeg(double value) { return value * deg; }
 
@@ -84,7 +84,7 @@ constexpr inline double to_sDeg(Angle quantity) { return quantity.convert(deg); 
 
 constexpr inline Angle from_cRad(double value) { return 90 * deg - Angle(value); }
 
-constexpr inline double to_cRad(Angle quantity) { return quantity.val(); }
+constexpr inline double to_cRad(Angle quantity) { return quantity.internal(); }
 
 constexpr inline Angle from_cDeg(double value) { return (90 - value) * deg; }
 

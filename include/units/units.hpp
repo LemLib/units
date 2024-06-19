@@ -68,7 +68,7 @@ template<
          *
          * @return constexpr double
          */
-        constexpr double val() const { return value; }
+        constexpr double internal() const { return value; }
 
         // TODO: document this
         constexpr double convert(Self quantity) { return value / quantity.value; }
@@ -139,9 +139,9 @@ template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 // Un(type)safely coerce the a unit into a different unit
-template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.val()); }
+template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
-template <isQuantity Q1, isQuantity Q2> using QMultiplication = 
+template <isQuantity Q1, isQuantity Q2> using Multiplied = 
     Quantity<
         std::ratio_add<typename Q1::mass, typename Q2::mass>, 
         std::ratio_add<typename Q1::length, typename Q2::length>,
@@ -153,7 +153,7 @@ template <isQuantity Q1, isQuantity Q2> using QMultiplication =
         std::ratio_add<typename Q1::moles, typename Q2::moles>
     >;
 
-template <isQuantity Q1, isQuantity Q2> using QDivision =
+template <isQuantity Q1, isQuantity Q2> using Divided =
     Quantity<
         std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
         std::ratio_subtract<typename Q1::length, typename Q2::length>,
@@ -165,7 +165,7 @@ template <isQuantity Q1, isQuantity Q2> using QDivision =
         std::ratio_subtract<typename Q1::moles, typename Q2::moles>
     >;
 
-template <isQuantity Q, typename factor> using QPower =
+template <isQuantity Q, typename factor> using Exponentiated =
     Quantity<   
         std::ratio_multiply<typename Q::mass, factor>, std::ratio_multiply<typename Q::length, factor>,
         std::ratio_multiply<typename Q::time, factor>, std::ratio_multiply<typename Q::current, factor>,
@@ -173,7 +173,7 @@ template <isQuantity Q, typename factor> using QPower =
         std::ratio_multiply<typename Q::luminosity, factor>, std::ratio_multiply<typename Q::moles, factor>
     >;
 
-template <isQuantity Q, typename quotient> using QRoot =
+template <isQuantity Q, typename quotient> using Rooted =
     Quantity<
         std::ratio_divide<typename Q::mass, quotient>, std::ratio_divide<typename Q::length, quotient>,
         std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
@@ -181,27 +181,27 @@ template <isQuantity Q, typename quotient> using QRoot =
         std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>
     >;
 
-template <isQuantity Q> constexpr Q operator+(Q lhs, Q rhs) { return Q(lhs.val() + rhs.val()); }
-template <isQuantity Q> constexpr Q operator-(Q lhs, Q rhs) { return Q(lhs.val() - rhs.val()); }
-template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.val() * multiple); }
-template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.val() * multiple); }
-template <isQuantity Q> constexpr Q operator/(Q quantity, double divisor) { return Q(quantity.val() / divisor); }
+template <isQuantity Q> constexpr Q operator+(Q lhs, Q rhs) { return Q(lhs.internal() + rhs.internal()); }
+template <isQuantity Q> constexpr Q operator-(Q lhs, Q rhs) { return Q(lhs.internal() - rhs.internal()); }
+template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
+template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
+template <isQuantity Q> constexpr Q operator/(Q quantity, double divisor) { return Q(quantity.internal() / divisor); }
 
-template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = QMultiplication<Q1, Q2>>
+template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>>
 Q3 constexpr operator*(Q1 lhs, Q2 rhs) {
-    return Q3(lhs.val() * rhs.val());
+    return Q3(lhs.internal() * rhs.internal());
 }
 
-template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = QDivision<Q1, Q2>> Q3 constexpr operator/(Q1 lhs, Q2 rhs) {
-    return Q3(lhs.val() / rhs.val());
+template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 constexpr operator/(Q1 lhs, Q2 rhs) {
+    return Q3(lhs.internal() / rhs.internal());
 }
 
-template <isQuantity Q> constexpr bool operator==(const Q& lhs, const Q& rhs) { return (lhs.val() == rhs.val()); }
-template <isQuantity Q> constexpr bool operator!=(const Q& lhs, const Q& rhs) { return (lhs.val() != rhs.val()); }
-template <isQuantity Q> constexpr bool operator<=(const Q& lhs, const Q& rhs) { return (lhs.val() <= rhs.val()); }
-template <isQuantity Q> constexpr bool operator>=(const Q& lhs, const Q& rhs) { return (lhs.val() >= rhs.val()); }
-template <isQuantity Q> constexpr bool operator<(const Q& lhs, const Q& rhs) { return (lhs.val() < rhs.val()); }
-template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { return (lhs.val() > rhs.val()); }
+template <isQuantity Q> constexpr bool operator==(const Q& lhs, const Q& rhs) { return (lhs.internal() == rhs.internal()); }
+template <isQuantity Q> constexpr bool operator!=(const Q& lhs, const Q& rhs) { return (lhs.internal() != rhs.internal()); }
+template <isQuantity Q> constexpr bool operator<=(const Q& lhs, const Q& rhs) { return (lhs.internal() <= rhs.internal()); }
+template <isQuantity Q> constexpr bool operator>=(const Q& lhs, const Q& rhs) { return (lhs.internal() >= rhs.internal()); }
+template <isQuantity Q> constexpr bool operator<(const Q& lhs, const Q& rhs) { return (lhs.internal() < rhs.internal()); }
+template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { return (lhs.internal() > rhs.internal()); }
 
 #define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n)                                                                  \
     using Name = Quantity<                                                                                              \
@@ -217,18 +217,18 @@ template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) { r
     constexpr Name operator""_##suffix(long double value) { return Name(static_cast<double>(value)); }                  \
     constexpr Name operator""_##suffix(unsigned long long value) { return Name(static_cast<double>(value)); }           \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                           \
-        os << quantity.val() << "_" << #suffix;                                                                         \
+        os << quantity.internal() << "_" << #suffix;                                                                         \
         return os;                                                                                                      \
     }                                                                                                                   \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                           \
-    constexpr inline double to_##suffix(Name quantity) { return quantity.val(); }
+    constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
-#define NEW_UNIT_LITERAL(Name, suffix, val)                                                                             \
-    constexpr Name suffix = val;                                                                                        \
-    constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * val; }                  \
-    constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * val; }           \
-    constexpr inline Name from_##suffix(double value) { return value * val; }                                           \
-    constexpr inline double to_##suffix(Name quantity) { return quantity.convert(val); }
+#define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                             \
+    constexpr Name suffix = multiple;                                                                                        \
+    constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }                  \
+    constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }           \
+    constexpr inline Name from_##suffix(double value) { return value * multiple; }                                           \
+    constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
 
 #define NEW_METRIC_PREFIXES(Name, base)                                                                                 \
     NEW_UNIT_LITERAL(Name, T##base, base * 1E12)                                                                        \
@@ -321,62 +321,62 @@ NEW_UNIT(Luminosity, candela, 0, 0, 0, 0, 0, 0, 1, 0);
 NEW_UNIT(Moles, mol, 0, 0, 0, 0, 0, 0, 0, 1);
 
 namespace units {
-template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.val())); }
+template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.internal())); }
 template <isQuantity Q> constexpr Q max(const Q& lhs, const Q& rhs) { return (lhs > rhs ? lhs : rhs); }
 template <isQuantity Q> constexpr Q min(const Q& lhs, const Q& rhs) { return (lhs < rhs ? lhs : rhs); }
 
-template <int R, isQuantity Q, isQuantity S = QPower<Q, std::ratio<R>>> constexpr S pow(const Q& lhs) {
-    return S(std::pow(lhs.val(), R));
+template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> constexpr S pow(const Q& lhs) {
+    return S(std::pow(lhs.internal(), R));
 }
 
-template <isQuantity Q, isQuantity S = QPower<Q, std::ratio<2>>> constexpr S square(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexpr S square(const Q& lhs) {
     return pow<2>(lhs);
 }
 
-template <isQuantity Q, isQuantity S = QPower<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
     return pow<3>(lhs);
 }
 
-template <int R, isQuantity Q, isQuantity S = QRoot<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
-    return S(std::pow(lhs.val(), 1.0 / R));
+template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
+    return S(std::pow(lhs.internal(), 1.0 / R));
 }
 
-template <isQuantity Q, isQuantity S = QRoot<Q, std::ratio<2>>> constexpr S sqrt(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<2>>> constexpr S sqrt(const Q& lhs) {
     return root<2>(lhs);
 }
 
-template <isQuantity Q, isQuantity S = QRoot<Q, std::ratio<3>>> constexpr S cbrt(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<3>>> constexpr S cbrt(const Q& lhs) {
     return root<3>(lhs);
 }
 
-template <isQuantity Q> constexpr Q hypot(const Q& lhs, const Q& rhs) { return Q(std::hypot(lhs.val(), rhs.val())); }
-template <isQuantity Q> constexpr Q mod(const Q& lhs, const Q& rhs) { return Q(std::fmod(lhs.val(), rhs.val())); }
+template <isQuantity Q> constexpr Q hypot(const Q& lhs, const Q& rhs) { return Q(std::hypot(lhs.internal(), rhs.internal())); }
+template <isQuantity Q> constexpr Q mod(const Q& lhs, const Q& rhs) { return Q(std::fmod(lhs.internal(), rhs.internal())); }
 
 template <isQuantity Q1, isQuantity Q2> constexpr Q1 copysign(const Q1& lhs, const Q2& rhs) {
-    return Q1(std::copysign(lhs.val(), rhs.val()));
+    return Q1(std::copysign(lhs.internal(), rhs.internal()));
 }
 
-template <isQuantity Q> constexpr int sgn(const Q& lhs) { return lhs.val() < 0 ? -1 : 1; }
-template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signbit(lhs.val()); }
+template <isQuantity Q> constexpr int sgn(const Q& lhs) { return lhs.internal() < 0 ? -1 : 1; }
+template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signbit(lhs.internal()); }
 
 template <isQuantity Q> constexpr Q clamp(const Q& lhs, const Q& lo, Q& hi) {
-    return Q(std::clamp(lhs.val(), lo.val(), hi.val()));
+    return Q(std::clamp(lhs.internal(), lo.internal(), hi.internal()));
 }
 
 template <isQuantity Q> constexpr Q ceil(const Q& lhs, const Q& rhs) {
-    return Q(std::ceil(lhs.val() / rhs.val()) * rhs.val());
+    return Q(std::ceil(lhs.internal() / rhs.internal()) * rhs.internal());
 }
 
 template <isQuantity Q> constexpr Q floor(const Q& lhs, const Q& rhs) {
-    return Q(std::floor(lhs.val() / rhs.val()) * rhs.val());
+    return Q(std::floor(lhs.internal() / rhs.internal()) * rhs.internal());
 }
 
 template <isQuantity Q> constexpr Q trunc(const Q& lhs, const Q& rhs) {
-    return Q(std::trunc(lhs.val() / rhs.val()) * rhs.val());
+    return Q(std::trunc(lhs.internal() / rhs.internal()) * rhs.internal());
 }
 
 template <isQuantity Q> constexpr Q round(const Q& lhs, const Q& rhs) {
-    return Q(std::round(lhs.val() / rhs.val()) * rhs.val());
+    return Q(std::round(lhs.internal() / rhs.internal()) * rhs.internal());
 }
 } // namespace units
 
