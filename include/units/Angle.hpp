@@ -2,15 +2,8 @@
 
 #include "units/units.hpp"
 
-using Angle = Quantity<
-    std::ratio<0>, 
-    std::ratio<0>, 
-    std::ratio<0>, 
-    std::ratio<0>, 
-    std::ratio<1>, 
-    std::ratio<0>,
-    std::ratio<0>, std::ratio<0>
->;
+using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>;
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
