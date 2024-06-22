@@ -30,7 +30,7 @@ void initialize() {
     pros::lcd::register_btn1_cb(on_center_button);
     units::Vector2D<AngularAcceleration> a(1_rpm2, 2_rpm2);
     Number num = Number(1.0);
-    num = 0.0;
+    num = Number(0.0);
     a.theta().convert(deg);
     to_cDeg(a.theta());
 
