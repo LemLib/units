@@ -37,7 +37,7 @@ void initialize() {
     2_rpm2 -= a.getOrientation();
     to_cDeg(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                      std::ratio<0>, std::ratio<0>>(5.0) -
-            a.theta() + 5_in);
+            a.theta() + 5_cDeg);
     Quantity<std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<0>,
              std::ratio<0>>
         c = Multiplied<Angle, Time>();
