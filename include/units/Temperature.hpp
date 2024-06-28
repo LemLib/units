@@ -29,14 +29,16 @@ namespace units {
 
 constexpr inline Temperature from_kelvin(double value) { return Temperature(value); }
 
-constexpr inline double to_kelvin(Temperature quantity) { return quantity.val(); }
+constexpr inline double to_kelvin(Temperature quantity) { return quantity.internal(); }
 
 constexpr inline Temperature from_celsius(double value) { return Temperature(value + 273.15); }
 
-constexpr inline double to_celsius(Temperature quantity) { return quantity.val() - 273.15; }
+constexpr inline double to_celsius(Temperature quantity) { return quantity.internal() - 273.15; }
 
 constexpr inline Temperature from_fahrenheit(double value) { return Temperature((value - 32) * (5.0 / 9.0) + 273.15); }
 
-constexpr inline double to_fahrenheit(Temperature quantity) { return (quantity.val() - 273.15) * (9.0 / 5.0) + 32; }
+constexpr inline double to_fahrenheit(Temperature quantity) {
+    return (quantity.internal() - 273.15) * (9.0 / 5.0) + 32;
+}
 
 } // namespace units

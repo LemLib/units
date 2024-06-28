@@ -2,8 +2,19 @@
 
 #include "units/units.hpp"
 
-using Angle = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>;
+class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                              std::ratio<0>, std::ratio<0>> {
+    public:
+        explicit constexpr Angle(double value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {}
+
+        constexpr Angle(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                 std::ratio<0>, std::ratio<0>, std::ratio<0>>
+                            value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {};
+};
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
