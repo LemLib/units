@@ -154,9 +154,41 @@ template <isQuantity Q, typename quotient> using Rooted =
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>;
 
-template <isQuantity Q> constexpr Q operator+(Q lhs, Q rhs) { return Q(lhs.internal() + rhs.internal()); }
+template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs) {
+    static_assert(std::ratio_equal<typename Q::mass, typename R::mass>(), "Mismatching mass dimension values of units");
+    static_assert(std::ratio_equal<typename Q::length, typename R::length>(),
+                  "Mismatching length dimension values of units");
+    static_assert(std::ratio_equal<typename Q::time, typename R::time>(), "Mismatching time dimension values of units");
+    static_assert(std::ratio_equal<typename Q::current, typename R::current>(),
+                  "Mismatching current dimension values of units");
+    static_assert(std::ratio_equal<typename Q::angle, typename R::angle>(),
+                  "Mismatching angle dimension values of units");
+    static_assert(std::ratio_equal<typename Q::temperature, typename R::temperature>(),
+                  "Mismatching temperature dimension values of units");
+    static_assert(std::ratio_equal<typename Q::luminosity, typename R::luminosity>(),
+                  "Mismatching luminosity dimension values of units");
+    static_assert(std::ratio_equal<typename Q::moles, typename R::moles>(),
+                  "Mismatching moles dimension values of units");
+    return Q(lhs.internal() + rhs.internal());
+}
 
-template <isQuantity Q> constexpr Q operator-(Q lhs, Q rhs) { return Q(lhs.internal() - rhs.internal()); }
+template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs) {
+    static_assert(std::ratio_equal<typename Q::mass, typename R::mass>(), "Mismatching mass dimension values of units");
+    static_assert(std::ratio_equal<typename Q::length, typename R::length>(),
+                  "Mismatching length dimension values of units");
+    static_assert(std::ratio_equal<typename Q::time, typename R::time>(), "Mismatching time dimension values of units");
+    static_assert(std::ratio_equal<typename Q::current, typename R::current>(),
+                  "Mismatching current dimension values of units");
+    static_assert(std::ratio_equal<typename Q::angle, typename R::angle>(),
+                  "Mismatching angle dimension values of units");
+    static_assert(std::ratio_equal<typename Q::temperature, typename R::temperature>(),
+                  "Mismatching temperature dimension values of units");
+    static_assert(std::ratio_equal<typename Q::luminosity, typename R::luminosity>(),
+                  "Mismatching luminosity dimension values of units");
+    static_assert(std::ratio_equal<typename Q::moles, typename R::moles>(),
+                  "Mismatching moles dimension values of units");
+    return Q(lhs.internal() + rhs.internal());
+}
 
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
 
