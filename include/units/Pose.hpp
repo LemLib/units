@@ -39,7 +39,8 @@ template <typename derivatives> class AbstractPose
          * @param v position
          * @param orientation orientation
          */
-        AbstractPose(Vector v, Divided<Angle, Exponentiated<Time, derivatives>> orientation) : Vector(v), orientation(orientation) {}
+        AbstractPose(Vector v, Divided<Angle, Exponentiated<Time, derivatives>> orientation)
+            : Vector(v), orientation(orientation) {}
 
         /**
          * @brief Construct a new Pose object
@@ -58,7 +59,8 @@ template <typename derivatives> class AbstractPose
          * @param y y position
          * @param orientation orientation
          */
-        AbstractPose(Len x, Len y, Divided<Angle, Exponentiated<Time, derivatives>> orientation) : Vector(x, y), orientation(orientation) {}
+        AbstractPose(Len x, Len y, Divided<Angle, Exponentiated<Time, derivatives>> orientation)
+            : Vector(x, y), orientation(orientation) {}
 
         /**
          * @brief Get the orientation
@@ -72,7 +74,9 @@ template <typename derivatives> class AbstractPose
          *
          * @param orientation orientation
          */
-        void setOrientation(Divided<Angle, Exponentiated<Time, derivatives>> orientation) { this->orientation = orientation; }
+        void setOrientation(Divided<Angle, Exponentiated<Time, derivatives>> orientation) {
+            this->orientation = orientation;
+        }
     protected:
         Divided<Angle, Exponentiated<Time, derivatives>> orientation; /** Orientation */
 };
