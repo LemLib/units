@@ -2,6 +2,7 @@
 
 #include "Angle.hpp"
 #include "units/Vector2D.hpp"
+#include "units/units.hpp"
 
 namespace units {
 /**
@@ -9,8 +10,8 @@ namespace units {
  *
  * @brief A class that represents a position and orientation in 2D space
  *
- * This class inherits from V2Position, which is identical to Vector2D<Length>. The only difference here
- * is that Pose has an additional member variable, orientation.
+ * This class inherits from Vector2D<Length / derivatives>, and has an additional Orientation component of type <Angle /
+ * derivatives>, where derivatives is a power of time.
  */
 template <typename derivatives> class AbstractPose
     : public Vector2D<Divided<Length, Exponentiated<Time, derivatives>>> {
@@ -81,8 +82,11 @@ template <typename derivatives> class AbstractPose
         Divided<Angle, Exponentiated<Time, derivatives>> orientation; /** Orientation */
 };
 
+// Position Pose (Length, Angle)
 using Pose = AbstractPose<std::ratio<0>>;
+// Velocity Pose (Length / Time, Angle / Time)
 using VelocityPose = AbstractPose<std::ratio<1>>;
+// AccelerationPose (Length / Time^2, Angle / Time^2)
 using AccelerationPose = AbstractPose<std::ratio<2>>;
 
 } // namespace units
