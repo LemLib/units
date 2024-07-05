@@ -111,11 +111,11 @@ class Quantity {
         }
 };
 
-template <typename Q> struct NamedTable {
+template <typename Q> struct LookupName {
         using Named = Q;
 };
 
-template <typename Q> using Named = typename NamedTable<Q>::Named;
+template <typename Q> using Named = typename LookupName<Q>::Named;
 
 // quantity checker. Used by the isQuantity concept
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
@@ -215,7 +215,7 @@ template <isQuantity Q> constexpr bool operator>(const Q& lhs, const Q& rhs) {
                 : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
                            std::ratio<j>, std::ratio<n>>(value) {};                                                    \
     };                                                                                                                 \
-    template <> struct NamedTable<Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,  \
+    template <> struct LookupName<Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,  \
                                            std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
