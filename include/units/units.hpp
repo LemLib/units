@@ -111,6 +111,12 @@ class Quantity {
         }
 };
 
+template <typename Q> struct LookupName {
+        using Named = Q;
+};
+
+template <typename Q> using Named = typename LookupName<Q>::Named;
+
 // quantity checker. Used by the isQuantity concept
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
           typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
@@ -128,35 +134,35 @@ concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to
 // Un(type)safely coerce the a unit into a different unit
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
-template <isQuantity Q1, isQuantity Q2> using Multiplied = Quantity<
+template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
     std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
     std::ratio_add<typename Q1::angle, typename Q2::angle>,
     std::ratio_add<typename Q1::temperature, typename Q2::temperature>,
     std::ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
-    std::ratio_add<typename Q1::moles, typename Q2::moles>>;
+    std::ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
 template <isQuantity Q1, isQuantity Q2> using Divided =
-    Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
-             std::ratio_subtract<typename Q1::length, typename Q2::length>,
-             std::ratio_subtract<typename Q1::time, typename Q2::time>,
-             std::ratio_subtract<typename Q1::current, typename Q2::current>,
-             std::ratio_subtract<typename Q1::angle, typename Q2::angle>,
-             std::ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
-             std::ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
-             std::ratio_subtract<typename Q1::moles, typename Q2::moles>>;
+    Named<Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
+                   std::ratio_subtract<typename Q1::length, typename Q2::length>,
+                   std::ratio_subtract<typename Q1::time, typename Q2::time>,
+                   std::ratio_subtract<typename Q1::current, typename Q2::current>,
+                   std::ratio_subtract<typename Q1::angle, typename Q2::angle>,
+                   std::ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
+                   std::ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
+                   std::ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
 
-template <isQuantity Q, typename factor> using Exponentiated =
+template <isQuantity Q, typename factor> using Exponentiated = Named<
     Quantity<std::ratio_multiply<typename Q::mass, factor>, std::ratio_multiply<typename Q::length, factor>,
              std::ratio_multiply<typename Q::time, factor>, std::ratio_multiply<typename Q::current, factor>,
              std::ratio_multiply<typename Q::angle, factor>, std::ratio_multiply<typename Q::temperature, factor>,
-             std::ratio_multiply<typename Q::luminosity, factor>, std::ratio_multiply<typename Q::moles, factor>>;
+             std::ratio_multiply<typename Q::luminosity, factor>, std::ratio_multiply<typename Q::moles, factor>>>;
 
-template <isQuantity Q, typename quotient> using Rooted =
+template <isQuantity Q, typename quotient> using Rooted = Named<
     Quantity<std::ratio_divide<typename Q::mass, quotient>, std::ratio_divide<typename Q::length, quotient>,
              std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
-             std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>;
+             std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -232,6 +238,10 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                value)                                                                                  \
                 : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
                            std::ratio<j>, std::ratio<n>>(value) {};                                                    \
+    };                                                                                                                 \
+    template <> struct LookupName<Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,  \
+                                           std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
+            using Named = Name;                                                                                        \
     };                                                                                                                 \
     constexpr Name suffix = Name(1.0);                                                                                 \
     constexpr Name operator""_##suffix(long double value) {                                                            \
