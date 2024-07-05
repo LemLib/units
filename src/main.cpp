@@ -1,5 +1,6 @@
 #include "main.h"
 #include "units/Pose.hpp"
+#include "units/Temperature.hpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -44,10 +45,16 @@ void initialize() {
     Length x = unit_cast<Length>(num);
     Angle y = toAngular<Length>(x, 2_cm);
     Length z = toLinear<Angle>(y, 2_cm);
+    static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                         std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
+    units::clamp(2_cDeg, a.theta(), Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                         std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
+    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                              std::ratio<0>, std::ratio<0>>(1.0));
 }
 
 /**
- * Runs while the robot is in the disabled state of Field Management System or
+ * Runs while the Probot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
