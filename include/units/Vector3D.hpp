@@ -71,7 +71,7 @@ template <isQuantity T> class Vector3D {
 
         /**
          * @brief get the z component
-         * 
+         *
          * @return T z component
          */
         T getZ() { return z; }
@@ -92,7 +92,7 @@ template <isQuantity T> class Vector3D {
 
         /**
          * @brief set the z component
-         * 
+         *
          * @param nz z component
          */
         void setZ(T nz) { z = nz; }
@@ -106,7 +106,9 @@ template <isQuantity T> class Vector3D {
          * @param other vector to add
          * @return Vector3D<T>
          */
-        Vector3D<T> operator+(Vector3D<T>& other) { return Vector3D<T>(x + other.getX(), y + other.getY(), z + getZ()); }
+        Vector3D<T> operator+(Vector3D<T>& other) {
+            return Vector3D<T>(x + other.getX(), y + other.getY(), z + getZ());
+        }
 
         /**
          * @brief - operator overload
@@ -236,9 +238,7 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<R> the cross product
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> Vector3D<R> cross(Vector3D<Q>& other) {
-            return Vector3D<R>(y * other.z - z * other.y,
-                               z * other.x - x * other.z,
-                               x * other.y - y * other.x);
+            return Vector3D<R>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
         }
 
         /**
@@ -248,8 +248,8 @@ template <isQuantity T> class Vector3D {
          */
         Vector3D<Angle> theta() {
             const T mag = magnitude();
-            return Vector3D<Angle>(acos(x/mag), acos(y/mag), acos(z/mag));
-            }
+            return Vector3D<Angle>(acos(x / mag), acos(y / mag), acos(z / mag));
+        }
 
         /**
          * @brief magnitude of the vector
@@ -269,7 +269,9 @@ template <isQuantity T> class Vector3D {
          * @param other the other vector
          * @return Vector3D<T>
          */
-        Vector3D<T> vectorTo(Vector3D<T>& other) { return Vector2D<T>(other.getX() - x, other.getY() - y, other.getZ() - z); }
+        Vector3D<T> vectorTo(Vector3D<T>& other) {
+            return Vector2D<T>(other.getX() - x, other.getY() - y, other.getZ() - z);
+        }
 
         /**
          * @brief the angle between two vectors
