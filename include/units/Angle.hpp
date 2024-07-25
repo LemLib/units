@@ -48,7 +48,7 @@ constexpr Angle operator""_stRot(long double value) { return static_cast<double>
 
 constexpr Angle operator""_stRot(unsigned long long value) { return static_cast<double>(value) * rot; }
 
-//Compass orientation
+// Compass orientation
 constexpr Angle operator""_cRad(long double value) { return 90_stDeg - Angle(static_cast<double>(value)); }
 
 constexpr Angle operator""_cRad(unsigned long long value) { return 90_stDeg - Angle(static_cast<double>(value)); }
