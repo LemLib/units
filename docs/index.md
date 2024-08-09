@@ -6,9 +6,10 @@ bob
 
 ```{toctree}
 :hidden:
-:maxdepth: -1
-:caption: Documentation
+:maxdepth: 2
+:caption: Index
 
 self
+./tutorials/index
 ./api.md
 ```

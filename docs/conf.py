@@ -39,7 +39,9 @@ html_static_path = ["_static"]
 
 breathe_projects = {"Units": "xml/"}
 
-breathe_projects_source = {"LemLib": ("../", ["include/units"])}
+breathe_projects_source = {
+    "Units": ("../", ["include/units"])
+}
 
 breathe_default_project = "Units"
 
