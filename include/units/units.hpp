@@ -9,8 +9,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-// define typenames
-
 /**
  * @brief Quantity class
  *
@@ -34,6 +32,10 @@ class Quantity {
         typedef Luminosity luminosity; /** luminosity unit type */
         typedef Moles moles; /** moles unit type */
 
+        /**
+         * @brief
+         *
+         */
         using Self = Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>;
 
         /**
@@ -58,13 +60,19 @@ class Quantity {
         constexpr Quantity(Self const& other) : value(other.value) {}
 
         /**
-         * @brief get the value of the quantity in its base unit type
+         * @brief get the value of the quantity in its base unit type. Not recommended for users
          *
          * @return constexpr double
          */
         constexpr double internal() const { return value; }
 
-        // TODO: document this
+        /**
+         * @brief get the value of the quantity in a specific unit. Not recommended for users, especially for units
+         * involving temperatures or angles
+         *
+         * @param quantity the unit value to convert into
+         * @return constexpr double
+         */
         constexpr double convert(Self quantity) { return value / quantity.value; }
 
         /**
@@ -117,21 +125,35 @@ template <typename Q> struct LookupName {
 
 template <typename Q> using Named = typename LookupName<Q>::Named;
 
-// quantity checker. Used by the isQuantity concept
+/**
+ * @brief Quantity checker function for isQuantity concept. Never to be used by users.
+ *
+ */
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
           typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
           typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
 void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
 
-// isQuantity concept
+/**
+ * @brief concept to use in template arguments (EX: template <isQuantity Q>). Requires any instance of the type Q to
+ * inherit from Quantity and have the same dimensions
+ */
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 // Isomorphic concept - used to ensure unit equivalecy
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...) &&
+                     requires(Q q) { quantityChecker(q); };
 
-// Un(type)safely coerce the a unit into a different unit
+/**
+ * @brief Un(type)safely coerce the a unit into a different unit
+ * 
+ * @tparam Q1 the unit type to return
+ * @tparam Q2 the unit type of the input
+ * @param quantity the input quantity
+ * @return constexpr Q1 
+ */
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
 template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
