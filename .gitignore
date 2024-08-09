@@ -18,3 +18,10 @@ temp.errors
 
 # Template Zips
 *.zip
+
+# Flake stuff
+.direnv
+
+# Built docs
+docs/_build
+docs/xml

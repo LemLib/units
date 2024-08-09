@@ -129,7 +129,7 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 // Isomorphic concept - used to ensure unit equivalecy
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...);
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
 
 // Un(type)safely coerce the a unit into a different unit
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
@@ -227,6 +227,13 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 }
 
 #define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n)                                                                 \
+    /**                                                                                                                \
+    this is an example of stuff you could put in a doxygen comment <br>                                                \
+    you need newlines<br>                                                                                              \
+    you're not allowed to whitespace <br>                                                                              \
+    can't have shit in detroit <br>                                                                                    \
+    @brief value i j                                                                                                   \
+    */                                                                                                                 \
     class Name : public Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,            \
                                  std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
         public:                                                                                                        \
