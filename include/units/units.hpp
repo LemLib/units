@@ -219,11 +219,11 @@ template <isQuantity Q, typename R> using Rooted =
                    std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
 
 /**
- * @brief add two quantities with the same unit type (determined with Isomorphic) 
- * 
+ * @brief add two quantities with the same unit type (determined with Isomorphic)
+ *
  * @param lhs the first addend
  * @param rhs the escond addend
- * @return constexpr Q the sum 
+ * @return constexpr Q the sum
  */
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -232,8 +232,8 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 }
 
 /**
- * @brief subtracts two quantities with the same unit type (determined with Isomorphic) 
- * 
+ * @brief subtracts two quantities with the same unit type (determined with Isomorphic)
+ *
  * @param lhs the left hand minuend
  * @param rhs the right hand minuend
  * @return constexpr Q the difference
@@ -245,27 +245,27 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
 }
 
 /**
- * @brief multiplies a unit quantity with a constant numerical factor 
- * 
- * @param quantity the first factor (united) 
+ * @brief multiplies a unit quantity with a constant numerical factor
+ *
+ * @param quantity the first factor (united)
  * @param multiple the second factor (numeric)
  * @return constexpr Q the product
  */
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
 
 /**
- * @brief multiplies a unit quantity with a constant numerical factor 
- * 
+ * @brief multiplies a unit quantity with a constant numerical factor
+ *
  * @param multiple the second factor (numeric)
- * @param quantity the first factor (united) 
+ * @param quantity the first factor (united)
  * @return constexpr Q the product
  */
 template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
 
 /**
  * @brief divides a unit quantity by a constant numerical factor
- * 
- * @param quantity the dividend (united) 
+ *
+ * @param quantity the dividend (united)
  * @param multiple the divisor (numeric)
  * @return constexpr Q the quotient
  */
