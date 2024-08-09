@@ -21,16 +21,25 @@ template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typena
           typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
 class Quantity {
     protected:
-        double value; /** the value stored in its base unit type */
+        /** the value stored in its base unit type */
+        double value;
     public:
-        typedef Mass mass; /** mass unit type */
-        typedef Length length; /** length unit type */
-        typedef Time time; /** time unit type */
-        typedef Current current; /** current unit type */
-        typedef Angle angle; /** angle unit type */
-        typedef Temperature temperature; /** temperature unit type */
-        typedef Luminosity luminosity; /** luminosity unit type */
-        typedef Moles moles; /** moles unit type */
+        /** mass unit type */
+        typedef Mass mass;
+        /** length unit type */
+        typedef Length length;
+        /** time unit type */
+        typedef Time time;
+        /** current unit type */
+        typedef Current current;
+        /** angle unit type */
+        typedef Angle angle;
+        /** temperature unit type */
+        typedef Temperature temperature;
+        /** luminosity unit type */
+        typedef Luminosity luminosity;
+        /** moles unit type */
+        typedef Moles moles;
 
         /**
          * @brief
@@ -62,7 +71,7 @@ class Quantity {
         /**
          * @brief get the value of the quantity in its base unit type. Not recommended for users
          *
-         * @return constexpr double
+         * @return the value in the base unit
          */
         constexpr double internal() const { return value; }
 
@@ -71,7 +80,7 @@ class Quantity {
          * involving temperatures or angles
          *
          * @param quantity the unit value to convert into
-         * @return constexpr double
+         * @return the value in the specified unit
          */
         constexpr double convert(Self quantity) { return value / quantity.value; }
 
@@ -156,7 +165,7 @@ concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to
  * @tparam Q1 the unit type to return
  * @tparam Q2 the unit type of the input
  * @param quantity the input quantity
- * @return constexpr Q1
+ * @return the casted value
  */
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
@@ -219,11 +228,11 @@ template <isQuantity Q, typename R> using Rooted =
                    std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
 
 /**
- * @brief add two quantities with the same unit type (determined with Isomorphic)
+ * @brief add two quantities with the same unit type (determined with #Isomorphic)
  *
  * @param lhs the first addend
  * @param rhs the escond addend
- * @return constexpr Q the sum
+ * @return the sum
  */
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -232,11 +241,11 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 }
 
 /**
- * @brief subtracts two quantities with the same unit type (determined with Isomorphic)
+ * @brief subtracts two quantities with the same unit type (determined with #Isomorphic)
  *
  * @param lhs the left hand minuend
  * @param rhs the right hand minuend
- * @return constexpr Q the difference
+ * @return the difference
  */
 template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -249,7 +258,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
  *
  * @param quantity the first factor (united)
  * @param multiple the second factor (numeric)
- * @return constexpr Q the product
+ * @return the product
  */
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
 
@@ -258,7 +267,7 @@ template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { ret
  *
  * @param multiple the second factor (numeric)
  * @param quantity the first factor (united)
- * @return constexpr Q the product
+ * @return the product
  */
 template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
 
@@ -267,14 +276,28 @@ template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { ret
  *
  * @param quantity the dividend (united)
  * @param multiple the divisor (numeric)
- * @return constexpr Q the quotient
+ * @return the quotient
  */
 template <isQuantity Q> constexpr Q operator/(Q quantity, double divisor) { return Q(quantity.internal() / divisor); }
 
+/**
+ * @brief multiplies two unit quantities. The output type is determined using [Multiplied]
+ *
+ * @param lhs the multiplicand
+ * @param rhs the multiplier
+ * @return the product
+ */
 template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>> Q3 constexpr operator*(Q1 lhs, Q2 rhs) {
     return Q3(lhs.internal() * rhs.internal());
 }
 
+/**
+ * @brief divides two unit quantities. The output type is determined using <Divided>
+ *
+ * @param lhs the dividend
+ * @param rhs the divisor
+ * @return the quotient
+ */
 template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 constexpr operator/(Q1 lhs, Q2 rhs) {
     return Q3(lhs.internal() / rhs.internal());
 }
