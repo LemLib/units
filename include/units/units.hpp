@@ -147,21 +147,23 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
  * @tparam Quantities additional (minimum of one) unit types to check
  */
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...) &&
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...) &&
                      requires(Q q) { quantityChecker(q); };
 
 /**
  * @brief Un(type)safely coerce the a unit into a different unit
- * 
+ *
  * @tparam Q1 the unit type to return
  * @tparam Q2 the unit type of the input
  * @param quantity the input quantity
- * @return constexpr Q1 
+ * @return constexpr Q1
  */
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
 /**
- * @brief simplification of unit multiplication. Multiplied<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the product of Q1 * Q2 
+ * @brief simplification of unit multiplication. Multiplied<Q1, Q2> is an equivalent (as defined by Isomorphic) unit
+ * type to the product of Q1 * Q2
+ *
  * @tparam Q1 the multiplicand
  * @tparam Q2 the multiplier
  */
@@ -174,7 +176,9 @@ template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     std::ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
 /**
- * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the quotient of Q1 / Q2 
+ * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the
+ * quotient of Q1 / Q2
+ *
  * @tparam Q1 the dividend
  * @tparam Q2 the divisor
  */
@@ -188,17 +192,31 @@ template <isQuantity Q1, isQuantity Q2> using Divided =
                    std::ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
                    std::ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
 
-template <isQuantity Q, typename factor> using Exponentiated = Named<
-    Quantity<std::ratio_multiply<typename Q::mass, factor>, std::ratio_multiply<typename Q::length, factor>,
-             std::ratio_multiply<typename Q::time, factor>, std::ratio_multiply<typename Q::current, factor>,
-             std::ratio_multiply<typename Q::angle, factor>, std::ratio_multiply<typename Q::temperature, factor>,
-             std::ratio_multiply<typename Q::luminosity, factor>, std::ratio_multiply<typename Q::moles, factor>>>;
+/**
+ * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
+ * type to the R'th power of Q
+ *
+ * @tparam Q the base
+ * @tparam R the power
+ */
+template <isQuantity Q, typename R> using Exponentiated =
+    Named<Quantity<std::ratio_multiply<typename Q::mass, R>, std::ratio_multiply<typename Q::length, R>,
+                   std::ratio_multiply<typename Q::time, R>, std::ratio_multiply<typename Q::current, R>,
+                   std::ratio_multiply<typename Q::angle, R>, std::ratio_multiply<typename Q::temperature, R>,
+                   std::ratio_multiply<typename Q::luminosity, R>, std::ratio_multiply<typename Q::moles, R>>>;
 
-template <isQuantity Q, typename quotient> using Rooted = Named<
-    Quantity<std::ratio_divide<typename Q::mass, quotient>, std::ratio_divide<typename Q::length, quotient>,
-             std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
-             std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
-             std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
+/**
+ * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
+ * type to the R'th root of Q
+ *
+ * @tparam Q the radicand
+ * @tparam R the degree
+ */
+template <isQuantity Q, typename R> using Rooted =
+    Named<Quantity<std::ratio_divide<typename Q::mass, R>, std::ratio_divide<typename Q::length, R>,
+                   std::ratio_divide<typename Q::time, R>, std::ratio_divide<typename Q::current, R>,
+                   std::ratio_divide<typename Q::angle, R>, std::ratio_divide<typename Q::temperature, R>,
+                   std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
 
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
