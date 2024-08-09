@@ -141,7 +141,11 @@ void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, L
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
-// Isomorphic concept - used to ensure unit equivalecy
+/**
+ * @brief concept to ensure unit equivalecy (equal dimensions)
+ * @tparam Q the first unit type to check
+ * @tparam Quantities additional (minimum of one) unit types to check
+ */
 template <typename Q, typename... Quantities>
 concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...) &&
                      requires(Q q) { quantityChecker(q); };
@@ -156,6 +160,11 @@ concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to
  */
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
+/**
+ * @brief simplification of unit multiplication. Multiplied<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the product of Q1 * Q2 
+ * @tparam Q1 the multiplicand
+ * @tparam Q2 the multiplier
+ */
 template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
     std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
@@ -164,6 +173,11 @@ template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     std::ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
     std::ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
+/**
+ * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the quotient of Q1 / Q2 
+ * @tparam Q1 the dividend
+ * @tparam Q2 the divisor
+ */
 template <isQuantity Q1, isQuantity Q2> using Divided =
     Named<Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
                    std::ratio_subtract<typename Q1::length, typename Q2::length>,
