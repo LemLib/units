@@ -8,6 +8,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+using std::ratio;
 
 /**
  * @brief Quantity class
@@ -16,9 +17,9 @@
  *
  * @tparam TYPENAMES the types of the units
  */
-template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
-          typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
-          typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
+template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>,
+          typename Current = ratio<0>, typename Angle = ratio<0>, typename Temperature = ratio<0>,
+          typename Luminosity = ratio<0>, typename Moles = ratio<0>>
 class Quantity {
     protected:
         /** the value stored in its base unit type */
@@ -117,11 +118,11 @@ class Quantity {
          * @param rhs the double to assign
          */
         constexpr void operator=(const double& rhs) {
-            static_assert(std::ratio_equal<mass, std::ratio<0>>() && std::ratio_equal<length, std::ratio<0>>() &&
-                              std::ratio_equal<time, std::ratio<0>>() && std::ratio_equal<current, std::ratio<0>>() &&
-                              std::ratio_equal<angle, std::ratio<0>>() &&
-                              std::ratio_equal<temperature, std::ratio<0>>() &&
-                              std::ratio_equal<luminosity, std::ratio<0>>() && std::ratio_equal<moles, std::ratio<0>>(),
+            static_assert(ratio_equal<mass, ratio<0>>() && ratio_equal<length, ratio<0>>() &&
+                              ratio_equal<time, ratio<0>>() && ratio_equal<current, ratio<0>>() &&
+                              ratio_equal<angle, ratio<0>>() &&
+                              ratio_equal<temperature, ratio<0>>() &&
+                              ratio_equal<luminosity, ratio<0>>() && ratio_equal<moles, ratio<0>>(),
                           "Cannot assign a double directly to a non-number unit type");
             value = rhs;
         }
@@ -137,9 +138,9 @@ template <typename Q> using Named = typename LookupName<Q>::Named;
  * @brief Quantity checker function for isQuantity concept. Never to be used by users
  *
  */
-template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
-          typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
-          typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
+template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>,
+          typename Current = ratio<0>, typename Angle = ratio<0>, typename Temperature = ratio<0>,
+          typename Luminosity = ratio<0>, typename Moles = ratio<0>>
 void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
 
 /**
@@ -176,12 +177,12 @@ template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantit
  * @tparam Q2 the multiplier
  */
 template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
-    std::ratio_add<typename Q1::mass, typename Q2::mass>, std::ratio_add<typename Q1::length, typename Q2::length>,
-    std::ratio_add<typename Q1::time, typename Q2::time>, std::ratio_add<typename Q1::current, typename Q2::current>,
-    std::ratio_add<typename Q1::angle, typename Q2::angle>,
-    std::ratio_add<typename Q1::temperature, typename Q2::temperature>,
-    std::ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
-    std::ratio_add<typename Q1::moles, typename Q2::moles>>>;
+    ratio_add<typename Q1::mass, typename Q2::mass>, ratio_add<typename Q1::length, typename Q2::length>,
+    ratio_add<typename Q1::time, typename Q2::time>, ratio_add<typename Q1::current, typename Q2::current>,
+    ratio_add<typename Q1::angle, typename Q2::angle>,
+    ratio_add<typename Q1::temperature, typename Q2::temperature>,
+    ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
+    ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
 /**
  * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the
@@ -191,14 +192,14 @@ template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
  * @tparam Q2 the divisor
  */
 template <isQuantity Q1, isQuantity Q2> using Divided =
-    Named<Quantity<std::ratio_subtract<typename Q1::mass, typename Q2::mass>,
-                   std::ratio_subtract<typename Q1::length, typename Q2::length>,
-                   std::ratio_subtract<typename Q1::time, typename Q2::time>,
-                   std::ratio_subtract<typename Q1::current, typename Q2::current>,
-                   std::ratio_subtract<typename Q1::angle, typename Q2::angle>,
-                   std::ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
-                   std::ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
-                   std::ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
+    Named<Quantity<ratio_subtract<typename Q1::mass, typename Q2::mass>,
+                   ratio_subtract<typename Q1::length, typename Q2::length>,
+                   ratio_subtract<typename Q1::time, typename Q2::time>,
+                   ratio_subtract<typename Q1::current, typename Q2::current>,
+                   ratio_subtract<typename Q1::angle, typename Q2::angle>,
+                   ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
+                   ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
+                   ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
 
 /**
  * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
@@ -208,10 +209,10 @@ template <isQuantity Q1, isQuantity Q2> using Divided =
  * @tparam R the power
  */
 template <isQuantity Q, typename R> using Exponentiated =
-    Named<Quantity<std::ratio_multiply<typename Q::mass, R>, std::ratio_multiply<typename Q::length, R>,
-                   std::ratio_multiply<typename Q::time, R>, std::ratio_multiply<typename Q::current, R>,
-                   std::ratio_multiply<typename Q::angle, R>, std::ratio_multiply<typename Q::temperature, R>,
-                   std::ratio_multiply<typename Q::luminosity, R>, std::ratio_multiply<typename Q::moles, R>>>;
+    Named<Quantity<ratio_multiply<typename Q::mass, R>, ratio_multiply<typename Q::length, R>,
+                   ratio_multiply<typename Q::time, R>, ratio_multiply<typename Q::current, R>,
+                   ratio_multiply<typename Q::angle, R>, ratio_multiply<typename Q::temperature, R>,
+                   ratio_multiply<typename Q::luminosity, R>, ratio_multiply<typename Q::moles, R>>>;
 
 /**
  * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
@@ -221,10 +222,10 @@ template <isQuantity Q, typename R> using Exponentiated =
  * @tparam R the degree
  */
 template <isQuantity Q, typename R> using Rooted =
-    Named<Quantity<std::ratio_divide<typename Q::mass, R>, std::ratio_divide<typename Q::length, R>,
-                   std::ratio_divide<typename Q::time, R>, std::ratio_divide<typename Q::current, R>,
-                   std::ratio_divide<typename Q::angle, R>, std::ratio_divide<typename Q::temperature, R>,
-                   std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
+    Named<Quantity<ratio_divide<typename Q::mass, R>, ratio_divide<typename Q::length, R>,
+                   ratio_divide<typename Q::time, R>, ratio_divide<typename Q::current, R>,
+                   ratio_divide<typename Q::angle, R>, ratio_divide<typename Q::temperature, R>,
+                   ratio_divide<typename Q::luminosity, R>, ratio_divide<typename Q::moles, R>>>;
 
 /**
  * @brief adds two isomorphic (equal dimensions) quantities
@@ -373,39 +374,39 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     return (lhs.internal() > rhs.internal());
 }
 
-#define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n)                                                                 \
-    class Name : public Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,            \
-                                 std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
+#define NEW_UNIT(Name, suffix, mass, len, time, cur, ang, temp, lum, mole)                                             \
+    class Name : public Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,                 \
+                                 ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>> {               \
         public:                                                                                                        \
             /**                                                                                                        \
-             @brief construct a new Name object<br>                                                                  \
+             @brief construct a new Name object<br>                                                                    \
              @param value the value of the new Name <br>                                                               \
              */                                                                                                        \
             explicit constexpr Name(double value)                                                                      \
-                : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
-                           std::ratio<j>, std::ratio<n>>(value) {}                                                     \
+                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,      \
+                           ratio<temp>, ratio<lum>, ratio<mole>>(value) {}                              \
             /**                                                                                                        \
-             @brief construct a new Name object<br>                                                                  \
+             @brief construct a new Name object<br>                                                                    \
              @param other the Name to copy<br>                                                                         \
              */                                                                                                        \
-            constexpr Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,         \
-                                    std::ratio<o>, std::ratio<j>, std::ratio<n>>                                       \
+            constexpr Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,              \
+                                    ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>>              \
                                value)                                                                                  \
-                : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
-                           std::ratio<j>, std::ratio<n>>(value) {};                                                    \
+                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,      \
+                           ratio<temp>, ratio<lum>, ratio<mole>>(value) {};                             \
     };                                                                                                                 \
-    template <> struct LookupName<Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,  \
-                                           std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
+    template <> struct LookupName<Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,       \
+                                           ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>>> {    \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
     constexpr Name suffix = Name(1.0);                                                                                 \
     constexpr Name operator""_##suffix(long double value) {                                                            \
-        return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
-                             std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
+        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,    \
+                             ratio<temp>, ratio<lum>, ratio<mole>>(static_cast<double>(value)));        \
     }                                                                                                                  \
     constexpr Name operator""_##suffix(unsigned long long value) {                                                     \
-        return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
-                             std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
+        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,    \
+                             ratio<temp>, ratio<lum>, ratio<mole>>(static_cast<double>(value)));        \
     }                                                                                                                  \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << "_" << #suffix;                                                                   \
@@ -553,7 +554,7 @@ template <isQuantity Q, isQuantity R> constexpr Q min(const Q& lhs, const R& rhs
  * @param lhs
  * @return constexpr S the result of the operation
  */
-template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> constexpr S pow(const Q& lhs) {
+template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, ratio<R>>> constexpr S pow(const Q& lhs) {
     return S(std::pow(lhs.internal(), R));
 }
 
@@ -563,7 +564,7 @@ template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> c
  * @param lhs the quantity
  * @return constexpr S the square of the quantity
  */
-template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexpr S square(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Exponentiated<Q, ratio<2>>> constexpr S square(const Q& lhs) {
     return pow<2>(lhs);
 }
 
@@ -573,7 +574,7 @@ template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexp
  * @param lhs the quantity
  * @return constexpr S the cube of the quantity
  */
-template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
+template <isQuantity Q, isQuantity S = Exponentiated<Q, ratio<3>>> constexpr S cube(const Q& lhs) {
     return pow<3>(lhs);
 }
 
@@ -584,7 +585,7 @@ template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexp
  * @param lhs the quantity
  * @return constexpr S the R root of the quantity
  */
-template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
+template <int R, isQuantity Q, isQuantity S = Rooted<Q, ratio<R>>> constexpr S root(const Q& lhs) {
     return S(std::pow(lhs.internal(), 1.0 / R));
 }
 
@@ -594,7 +595,7 @@ template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexp
  * @param lhs the quantity
  * @return constexpr S the square root of the quantity
  */
-template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<2>>> constexpr S sqrt(const Q& lhs) { return root<2>(lhs); }
+template <isQuantity Q, isQuantity S = Rooted<Q, ratio<2>>> constexpr S sqrt(const Q& lhs) { return root<2>(lhs); }
 
 /**
  * @brief takes the cube root of a quantity
@@ -602,7 +603,7 @@ template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<2>>> constexpr S sqr
  * @param lhs the quantity
  * @return constexpr S the cube root of the quantity
  */
-template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<3>>> constexpr S cbrt(const Q& lhs) { return root<3>(lhs); }
+template <isQuantity Q, isQuantity S = Rooted<Q, ratio<3>>> constexpr S cbrt(const Q& lhs) { return root<3>(lhs); }
 
 /**
  * @brief calculates the hypotenuse of a right triangle with two sides of isomorphic quantities
