@@ -17,9 +17,9 @@ using std::ratio, std::ratio_add, std::ratio_subtract, std::ratio_multiply, std:
  *
  * @tparam TYPENAMES the types of the units
  */
-template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>,
-          typename Current = ratio<0>, typename Angle = ratio<0>, typename Temperature = ratio<0>,
-          typename Luminosity = ratio<0>, typename Moles = ratio<0>>
+template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>, typename Current = ratio<0>,
+          typename Angle = ratio<0>, typename Temperature = ratio<0>, typename Luminosity = ratio<0>,
+          typename Moles = ratio<0>>
 class Quantity {
     protected:
         /** the value stored in its base unit type */
@@ -120,27 +120,31 @@ class Quantity {
         constexpr void operator=(const double& rhs) {
             static_assert(ratio_equal<mass, ratio<0>>() && ratio_equal<length, ratio<0>>() &&
                               ratio_equal<time, ratio<0>>() && ratio_equal<current, ratio<0>>() &&
-                              ratio_equal<angle, ratio<0>>() &&
-                              ratio_equal<temperature, ratio<0>>() &&
+                              ratio_equal<angle, ratio<0>>() && ratio_equal<temperature, ratio<0>>() &&
                               ratio_equal<luminosity, ratio<0>>() && ratio_equal<moles, ratio<0>>(),
                           "Cannot assign a double directly to a non-number unit type");
             value = rhs;
         }
 };
 
+/**
+ * @brief helper struct to assist with looking up the name of a unit type. Should not be used by users
+ */
 template <typename Q> struct LookupName {
         using Named = Q;
 };
 
+/**
+ * @brief helper type to assist with looking up the name of a unit type. Should not be used by users
+ */
 template <typename Q> using Named = typename LookupName<Q>::Named;
 
 /**
- * @brief Quantity checker function for isQuantity concept. Never to be used by users
- *
+ * @brief helper function for isQuantity concept. Should not be used by users
  */
-template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>,
-          typename Current = ratio<0>, typename Angle = ratio<0>, typename Temperature = ratio<0>,
-          typename Luminosity = ratio<0>, typename Moles = ratio<0>>
+template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>, typename Current = ratio<0>,
+          typename Angle = ratio<0>, typename Temperature = ratio<0>, typename Luminosity = ratio<0>,
+          typename Moles = ratio<0>>
 void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
 
 /**
@@ -179,10 +183,8 @@ template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantit
 template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     ratio_add<typename Q1::mass, typename Q2::mass>, ratio_add<typename Q1::length, typename Q2::length>,
     ratio_add<typename Q1::time, typename Q2::time>, ratio_add<typename Q1::current, typename Q2::current>,
-    ratio_add<typename Q1::angle, typename Q2::angle>,
-    ratio_add<typename Q1::temperature, typename Q2::temperature>,
-    ratio_add<typename Q1::luminosity, typename Q2::luminosity>,
-    ratio_add<typename Q1::moles, typename Q2::moles>>>;
+    ratio_add<typename Q1::angle, typename Q2::angle>, ratio_add<typename Q1::temperature, typename Q2::temperature>,
+    ratio_add<typename Q1::luminosity, typename Q2::luminosity>, ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
 /**
  * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the
@@ -191,15 +193,13 @@ template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
  * @tparam Q1 the dividend
  * @tparam Q2 the divisor
  */
-template <isQuantity Q1, isQuantity Q2> using Divided =
-    Named<Quantity<ratio_subtract<typename Q1::mass, typename Q2::mass>,
-                   ratio_subtract<typename Q1::length, typename Q2::length>,
-                   ratio_subtract<typename Q1::time, typename Q2::time>,
-                   ratio_subtract<typename Q1::current, typename Q2::current>,
-                   ratio_subtract<typename Q1::angle, typename Q2::angle>,
-                   ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
-                   ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
-                   ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
+template <isQuantity Q1, isQuantity Q2> using Divided = Named<Quantity<
+    ratio_subtract<typename Q1::mass, typename Q2::mass>, ratio_subtract<typename Q1::length, typename Q2::length>,
+    ratio_subtract<typename Q1::time, typename Q2::time>, ratio_subtract<typename Q1::current, typename Q2::current>,
+    ratio_subtract<typename Q1::angle, typename Q2::angle>,
+    ratio_subtract<typename Q1::temperature, typename Q2::temperature>,
+    ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
+    ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
 
 /**
  * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
@@ -375,38 +375,54 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 }
 
 #define NEW_UNIT(Name, suffix, mass, len, time, cur, ang, temp, lum, mole)                                             \
-    class Name : public Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,                 \
-                                 ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>> {               \
+    class Name : public Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>,            \
+                                 ratio<lum>, ratio<mole>> {                                                            \
         public:                                                                                                        \
             /**                                                                                                        \
              @brief construct a new Name object<br>                                                                    \
              @param value the value of the new Name <br>                                                               \
              */                                                                                                        \
             explicit constexpr Name(double value)                                                                      \
-                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,      \
-                           ratio<temp>, ratio<lum>, ratio<mole>>(value) {}                              \
+                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,      \
+                           ratio<mole>>(value) {}                                                                      \
             /**                                                                                                        \
              @brief construct a new Name object<br>                                                                    \
              @param other the Name to copy<br>                                                                         \
              */                                                                                                        \
-            constexpr Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,              \
-                                    ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>>              \
+            constexpr Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>,         \
+                                    ratio<lum>, ratio<mole>>                                                           \
                                value)                                                                                  \
-                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,      \
-                           ratio<temp>, ratio<lum>, ratio<mole>>(value) {};                             \
+                : Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,      \
+                           ratio<mole>>(value) {};                                                                     \
     };                                                                                                                 \
-    template <> struct LookupName<Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>,       \
-                                           ratio<ang>, ratio<temp>, ratio<lum>, ratio<mole>>> {    \
+    /**                                                                                                                \
+    @brief struct used for name lookups for Name                                                                       \
+    */                                                                                                                 \
+    template <> struct LookupName<Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>,  \
+                                           ratio<lum>, ratio<mole>>> {                                                 \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
+    /**                                                                                                                \
+     @brief the base unit for Name. Has a value of 1.0                                                                 \
+     */                                                                                                                \
     constexpr Name suffix = Name(1.0);                                                                                 \
+    /**                                                                                                                \
+     @brief function to initialize a new Name quantity in units of suffix.                                             \
+     @param value the value in suffix                                                                                  \
+     @return the quantity                                                                                              \
+     */                                                                                                                \
     constexpr Name operator""_##suffix(long double value) {                                                            \
-        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,    \
-                             ratio<temp>, ratio<lum>, ratio<mole>>(static_cast<double>(value)));        \
+        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,    \
+                             ratio<mole>>(static_cast<double>(value)));                                                \
     }                                                                                                                  \
+    /**                                                                                                                \
+    @brief function to initialize a new Name quantity in units of suffix.                                              \
+    @param value the value in suffix                                                                                   \
+    @return the quantity                                                                                               \
+    */                                                                                                                 \
     constexpr Name operator""_##suffix(unsigned long long value) {                                                     \
-        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>,    \
-                             ratio<temp>, ratio<lum>, ratio<mole>>(static_cast<double>(value)));        \
+        return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,    \
+                             ratio<mole>>(static_cast<double>(value)));                                                \
     }                                                                                                                  \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << "_" << #suffix;                                                                   \
@@ -417,7 +433,17 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
     constexpr Name suffix = multiple;                                                                                  \
+    /**                                                                                                                \
+     @brief function to initialize a new Name quantity in units of suffix.                                             \
+     @param value the value in suffix                                                                                  \
+     @return the quantity                                                                                              \
+     */                                                                                                                \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
+    /**                                                                                                                \
+    @brief function to initialize a new Name quantity in units of suffix.                                              \
+    @param value the value in suffix                                                                                   \
+    @return the quantity                                                                                               \
+    */                                                                                                                 \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
