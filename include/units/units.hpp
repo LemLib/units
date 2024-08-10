@@ -42,7 +42,7 @@ class Quantity {
         typedef Moles moles;
 
         /**
-         * @brief convenience label. Represents an equivalent unit (equal dimensions)  
+         * @brief convenience label. Represents an equivalent unit (equal dimensions)
          */
         using Self = Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>;
 
@@ -155,7 +155,7 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
  * @tparam Quantities additional (minimum of one) unit types to check
  */
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...) &&
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...) &&
                      requires(Q q) { quantityChecker(q); };
 
 /**
@@ -227,7 +227,7 @@ template <isQuantity Q, typename R> using Rooted =
                    std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
 
 /**
- * @brief adds two isomorphic (equal dimensions) quantities 
+ * @brief adds two isomorphic (equal dimensions) quantities
  *
  * @param lhs the first addend
  * @param rhs the second addend
@@ -240,7 +240,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 }
 
 /**
- * @brief subtracts two isomorphic (equal dimensions) quantities 
+ * @brief subtracts two isomorphic (equal dimensions) quantities
  *
  * @param lhs the left hand minuend
  * @param rhs the right hand minuend
@@ -305,7 +305,7 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 cons
  * @brief checks if two isomorphic (equal dimensions) quantities have equal internal values
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if both quantities have the same value 
+ * @return true if both quantities have the same value
  * @return false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, const R& rhs)
@@ -328,7 +328,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator!=(const Q& lhs, co
 }
 
 /**
- * @brief checks if a quantity has a lesser or equal value than another quantity with equal dimensions   
+ * @brief checks if a quantity has a lesser or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
  * @return true if the left hand quantity's value is less than or equal to the right hand quantity
@@ -341,7 +341,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<=(const Q& lhs, co
 }
 
 /**
- * @brief checks if a quantity has a greater or equal value than another quantity with equal dimensions   
+ * @brief checks if a quantity has a greater or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
  * @return true if the left hand quantity's value is greater than or equal to the right hand quantity
@@ -354,7 +354,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>=(const Q& lhs, co
 }
 
 /**
- * @brief checks if a quantity has a lesser value than another quantity with equal dimensions   
+ * @brief checks if a quantity has a lesser value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
  * @return true if the left hand quantity's value is less than the right hand quantity
@@ -367,7 +367,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<(const Q& lhs, con
 }
 
 /**
- * @brief checks if a quantity has a greater value than another quantity with equal dimensions   
+ * @brief checks if a quantity has a greater value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
  * @return true if the left hand quantity's value is greater than the right hand quantity
@@ -380,19 +380,20 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 }
 
 #define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n)                                                                 \
-    /**                                                                                                                \
-    this is an example of stuff you could put in a doxygen comment <br>                                                \
-    you need newlines<br>                                                                                              \
-    you're not allowed to whitespace <br>                                                                              \
-    can't have shit in detroit <br>                                                                                    \
-    @brief value i j                                                                                                   \
-    */                                                                                                                 \
     class Name : public Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,            \
                                  std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
         public:                                                                                                        \
+            /**                                                                                                        \
+             * @brief construct a new Name object<br>                                                                  \
+             * @param value the value of the new Name <br>                                                             \
+             */                                                                                                        \
             explicit constexpr Name(double value)                                                                      \
                 : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
                            std::ratio<j>, std::ratio<n>>(value) {}                                                     \
+            /**                                                                                                        \
+             * @brief construct a new Name object<br>                                                                  \
+             * @param other the Name to copy<br>                                                                       \
+             */                                                                                                        \
             constexpr Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,         \
                                     std::ratio<o>, std::ratio<j>, std::ratio<n>>                                       \
                                value)                                                                                  \
