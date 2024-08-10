@@ -42,8 +42,7 @@ class Quantity {
         typedef Moles moles;
 
         /**
-         * @brief
-         *
+         * @brief convenience label. Represents an equivalent unit (equal dimensions)  
          */
         using Self = Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>;
 
@@ -135,7 +134,7 @@ template <typename Q> struct LookupName {
 template <typename Q> using Named = typename LookupName<Q>::Named;
 
 /**
- * @brief Quantity checker function for isQuantity concept. Never to be used by users.
+ * @brief Quantity checker function for isQuantity concept. Never to be used by users
  *
  */
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
@@ -256,8 +255,8 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
 /**
  * @brief multiplies a unit quantity with a constant numerical factor
  *
- * @param quantity the first factor (united)
- * @param multiple the second factor (numeric)
+ * @param quantity the multiplicand (united)
+ * @param multiple the multiplier (numeric)
  * @return the product
  */
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
@@ -265,8 +264,8 @@ template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { ret
 /**
  * @brief multiplies a unit quantity with a constant numerical factor
  *
- * @param multiple the second factor (numeric)
- * @param quantity the first factor (united)
+ * @param multiple the multiplicand (numeric)
+ * @param quantity the the multiplier (united)
  * @return the product
  */
 template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
@@ -302,36 +301,78 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 cons
     return Q3(lhs.internal() / rhs.internal());
 }
 
+/**
+ * @brief checks if two isomorphic (equal dimensions) quantities have equal internal values
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if both quantities have the same value 
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs.internal() == rhs.internal());
 }
 
+/**
+ * @brief checks if two isomorphic (equal dimensions) quantities have differing internal values
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if both quantities have the same value
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator!=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs.internal() != rhs.internal());
 }
 
+/**
+ * @brief checks if a quantity has a lesser or equal value than another quantity with equal dimensions   
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if the left hand quantity's value is less than or equal to the right hand quantity
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator<=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs.internal() <= rhs.internal());
 }
 
+/**
+ * @brief checks if a quantity has a greater or equal value than another quantity with equal dimensions   
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if the left hand quantity's value is greater than or equal to the right hand quantity
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator>=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs.internal() >= rhs.internal());
 }
 
+/**
+ * @brief checks if a quantity has a lesser value than another quantity with equal dimensions   
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if the left hand quantity's value is less than the right hand quantity
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator<(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs.internal() < rhs.internal());
 }
 
+/**
+ * @brief checks if a quantity has a greater value than another quantity with equal dimensions   
+ * @param lhs the first quantity to compare
+ * @param rhs the second quantity to compare
+ * @return true if the left hand quantity's value is greater than the right hand quantity
+ * @return false otherwise
+ */
 template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
