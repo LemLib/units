@@ -155,7 +155,7 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
  * @tparam Quantities additional (minimum of one) unit types to check
  */
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...) &&
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...) &&
                      requires(Q q) { quantityChecker(q); };
 
 /**
@@ -230,8 +230,8 @@ template <isQuantity Q, typename R> using Rooted =
  * @brief add two quantities with the same unit type (determined with #Isomorphic)
  *
  * @param lhs the first addend
- * @param rhs the escond addend
- * @return the sum
+ * @param rhs the second addend
+ * @return constexpr Q the sum
  */
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -517,60 +517,160 @@ NEW_UNIT(Luminosity, candela, 0, 0, 0, 0, 0, 0, 1, 0);
 NEW_UNIT(Moles, mol, 0, 0, 0, 0, 0, 0, 0, 1);
 
 namespace units {
+/**
+ * @brief takes the absolute value of a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr Q the absolute value
+ */
 template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.internal())); }
 
+/**
+ * @brief takes the maximum of two isomorphic quantities
+ *
+ * @param lhs the first operand
+ * @param rhs the second operand
+ * @return constexpr Q
+ */
 template <isQuantity Q, isQuantity R> constexpr Q max(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs > rhs ? lhs : rhs);
 }
 
+/**
+ * @brief takes the minimum of two isomorphic quantites (most conservative quantity)
+ *
+ * @param lhs the first operand
+ * @param rhs the second operand
+ * @return constexpr Q
+ */
 template <isQuantity Q, isQuantity R> constexpr Q min(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return (lhs < rhs ? lhs : rhs);
 }
 
+/**
+ * @brief calculates the power of a quantity to a given integer
+ *
+ * @tparam R the power to raise the quantity to
+ * @param lhs
+ * @return constexpr S the result of the operation
+ */
 template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> constexpr S pow(const Q& lhs) {
     return S(std::pow(lhs.internal(), R));
 }
 
+/**
+ * @brief squares a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr S the square of the quantity
+ */
 template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexpr S square(const Q& lhs) {
     return pow<2>(lhs);
 }
 
+/**
+ * @brief takes the cube of a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr S the cube of the quantity
+ */
 template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
     return pow<3>(lhs);
 }
 
+/**
+ * @brief takes the R root of a quantity
+ *
+ * @tparam R the order of the root
+ * @param lhs the quantity
+ * @return constexpr S the R root of the quantity
+ */
 template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
     return S(std::pow(lhs.internal(), 1.0 / R));
 }
 
+/**
+ * @brief takes the square root of a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr S the square root of the quantity
+ */
 template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<2>>> constexpr S sqrt(const Q& lhs) { return root<2>(lhs); }
 
+/**
+ * @brief takes the cube root of a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr S the cube root of the quantity
+ */
 template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<3>>> constexpr S cbrt(const Q& lhs) { return root<3>(lhs); }
 
+/**
+ * @brief calculates the hypotenuse of a right triangle with two sides of isomorphic quantities
+ *
+ * @param lhs x side
+ * @param rhs y side
+ * @return constexpr Q the hypotenuse
+ */
 template <isQuantity Q, isQuantity R> constexpr Q hypot(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return Q(std::hypot(lhs.internal(), rhs.internal()));
 }
 
+/**
+ * @brief returns the remainder of a division of two isomorphic quantities
+ *
+ * @param lhs the dividend
+ * @param rhs the divisor
+ * @return constexpr Q the remainder
+ */
 template <isQuantity Q, isQuantity R> constexpr Q mod(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
 {
     return Q(std::fmod(lhs.internal(), rhs.internal()));
 }
 
+/**
+ * @brief returns the absolute value of x with the sign of y
+ *
+ * @param lhs the quantity to take the absolute value of (x)
+ * @param rhs the quantity to take the sign of (y)
+ * @return constexpr the first quantity with the sign of the second
+ */
 template <isQuantity Q1, isQuantity Q2> constexpr Q1 copysign(const Q1& lhs, const Q2& rhs) {
     return Q1(std::copysign(lhs.internal(), rhs.internal()));
 }
 
+/**
+ * @brief returns the sign of a quantity
+ *
+ * @param lhs the quantity
+ * @return constexpr int the sign of the quantity
+ */
 template <isQuantity Q> constexpr int sgn(const Q& lhs) { return lhs.internal() < 0 ? -1 : 1; }
 
+/**
+ * @brief returns true if the quantity is negative
+ *
+ * @param lhs the quantity
+ * @return true if the quantity is negative
+ * @return false if the quantity is not negative
+ */
 template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signbit(lhs.internal()); }
 
+/**
+ * @brief clamps a quantity between two other isomporphic quantities
+ *
+ * @param lhs the quantity to clamp
+ * @param lo the lower bound
+ * @param hi the upper bound
+ * @return constexpr Q the clamped quantity
+ */
 template <isQuantity Q, isQuantity R, isQuantity S> constexpr Q clamp(const Q& lhs, const R& lo, const S& hi)
     requires Isomorphic<Q, R, S>
 {
