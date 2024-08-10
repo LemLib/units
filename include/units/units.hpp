@@ -305,8 +305,7 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 cons
  * @brief checks if two isomorphic (equal dimensions) quantities have equal internal values
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if both quantities have the same value
- * @return false otherwise
+ * @return true if both quantities have the same value, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -318,8 +317,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, co
  * @brief checks if two isomorphic (equal dimensions) quantities have differing internal values
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if both quantities have the same value
- * @return false otherwise
+ * @return true if both quantities have the same value, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator!=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -331,8 +329,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator!=(const Q& lhs, co
  * @brief checks if a quantity has a lesser or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if the left hand quantity's value is less than or equal to the right hand quantity
- * @return false otherwise
+ * @return true if the left hand quantity's value is less than or equal to the right hand quantity, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator<=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -344,8 +341,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<=(const Q& lhs, co
  * @brief checks if a quantity has a greater or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if the left hand quantity's value is greater than or equal to the right hand quantity
- * @return false otherwise
+ * @return true if the left hand quantity's value is greater than or equal to the right hand quantity, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator>=(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -357,8 +353,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>=(const Q& lhs, co
  * @brief checks if a quantity has a lesser value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if the left hand quantity's value is less than the right hand quantity
- * @return false otherwise
+ * @return true if the left hand quantity's value is less than the right hand quantity, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator<(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -370,8 +365,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<(const Q& lhs, con
  * @brief checks if a quantity has a greater value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
- * @return true if the left hand quantity's value is greater than the right hand quantity
- * @return false otherwise
+ * @return true if the left hand quantity's value is greater than the right hand quantity, false otherwise
  */
 template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, const R& rhs)
     requires Isomorphic<Q, R>
@@ -384,15 +378,15 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                  std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
         public:                                                                                                        \
             /**                                                                                                        \
-             * @brief construct a new Name object<br>                                                                  \
-             * @param value the value of the new Name <br>                                                             \
+             @brief construct a new Name object<br>                                                                  \
+             @param value the value of the new Name <br>                                                               \
              */                                                                                                        \
             explicit constexpr Name(double value)                                                                      \
                 : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
                            std::ratio<j>, std::ratio<n>>(value) {}                                                     \
             /**                                                                                                        \
-             * @brief construct a new Name object<br>                                                                  \
-             * @param other the Name to copy<br>                                                                       \
+             @brief construct a new Name object<br>                                                                  \
+             @param other the Name to copy<br>                                                                         \
              */                                                                                                        \
             constexpr Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,         \
                                     std::ratio<o>, std::ratio<j>, std::ratio<n>>                                       \
@@ -659,8 +653,7 @@ template <isQuantity Q> constexpr int sgn(const Q& lhs) { return lhs.internal() 
  * @brief returns true if the quantity is negative
  *
  * @param lhs the quantity
- * @return true if the quantity is negative
- * @return false if the quantity is not negative
+ * @return true if the quantity is negative, false otherwise
  */
 template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signbit(lhs.internal()); }
 
