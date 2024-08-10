@@ -8,7 +8,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-using std::ratio;
+using std::ratio, std::ratio_add, std::ratio_subtract, std::ratio_multiply, std::ratio_divide;
 
 /**
  * @brief Quantity class
