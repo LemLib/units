@@ -227,7 +227,7 @@ template <isQuantity Q, typename R> using Rooted =
                    std::ratio_divide<typename Q::luminosity, R>, std::ratio_divide<typename Q::moles, R>>>;
 
 /**
- * @brief add two quantities with the same unit type (determined with #Isomorphic)
+ * @brief adds two isomorphic (equal dimensions) quantities 
  *
  * @param lhs the first addend
  * @param rhs the second addend
@@ -240,7 +240,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 }
 
 /**
- * @brief subtracts two quantities with the same unit type (determined with #Isomorphic)
+ * @brief subtracts two isomorphic (equal dimensions) quantities 
  *
  * @param lhs the left hand minuend
  * @param rhs the right hand minuend
