@@ -1,38 +1,61 @@
 # API Reference
 
-## Outline
+## Abstract Quantities
 
-- Angle.hpp
-- Pose.hpp
-- Temperature.hpp
-- Vector2D.hpp
-- Vector3D.hpp
-- units.hpp
+```{doxygenclass} Quantity
+:members:
+```
+
+## Generic Operations
+
+```{doxygengroup} operations
+:members:
+:inner:
+```
+
+
+## Quantities
+
+### Number
+
+```{doxygengroup} Number
+:content-only:
+:members:
+```
+
+### Mass
+
+```{doxygengroup} Mass
+:content-only:
+:members:
+```
+
+<!--### Time-->
+<!--### Length-->
+<!--### Area-->
+<!--### Linear Velocity-->
+<!--### Linear Acceleration-->
+<!--### Linear Jerk-->
+<!--### Curvature-->
+<!--### Inertia-->
+<!--### Force-->
+<!--### Torque-->
+<!--### Power-->
+<!--### Current-->
+<!--### Charge-->
+<!--### Voltage-->
+<!--### Resistance-->
+<!--### Conductance-->
+<!--### Luminosity-->
+<!--### Moles-->
+<!--### Angle-->
+<!--### Pose-->
+<!--### Temperature-->
+<!--### Vector 2D-->
+<!--### Vector 3D-->
 
 ## units.hpp
 
 ```{doxygenfile} units.hpp
+
 ```
-<!--## Pose.hpp-->
-
-<!--```{doxygenfile} Pose.hpp-->
-
-<!--```-->
-
-<!--## Vector2D-->
-
-<!--```{doxygenfile} Vector2D.hpp-->
-
-<!--```-->
-
-<!--## Vector3D-->
-
-<!--```{doxygenfile} Vector3D.hpp-->
-
-<!--```-->
-
-<!--## Units-->
-
-<!--```{doxygenfile} units.hpp-->
-<!---->
-<!--```-->

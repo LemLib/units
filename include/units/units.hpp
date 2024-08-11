@@ -155,6 +155,11 @@ template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 /**
+ * @defgroup operations
+ * @brief The following are generic operations that can be performed on any `Quantity`.
+ */
+
+/** @ingroup operations
  * @brief concept to ensure unit equivalecy (equal dimensions)
  * @tparam Q the first unit type to check
  * @tparam Quantities additional (minimum of one) unit types to check
@@ -163,7 +168,7 @@ template <typename Q, typename... Quantities>
 concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...) &&
                      requires(Q q) { quantityChecker(q); };
 
-/**
+/** @ingroup operations
  * @brief Un(type)safely coerce the a unit into a different unit
  *
  * @tparam Q1 the unit type to return
@@ -173,7 +178,7 @@ concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to
  */
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
 
-/**
+/** @ingroup operations
  * @brief simplification of unit multiplication. Multiplied<Q1, Q2> is an equivalent (as defined by Isomorphic) unit
  * type to the product of Q1 * Q2
  *
@@ -186,7 +191,7 @@ template <isQuantity Q1, isQuantity Q2> using Multiplied = Named<Quantity<
     ratio_add<typename Q1::angle, typename Q2::angle>, ratio_add<typename Q1::temperature, typename Q2::temperature>,
     ratio_add<typename Q1::luminosity, typename Q2::luminosity>, ratio_add<typename Q1::moles, typename Q2::moles>>>;
 
-/**
+/** @ingroup operations
  * @brief simplification of unit division. Divided<Q1, Q2> is an equivalent (as defined by Isomorphic) unit type to the
  * quotient of Q1 / Q2
  *
@@ -201,7 +206,7 @@ template <isQuantity Q1, isQuantity Q2> using Divided = Named<Quantity<
     ratio_subtract<typename Q1::luminosity, typename Q2::luminosity>,
     ratio_subtract<typename Q1::moles, typename Q2::moles>>>;
 
-/**
+/** @ingroup operations
  * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
  * type to the R'th power of Q
  *
@@ -214,7 +219,7 @@ template <isQuantity Q, typename R> using Exponentiated =
                    ratio_multiply<typename Q::angle, R>, ratio_multiply<typename Q::temperature, R>,
                    ratio_multiply<typename Q::luminosity, R>, ratio_multiply<typename Q::moles, R>>>;
 
-/**
+/** @ingroup operations
  * @brief simplification of unit exponentiation. Exponentiated<Q, R> is an equivalent (as defined by Isomorphic) unit
  * type to the R'th root of Q
  *
@@ -227,7 +232,7 @@ template <isQuantity Q, typename R> using Rooted =
                    ratio_divide<typename Q::angle, R>, ratio_divide<typename Q::temperature, R>,
                    ratio_divide<typename Q::luminosity, R>, ratio_divide<typename Q::moles, R>>>;
 
-/**
+/** @ingroup operations
  * @brief adds two isomorphic (equal dimensions) quantities
  *
  * @param lhs the first addend
@@ -240,7 +245,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     return Q(lhs.internal() + rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief subtracts two isomorphic (equal dimensions) quantities
  *
  * @param lhs the left hand minuend
@@ -253,7 +258,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     return Q(lhs.internal() + rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief multiplies a unit quantity with a constant numerical factor
  *
  * @param quantity the multiplicand (united)
@@ -262,7 +267,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
  */
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
 
-/**
+/** @ingroup operations
  * @brief multiplies a unit quantity with a constant numerical factor
  *
  * @param multiple the multiplicand (numeric)
@@ -271,7 +276,7 @@ template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { ret
  */
 template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
 
-/**
+/** @ingroup operations
  * @brief divides a unit quantity by a constant numerical factor
  *
  * @param quantity the dividend (united)
@@ -280,7 +285,7 @@ template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { ret
  */
 template <isQuantity Q> constexpr Q operator/(Q quantity, double divisor) { return Q(quantity.internal() / divisor); }
 
-/**
+/** @ingroup operations
  * @brief multiplies two unit quantities. The output type is determined using [Multiplied]
  *
  * @param lhs the multiplicand
@@ -291,7 +296,7 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>> Q3 c
     return Q3(lhs.internal() * rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief divides two unit quantities. The output type is determined using <Divided>
  *
  * @param lhs the dividend
@@ -302,7 +307,7 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 cons
     return Q3(lhs.internal() / rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if two isomorphic (equal dimensions) quantities have equal internal values
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -314,7 +319,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, co
     return (lhs.internal() == rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if two isomorphic (equal dimensions) quantities have differing internal values
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -326,7 +331,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator!=(const Q& lhs, co
     return (lhs.internal() != rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if a quantity has a lesser or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -338,7 +343,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<=(const Q& lhs, co
     return (lhs.internal() <= rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if a quantity has a greater or equal value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -350,7 +355,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>=(const Q& lhs, co
     return (lhs.internal() >= rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if a quantity has a lesser value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -362,7 +367,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator<(const Q& lhs, con
     return (lhs.internal() < rhs.internal());
 }
 
-/**
+/** @ingroup operations
  * @brief checks if a quantity has a greater value than another quantity with equal dimensions
  * @param lhs the first quantity to compare
  * @param rhs the second quantity to compare
@@ -375,6 +380,10 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 }
 
 #define NEW_UNIT(Name, suffix, mass, len, time, cur, ang, temp, lum, mole)                                             \
+    /** @defgroup Name */                                                                                              \
+                                                                                                                       \
+    /**@ingroup Name                                                                                                   \
+     */                                                                                                                \
     class Name : public Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>,            \
                                  ratio<lum>, ratio<mole>> {                                                            \
         public:                                                                                                        \
@@ -416,6 +425,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                              ratio<mole>>(static_cast<double>(value)));                                                \
     }                                                                                                                  \
     /**                                                                                                                \
+    @ingroup Name                                                                                                      \
     @brief function to initialize a new Name quantity in units of suffix.                                              \
     @param value the value in suffix                                                                                   \
     @return the quantity                                                                                               \
@@ -424,6 +434,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,    \
                              ratio<mole>>(static_cast<double>(value)));                                                \
     }                                                                                                                  \
+                                                                                                                       \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << "_" << #suffix;                                                                   \
         return os;                                                                                                     \
@@ -434,11 +445,13 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
     constexpr Name suffix = multiple;                                                                                  \
     /**                                                                                                                \
-     @brief function to initialize a new Name quantity in units of suffix.                                             \
-     @param value the value in suffix                                                                                  \
-     @return the quantity                                                                                              \
-     */                                                                                                                \
+    @ingroup Name                                                                                                      \
+    @brief function to initialize a new Name quantity in units of suffix.                                              \
+    @param value the value in suffix                                                                                   \
+    @return the quantity                                                                                               \
+    */                                                                                                                 \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
+                                                                                                                       \
     /**                                                                                                                \
     @brief function to initialize a new Name quantity in units of suffix.                                              \
     @param value the value in suffix                                                                                   \
@@ -459,6 +472,10 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
 
 NEW_UNIT(Number, num, 0, 0, 0, 0, 0, 0, 0, 0)
+
+/**
+ * @brief The numbers mason, what do they mean
+ */
 NEW_UNIT_LITERAL(Number, percent, num / 100.0);
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)

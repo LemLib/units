@@ -10,6 +10,6 @@ bob
 :caption: Index
 
 self
-./tutorials/index
+<!--./tutorials/index-->
 ./api.md
 ```
