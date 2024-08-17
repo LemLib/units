@@ -173,7 +173,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
-    return Q(lhs.internal() + rhs.internal());
+    return Q(lhs.internal() - rhs.internal());
 }
 
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
