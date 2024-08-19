@@ -32,46 +32,33 @@ template <size_t N, isQuantity T> class Vector {
         Vector(std::array<T, N> _vec): vec(_vec) {}
 
         /**
-         * @brief get the x component
+         * @brief get a ref to the x component
          *
-         * @return T x component
+         * @return the x component
          */
-        T getX() requires(N >= 1) { return vec[0]; }
+        T& getX() requires(N >= 1) { return vec[0]; }
 
         /**
-         * @brief get the y component
+         * @brief get a ref to the y component
          *
-         * @return T y component
+         * @return the y component
          */
-        T getY() requires(N >= 2) { return vec[1]; }
+        T& getY() requires(N >= 2) { return vec[1]; }
 
         /**
-         * @brief get the z component
+         * @brief get a ref to the z component
          *
-         * @return T z component
+         * @return the z component
          */
-        T getZ() requires(N >= 3) { return vec[2]; }
+        T& getZ() requires(N >= 3) { return vec[2]; }
 
         /**
-         * @brief set the x component
+         * @brief get a ref to any component
          *
-         * @param nx x component
+         * @return The component
          */
-        void setX(T nx) requires(N >= 2) { vec[0] = nx; }
-
-        /**
-         * @brief set the y component
-         *
-         * @param ny y component
-         */
-        void setY(T ny) requires(N >= 2) { vec[1] = ny; }
-
-        /**
-         * @brief set the z component
-         *
-         * @param nz z component
-         */
-        void setZ(T ny) requires(N >= 3) { vec[2] = ny; }
+        template <size_t I>
+        T& get() requires(N >= I) { return vec[I]; }
 
         /**
          * @brief += operator overload
@@ -182,5 +169,14 @@ template <size_t N, isQuantity T> class Vector {
          * @return Vector<N, T>
          */
         Vector<N, T> operator/(double factor) { return (Vector<N, T>(*this) /= factor); }
+
+        template<isQuantity T2>
+        Multiplied<T, T2> dot(vector<N, T2> v) {
+            Multiplied<T, T2> sum{0};
+            for(size_t i = 0; i < n; ++i) {
+                sum += this->vec[i] * v.vec[i];
+            }
+            return sum;
+        }
 };
 } // namespace units
