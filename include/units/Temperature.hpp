@@ -5,7 +5,10 @@
 using Temperature = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
                              std::ratio<0>, std::ratio<0>>;
 
-constexpr Temperature kelvin = Temperature(1.0);
+constexpr Temperature Kelvin = Temperature(1.0);
+constexpr Temperature DegreeCelsius = Kelvin;
+constexpr Temperature DegreeRankine = Temperature(1.0/1.8);
+constexpr Temperature DegreeFahrenheit = DegreeRankine;
 
 constexpr Temperature operator""_kelvin(long double value) { return Temperature(static_cast<double>(value)); }
 
@@ -18,11 +21,11 @@ constexpr Temperature operator""_celsius(unsigned long long value) {
 }
 
 constexpr Temperature operator""_fahrenheit(long double value) {
-    return Temperature((static_cast<double>(value) - 32) * (5.0 / 9.0) + 273.5);
+    return Temperature((static_cast<double>(value) - 32) / 1.8 + 273.5);
 }
 
 constexpr Temperature operator""_fahrenheit(unsigned long long value) {
-    return Temperature((static_cast<double>(value) - 32) * (5.0 / 9.0) + 273.5);
+    return Temperature((static_cast<double>(value) - 32) / 1.8 + 273.5);
 }
 
 namespace units {
