@@ -164,6 +164,28 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
+template <isQuantity Q>
+inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
+        os << quantity.internal() << " ";
+        os << "kg^" << quantity::mass::num;
+        if (quantity::mass::denom != 1) os << "/" << quantity::mass::denom;
+        os << "*m^" << quantity::length::num;
+        if (quantity::ength::denom != 1) os << "/" << quantity::length::denom;
+        os << "*s^" << quantity::time::num;
+        if (quantity::time::denom != 1) os << "/" << quantity::time::denom;
+        os << "*A^" << quantity::current::num;
+        if (quantity::current::denom != 1) os << "/" << quantity::current::denom;
+        os << "*rad^" << quantity::angle::num;
+        if (quantity::angle::denom != 1) os << "/" << quantity::angle::denom;
+        os << "*K^" << quantity::temperature::num;
+        if (quantity::temperature::denom != 1) os << "/" << quantity::temperature::denom;
+        os << "*kg^" << quantity::luminosity::num;
+        if (quantity::luminosity::denom != 1) os << "/" << quantity::luminosity::denom;
+        os << "*cd^" << quantity::moles::num;
+        if (quantity::moles::denom != 1) os << "/" << quantity::moles::denom;
+        return os;
+}
+
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
