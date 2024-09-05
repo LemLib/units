@@ -127,9 +127,9 @@ void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, L
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
-// Isomorphic concept - used to ensure unit equivalecy
+// Isomorphic concept - used to ensure unit equivalency
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...);
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
 
 // Un(type)safely coerce the a unit into a different unit
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
@@ -226,7 +226,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     return (lhs.internal() > rhs.internal());
 }
 
-#define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n)                                                                 \
+#define NEW_UNIT(Name, Full, suffix, m, l, t, i, a, o, j, n)                                                           \
     class Name : public Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,            \
                                  std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
         public:                                                                                                        \
@@ -243,7 +243,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                            std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
-    constexpr Name suffix = Name(1.0);                                                                                 \
+    constexpr Name Full = Name(1.0);                                                                                   \
     constexpr Name operator""_##suffix(long double value) {                                                            \
         return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
@@ -253,108 +253,108 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
     }                                                                                                                  \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
-        os << quantity.internal() << "_" << #suffix;                                                                   \
+        os << quantity.internal() << " " << #Full;                                                                     \
         return os;                                                                                                     \
     }                                                                                                                  \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
-#define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
-    constexpr Name suffix = multiple;                                                                                  \
+#define NEW_UNIT_LITERAL(Name, Full, suffix, multiple)                                                                 \
+    constexpr Name Full = multiple;                                                                                    \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
 
-#define NEW_METRIC_PREFIXES(Name, base)                                                                                \
-    NEW_UNIT_LITERAL(Name, T##base, base * 1E12)                                                                       \
-    NEW_UNIT_LITERAL(Name, G##base, base * 1E9)                                                                        \
-    NEW_UNIT_LITERAL(Name, M##base, base * 1E6)                                                                        \
-    NEW_UNIT_LITERAL(Name, k##base, base * 1E3)                                                                        \
-    NEW_UNIT_LITERAL(Name, c##base, base / 1E2)                                                                        \
-    NEW_UNIT_LITERAL(Name, m##base, base / 1E3)                                                                        \
-    NEW_UNIT_LITERAL(Name, u##base, base / 1E6)                                                                        \
-    NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
+#define NEW_METRIC_PREFIXES(Name, Full, base)                                                                          \
+    NEW_UNIT_LITERAL(Name, Tera##Full, T##base, base * 1E12)                                                           \
+    NEW_UNIT_LITERAL(Name, Giga##Full, G##base, base * 1E9)                                                            \
+    NEW_UNIT_LITERAL(Name, Mega##Full, M##base, base * 1E6)                                                            \
+    NEW_UNIT_LITERAL(Name, Kilo##Full, k##base, base * 1E3)                                                            \
+    NEW_UNIT_LITERAL(Name, Centi##Full, c##base, base / 1E2)                                                           \
+    NEW_UNIT_LITERAL(Name, Milli##Full, m##base, base / 1E3)                                                           \
+    NEW_UNIT_LITERAL(Name, Micro##Full, u##base, base / 1E6)                                                           \
+    NEW_UNIT_LITERAL(Name, Nano##Full, n##base, base / 1E9)
 
-NEW_UNIT(Number, num, 0, 0, 0, 0, 0, 0, 0, 0)
-NEW_UNIT_LITERAL(Number, percent, num / 100.0);
+NEW_UNIT(Number, One, num, 0, 0, 0, 0, 0, 0, 0, 0)
+NEW_UNIT_LITERAL(Number, Percent, percent, One / 100.0);
 
-NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
-NEW_UNIT_LITERAL(Mass, g, kg / 1000)
-NEW_UNIT_LITERAL(Mass, lb, g * 453.6)
+NEW_UNIT(Mass, Kilogram, kg, 1, 0, 0, 0, 0, 0, 0, 0)
+NEW_UNIT_LITERAL(Mass, Gram, g, Kilogram / 1000)
+NEW_UNIT_LITERAL(Mass, Pound, lb, Gram * 453.6)
 
-NEW_UNIT(Time, sec, 0, 0, 1, 0, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(Time, sec)
-NEW_UNIT_LITERAL(Time, min, sec * 60)
-NEW_UNIT_LITERAL(Time, hr, min * 60)
-NEW_UNIT_LITERAL(Time, day, hr * 24)
+NEW_UNIT(Time, Second, sec, 0, 0, 1, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Time, second, Second)
+NEW_UNIT_LITERAL(Time, Minute, min, Second * 60)
+NEW_UNIT_LITERAL(Time, Hour, hr, Minute * 60)
+NEW_UNIT_LITERAL(Time, Day, day, Hour * 24)
 
-NEW_UNIT(Length, m, 0, 1, 0, 0, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(Length, m)
-NEW_UNIT_LITERAL(Length, in, cm * 2.54)
-NEW_UNIT_LITERAL(Length, ft, in * 12)
-NEW_UNIT_LITERAL(Length, yd, ft * 3)
-NEW_UNIT_LITERAL(Length, mi, ft * 5280)
-NEW_UNIT_LITERAL(Length, tile, 600 * mm)
+NEW_UNIT(Length, Meter, m, 0, 1, 0, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Length, meter, Meter)
+NEW_UNIT_LITERAL(Length, Inch, in, Centimeter * 2.54)
+NEW_UNIT_LITERAL(Length, Foot, ft, Inch * 12)
+NEW_UNIT_LITERAL(Length, Yard, yd, Foot * 3)
+NEW_UNIT_LITERAL(Length, Mile, mi, Foot * 5280)
+NEW_UNIT_LITERAL(Length, Tile, tile, Millimeter * 600)
 
-NEW_UNIT(Area, m2, 0, 2, 0, 0, 0, 0, 0, 0)
-NEW_UNIT_LITERAL(Area, Tm2, Tm* Tm);
-NEW_UNIT_LITERAL(Area, Gm2, Gm* Gm);
-NEW_UNIT_LITERAL(Area, Mm2, Mm* Mm);
-NEW_UNIT_LITERAL(Area, km2, km* km);
-NEW_UNIT_LITERAL(Area, cm2, cm* cm);
-NEW_UNIT_LITERAL(Area, mm2, mm* mm);
-NEW_UNIT_LITERAL(Area, um2, um* um);
-NEW_UNIT_LITERAL(Area, nm2, nm* nm);
-NEW_UNIT_LITERAL(Area, in2, in* in)
+NEW_UNIT(Area, MeterSquared, m2, 0, 2, 0, 0, 0, 0, 0, 0)
+NEW_UNIT_LITERAL(Area, TerameterSquared, Tm2, Terameter* Terameter);
+NEW_UNIT_LITERAL(Area, GigameterSquared, Gm2, Gigameter * Gigameter);
+NEW_UNIT_LITERAL(Area, MegameterSquared, Mm2, Megameter * Megameter);
+NEW_UNIT_LITERAL(Area, KilometerSquared, km2, Kilometer * Kilometer);
+NEW_UNIT_LITERAL(Area, CentimeterSquared, cm2, Centimeter * Centimeter);
+NEW_UNIT_LITERAL(Area, MillimeterSquared, mm2, Millimeter * Millimeter);
+NEW_UNIT_LITERAL(Area, MicrometerSquared, um2, Micrometer * Micrometer);
+NEW_UNIT_LITERAL(Area, NanometerSquared, nm2, Nanometer * Nanometer);
+NEW_UNIT_LITERAL(Area, InchSquared, in2, Inch * Inch);
 
-NEW_UNIT(LinearVelocity, mps, 0, 1, -1, 0, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(LinearVelocity, mps);
-NEW_UNIT_LITERAL(LinearVelocity, mph, m / hr)
-NEW_METRIC_PREFIXES(LinearVelocity, mph)
-NEW_UNIT_LITERAL(LinearVelocity, inps, in / sec)
-NEW_UNIT_LITERAL(LinearVelocity, miph, mi / hr)
+NEW_UNIT(LinearVelocity, MetersPerSecond, mps, 0, 1, -1, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearVelocity, metersPerSecond, MetersPerSecond);
+NEW_UNIT_LITERAL(LinearVelocity, MetersPerHour, mph, Meter / Hour)
+NEW_METRIC_PREFIXES(LinearVelocity, metersPerHour, MetersPerHour)
+NEW_UNIT_LITERAL(LinearVelocity, InchesPerSecond, inps, Inch / Second)
+NEW_UNIT_LITERAL(LinearVelocity, MilesPerHour, miph, Mile / Hour)
 
-NEW_UNIT(LinearAcceleration, mps2, 0, 1, -2, 0, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(LinearAcceleration, mps2)
-NEW_UNIT_LITERAL(LinearAcceleration, mph2, m / hr / hr)
-NEW_METRIC_PREFIXES(LinearAcceleration, mph2)
-NEW_UNIT_LITERAL(LinearAcceleration, inps2, in / sec / sec)
-NEW_UNIT_LITERAL(LinearAcceleration, miph2, mi / hr / hr)
+NEW_UNIT(LinearAcceleration, MetersPerSecondSquared, mps2, 0, 1, -2, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearAcceleration, metersPerSecondSquared, MetersPerSecondSquared)
+NEW_UNIT_LITERAL(LinearAcceleration, MetersPerHourSquared, mph2, Meter / (Hour * Hour))
+NEW_METRIC_PREFIXES(LinearAcceleration, metersPerHourSquared, MetersPerHourSquared)
+NEW_UNIT_LITERAL(LinearAcceleration, InchesPerSecondSquared, inps2, Inch / (Second * Second))
+NEW_UNIT_LITERAL(LinearAcceleration, MilesPerHourSquared, miph2, Mile / (Hour * Hour))
 
-NEW_UNIT(LinearJerk, mps3, 0, 1, -3, 0, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(LinearJerk, mps3)
-NEW_UNIT_LITERAL(LinearJerk, mph3, m / (hr * hr * hr))
-NEW_METRIC_PREFIXES(LinearJerk, mph3)
-NEW_UNIT_LITERAL(LinearJerk, inps3, in / (sec * sec * sec))
-NEW_UNIT_LITERAL(LinearJerk, miph3, mi / (hr * hr * hr))
+NEW_UNIT(LinearJerk, MetersPerSecondCubed, mps3, 0, 1, -3, 0, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(LinearJerk, metersPerSecondCubed, MetersPerSecondCubed)
+NEW_UNIT_LITERAL(LinearJerk, MetersPerHourCubed, mph3, Meter / (Hour * Hour * Hour))
+NEW_METRIC_PREFIXES(LinearJerk, metersPerHourCubed, MetersPerHourCubed)
+NEW_UNIT_LITERAL(LinearJerk, InchesPerSecondCubed, inps3, Inch / (Second * Second * Second))
+NEW_UNIT_LITERAL(LinearJerk, MilesPerHourCubed, miph3, Mile / (Hour * Hour * Hour))
 
-NEW_UNIT(Curvature, radpm, 0, -1, 0, 0, 0, 0, 0, 0);
+NEW_UNIT(Curvature, RadiansPerMeter, radpm, 0, -1, 0, 0, 0, 0, 0, 0);
 
-NEW_UNIT(Inertia, kgm2, 1, 2, 0, 0, 0, 0, 0, 0)
+NEW_UNIT(Inertia, KilogramMeterSquared, kgm2, 1, 2, 0, 0, 0, 0, 0, 0)
 
-NEW_UNIT(Force, N, 1, 1, -2, 0, 0, 0, 0, 0)
+NEW_UNIT(Force, Newton, N, 1, 1, -2, 0, 0, 0, 0, 0)
 
-NEW_UNIT(Torque, Nm, 1, 2, -2, 0, 0, 0, 0, 0)
+NEW_UNIT(Torque, NewtonMeter, Nm, 1, 2, -2, 0, 0, 0, 0, 0)
 
-NEW_UNIT(Power, watt, 1, 2, -3, 0, 0, 0, 0, 0)
+NEW_UNIT(Power, Watt, watt, 1, 2, -3, 0, 0, 0, 0, 0)
 
-NEW_UNIT(Current, amp, 0, 0, 0, 1, 0, 0, 0, 0)
+NEW_UNIT(Current, Ampere, amp, 0, 0, 0, 1, 0, 0, 0, 0)
 
-NEW_UNIT(Charge, coulomb, 0, 0, 1, 1, 0, 0, 0, 0)
+NEW_UNIT(Charge, Coulomb, coulomb, 0, 0, 1, 1, 0, 0, 0, 0)
 
-NEW_UNIT(Voltage, volt, 1, 2, -3, -1, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(Voltage, volt);
+NEW_UNIT(Voltage, Volt, volt, 1, 2, -3, -1, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Voltage, volt, Volt);
 
-NEW_UNIT(Resistance, ohm, 1, 2, -3, -2, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(Resistance, ohm)
+NEW_UNIT(Resistance, Ohm, ohm, 1, 2, -3, -2, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Resistance, ohm, Ohm)
 
-NEW_UNIT(Conductance, siemen, -1, -2, 3, 2, 0, 0, 0, 0)
-NEW_METRIC_PREFIXES(Conductance, siemen);
+NEW_UNIT(Conductance, Seimen, siemen, -1, -2, 3, 2, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Conductance, siemen, Seimen);
 
-NEW_UNIT(Luminosity, candela, 0, 0, 0, 0, 0, 0, 1, 0);
+NEW_UNIT(Luminosity, Candela, candela, 0, 0, 0, 0, 0, 0, 1, 0);
 
-NEW_UNIT(Moles, mol, 0, 0, 0, 0, 0, 0, 0, 1);
+NEW_UNIT(Moles, Mol, mol, 0, 0, 0, 0, 0, 0, 0, 1);
 
 namespace units {
 template <isQuantity Q> constexpr Q abs(const Q& lhs) { return Q(std::abs(lhs.internal())); }
