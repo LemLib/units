@@ -164,26 +164,25 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
-template <isQuantity Q>
-inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
-        os << quantity.internal() << " ";
-        if (Q::mass::num != 0) os << "kg^" << Q::mass::num;
-        if (Q::mass::den != 1) os << "/" << Q::mass::den;
-        if (Q::length::num != 0) os << "*m^" << Q::length::num;
-        if (Q::length::den != 1) os << "/" << Q::length::den;
-        if (Q::time::num != 0) os << "*s^" << Q::time::num;
-        if (Q::time::den != 1) os << "/" << Q::time::den;
-        if (Q::current::num != 0) os << "*A^" << Q::current::num;
-        if (Q::current::den != 1) os << "/" << Q::current::den;
-        if (Q::angle::num != 0) os << "*rad^" << Q::angle::num;
-        if (Q::angle::den != 1) os << "/" << Q::angle::den;
-        if (Q::temperature::num != 0) os << "*K^" << Q::temperature::num;
-        if (Q::temperature::den != 1) os << "/" << Q::temperature::den;
-        if (Q::luminosity::num != 0) os << "*kg^" << Q::luminosity::num;
-        if (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
-        if (Q::moles::num != 0) os << "*cd^" << Q::moles::num;
-        if (Q::moles::den != 1) os << "/" << Q::moles::den;
-        return os;
+template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
+    os << quantity.internal() << " ";
+    if (Q::mass::num != 0) os << "kg^" << Q::mass::num;
+    if (Q::mass::den != 1) os << "/" << Q::mass::den;
+    if (Q::length::num != 0) os << "*m^" << Q::length::num;
+    if (Q::length::den != 1) os << "/" << Q::length::den;
+    if (Q::time::num != 0) os << "*s^" << Q::time::num;
+    if (Q::time::den != 1) os << "/" << Q::time::den;
+    if (Q::current::num != 0) os << "*A^" << Q::current::num;
+    if (Q::current::den != 1) os << "/" << Q::current::den;
+    if (Q::angle::num != 0) os << "*rad^" << Q::angle::num;
+    if (Q::angle::den != 1) os << "/" << Q::angle::den;
+    if (Q::temperature::num != 0) os << "*K^" << Q::temperature::num;
+    if (Q::temperature::den != 1) os << "/" << Q::temperature::den;
+    if (Q::luminosity::num != 0) os << "*kg^" << Q::luminosity::num;
+    if (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
+    if (Q::moles::num != 0) os << "*cd^" << Q::moles::num;
+    if (Q::moles::den != 1) os << "/" << Q::moles::den;
+    return os;
 }
 
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
