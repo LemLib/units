@@ -121,7 +121,7 @@ template <typename Q> using Named = typename LookupName<Q>::Named;
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
           typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
           typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
-void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
+void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>) {}
 
 // isQuantity concept
 template <typename Q>
@@ -129,7 +129,7 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 // Isomorphic concept - used to ensure unit equivalecy
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...);
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
 
 // Un(type)safely coerce the a unit into a different unit
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
@@ -165,23 +165,51 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
 template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
-    os << quantity.internal() << " ";
-    if (Q::mass::num != 0) os << "kg^" << Q::mass::num;
-    if (Q::mass::den != 1) os << "/" << Q::mass::den;
-    if (Q::length::num != 0) os << "*m^" << Q::length::num;
-    if (Q::length::den != 1) os << "/" << Q::length::den;
-    if (Q::time::num != 0) os << "*s^" << Q::time::num;
-    if (Q::time::den != 1) os << "/" << Q::time::den;
-    if (Q::current::num != 0) os << "*A^" << Q::current::num;
-    if (Q::current::den != 1) os << "/" << Q::current::den;
-    if (Q::angle::num != 0) os << "*rad^" << Q::angle::num;
-    if (Q::angle::den != 1) os << "/" << Q::angle::den;
-    if (Q::temperature::num != 0) os << "*K^" << Q::temperature::num;
-    if (Q::temperature::den != 1) os << "/" << Q::temperature::den;
-    if (Q::luminosity::num != 0) os << "*kg^" << Q::luminosity::num;
-    if (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
-    if (Q::moles::num != 0) os << "*cd^" << Q::moles::num;
-    if (Q::moles::den != 1) os << "/" << Q::moles::den;
+    if constexpr (!std::is_same_v<Named<Q>, Q>) {
+        os << Named<Q>(quantity);
+    } else {
+        os << quantity.internal();
+        if constexpr (Q::mass::num != 0) {
+            os << "_kg";
+            if constexpr (Q::mass::num != 1 && Q::mass::den == 1) os << "^" << Q::mass::num;
+            if constexpr (Q::mass::den != 1) os << "/" << Q::mass::den;
+        }
+        if constexpr (Q::length::num != 0) {
+            os << "_m";
+            if constexpr (Q::length::num != 1 && Q::length::den == 1) os << "^" << Q::length::num;
+            if constexpr (Q::length::den != 1) os << "/" << Q::length::den;
+        }
+        if constexpr (Q::time::num != 0) {
+            os << "_s";
+            if constexpr (Q::time::num != 1 && Q::time::den == 1) os << "^" << Q::time::num;
+            if constexpr (Q::time::den != 1) os << "/" << Q::time::den;
+        }
+        if constexpr (Q::current::num != 0) {
+            os << "_A";
+            if constexpr (Q::current::num != 1 && Q::current::den == 1) os << "^" << Q::current::num;
+            if constexpr (Q::current::den != 1) os << "/" << Q::current::den;
+        }
+        if constexpr (Q::angle::num != 0) {
+            os << "_rad";
+            if constexpr (Q::angle::num != 1 && Q::angle::den == 1) os << "^" << Q::angle::num;
+            if constexpr (Q::angle::den != 1) os << "/" << Q::angle::den;
+        }
+        if constexpr (Q::temperature::num != 0) {
+            os << "_K";
+            if constexpr (Q::temperature::num != 1 && Q::temperature::den == 1) os << "^" << Q::temperature::num;
+            if constexpr (Q::temperature::den != 1) os << "/" << Q::temperature::den;
+        }
+        if constexpr (Q::luminosity::num != 0) {
+            os << "_kg";
+            if constexpr (Q::luminosity::num != 1 && Q::luminosity::den == 1) os << "^" << Q::luminosity::num;
+            if constexpr (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
+        }
+        if constexpr (Q::moles::num != 0) {
+            os << "_cd";
+            if constexpr (Q::moles::num != 1 && Q::moles::den == 1) os << "^" << Q::moles::num;
+            if constexpr (Q::moles::den != 1) os << "/" << Q::moles::den;
+        }
+    }
     return os;
 }
 
@@ -264,7 +292,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                            std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
-    constexpr Name suffix = Name(1.0);                                                                                 \
+    [[maybe_unused]] constexpr Name suffix = Name(1.0);                                                                \
     constexpr Name operator""_##suffix(long double value) {                                                            \
         return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
@@ -281,7 +309,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
-    constexpr Name suffix = multiple;                                                                                  \
+    [[maybe_unused]] constexpr Name suffix = multiple;                                                                 \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
