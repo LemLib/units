@@ -17,9 +17,19 @@ class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::
                        std::ratio<0>, std::ratio<0>>(value) {};
 };
 
-constexpr Angle Radian = Angle(1.0);
-constexpr Angle Degree = Angle(M_PI / 180);
-constexpr Angle Rotation = Angle(M_TWOPI);
+template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                       std::ratio<0>, std::ratio<0>, std::ratio<0>>> {
+        using Named = Angle;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
+    os << quantity.internal() << " rad";
+    return os;
+}
+
+constexpr Angle rad = Angle(1.0);
+constexpr Angle deg = Angle(M_PI / 180);
+constexpr Angle rot = Angle(M_TWOPI);
 
 NEW_UNIT(AngularVelocity, RadiansPerSecond, radps, 0, 0, -1, 0, 1, 0, 0, 0)
 NEW_UNIT_LITERAL(AngularVelocity, DegreesPerSecond, degps, Degree / Second)
