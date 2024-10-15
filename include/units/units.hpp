@@ -129,7 +129,7 @@ concept isQuantity = requires(Q q) { quantityChecker(q); };
 
 // Isomorphic concept - used to ensure unit equivalecy
 template <typename Q, typename... Quantities>
-concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>)&&...);
+concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
 
 // Un(type)safely coerce the a unit into a different unit
 template <isQuantity Q1, isQuantity Q2> constexpr inline Q1 unit_cast(Q2 quantity) { return Q1(quantity.internal()); }
