@@ -31,7 +31,7 @@ void initialize() {
     units::AccelerationPose a(1_mps2, 2_mps2);
     Number num = Number(1.0);
     num = Number(0.0);
-    a.theta().convert(deg);
+    a.theta().convert(Degree);
     a.setOrientation(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<-2>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                               std::ratio<0>, std::ratio<0>>(1.0));
     a.getOrientation() += 2_rpm2;
@@ -43,8 +43,8 @@ void initialize() {
              std::ratio<0>>
         c = Multiplied<Angle, Time>();
     Length x = unit_cast<Length>(num);
-    Angle y = toAngular<Length>(x, 2_cm);
-    Length z = toLinear<Angle>(y, 2_cm);
+    Angle y = toAngular<Length>(x, 2_cMeter);
+    Length z = toLinear<Angle>(y, 2_cMeter);
     static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
                                          std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
     units::clamp(2_cDeg, a.theta(), Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
