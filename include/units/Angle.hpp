@@ -1,7 +1,6 @@
 #pragma once
 
 #include "units.hpp"
-#include "units/units.hpp"
 
 class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                               std::ratio<0>, std::ratio<0>> {
@@ -27,9 +26,9 @@ inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
     return os;
 }
 
-constexpr Angle rad = Angle(1.0);
-constexpr Angle deg = Angle(M_PI / 180);
-constexpr Angle rot = Angle(M_TWOPI);
+constexpr Angle Radian = Angle(1.0);
+constexpr Angle Degree = Angle(M_PI / 180);
+constexpr Angle Rotation = Angle(M_TWOPI);
 
 NEW_UNIT(AngularVelocity, RadiansPerSecond, radps, 0, 0, -1, 0, 1, 0, 0, 0)
 NEW_UNIT_LITERAL(AngularVelocity, DegreesPerSecond, degps, Degree / Second)
