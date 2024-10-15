@@ -2,8 +2,29 @@
 
 #include "units/units.hpp"
 
-using Temperature = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                             std::ratio<0>, std::ratio<0>>;
+class Temperature : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                    std::ratio<1>, std::ratio<0>, std::ratio<0>> {
+    public:
+        explicit constexpr Temperature(double value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                       std::ratio<0>, std::ratio<0>>(value) {}
+
+        constexpr Temperature(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                       std::ratio<1>, std::ratio<0>, std::ratio<0>>
+                                  value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                       std::ratio<0>, std::ratio<0>>(value) {};
+};
+
+template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                       std::ratio<1>, std::ratio<0>, std::ratio<0>>> {
+        using Named = Temperature;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const Temperature& quantity) {
+    os << quantity.internal() << " k";
+    return os;
+}
 
 constexpr Temperature kelvin = Temperature(1.0);
 
