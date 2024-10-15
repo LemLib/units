@@ -145,7 +145,7 @@ template <typename Q> using Named = typename LookupName<Q>::Named;
 template <typename Mass = ratio<0>, typename Length = ratio<0>, typename Time = ratio<0>, typename Current = ratio<0>,
           typename Angle = ratio<0>, typename Temperature = ratio<0>, typename Luminosity = ratio<0>,
           typename Moles = ratio<0>>
-void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
+void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>) {}
 
 /**
  * @brief concept to use in template arguments (EX: template <isQuantity Q>). Requires any instance of the type Q to
@@ -239,6 +239,47 @@ template <isQuantity Q, typename R> using Rooted =
  * @param rhs the second addend
  * @return constexpr Q the sum
  */
+template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
+    if constexpr (!std::is_same_v<Named<Q>, Q>) {
+        os << Named<Q>(quantity);
+    } else {
+        os << quantity.internal();
+        if constexpr (Q::mass::num != 0) {
+            os << " kg^" << Q::mass::num;
+            if constexpr (Q::mass::den != 1) os << "/" << Q::mass::den;
+        }
+        if constexpr (Q::length::num != 0) {
+            os << "*m^" << Q::length::num;
+            if constexpr (Q::length::den != 1) os << "/" << Q::length::den;
+        }
+        if constexpr (Q::time::num != 0) {
+            os << "*s^" << Q::time::num;
+            if constexpr (Q::time::den != 1) os << "/" << Q::time::den;
+        }
+        if constexpr (Q::current::num != 0) {
+            os << "*A^" << Q::current::num;
+            if constexpr (Q::current::den != 1) os << "/" << Q::current::den;
+        }
+        if constexpr (Q::angle::num != 0) {
+            os << "*rad^" << Q::angle::num;
+            if constexpr (Q::angle::den != 1) os << "/" << Q::angle::den;
+        }
+        if constexpr (Q::temperature::num != 0) {
+            os << "*K^" << Q::temperature::num;
+            if constexpr (Q::temperature::den != 1) os << "/" << Q::temperature::den;
+        }
+        if constexpr (Q::luminosity::num != 0) {
+            os << "*cd^" << Q::luminosity::num;
+            if constexpr (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
+        }
+        if constexpr (Q::moles::num != 0) {
+            os << "*mol^" << Q::moles::num;
+            if constexpr (Q::moles::den != 1) os << "/" << Q::moles::den;
+        }
+    }
+    return os;
+}
+
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
@@ -255,7 +296,7 @@ template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
 template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
-    return Q(lhs.internal() + rhs.internal());
+    return Q(lhs.internal() - rhs.internal());
 }
 
 /** @ingroup operations
@@ -414,7 +455,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     /**                                                                                                                \
      @brief the base unit for Name. Has a value of 1.0                                                                 \
      */                                                                                                                \
-    constexpr Name suffix = Name(1.0);                                                                                 \
+    [[maybe_unused]] constexpr Name suffix = Name(1.0);                                                                \
     /**                                                                                                                \
      @brief function to initialize a new Name quantity in units of suffix.                                             \
      @param value the value in suffix                                                                                  \
@@ -436,14 +477,14 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     }                                                                                                                  \
                                                                                                                        \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
-        os << quantity.internal() << "_" << #suffix;                                                                   \
+        os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
     }                                                                                                                  \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
-    constexpr Name suffix = multiple;                                                                                  \
+    [[maybe_unused]] constexpr Name suffix = multiple;                                                                 \
     /**                                                                                                                \
     @ingroup Name                                                                                                      \
     @brief function to initialize a new Name quantity in units of suffix.                                              \
