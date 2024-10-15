@@ -174,31 +174,31 @@ template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const 
             if constexpr (Q::mass::den != 1) os << "/" << Q::mass::den;
         }
         if constexpr (Q::length::num != 0) {
-            os << " m^" << Q::length::num;
+            os << "*m^" << Q::length::num;
             if constexpr (Q::length::den != 1) os << "/" << Q::length::den;
         }
         if constexpr (Q::time::num != 0) {
-            os << " s^" << Q::time::num;
+            os << "*s^" << Q::time::num;
             if constexpr (Q::time::den != 1) os << "/" << Q::time::den;
         }
         if constexpr (Q::current::num != 0) {
-            os << " A^" << Q::current::num;
+            os << "*A^" << Q::current::num;
             if constexpr (Q::current::den != 1) os << "/" << Q::current::den;
         }
         if constexpr (Q::angle::num != 0) {
-            os << " rad^" << Q::angle::num;
+            os << "*rad^" << Q::angle::num;
             if constexpr (Q::angle::den != 1) os << "/" << Q::angle::den;
         }
         if constexpr (Q::temperature::num != 0) {
-            os << " K^" << Q::temperature::num;
+            os << "*K^" << Q::temperature::num;
             if constexpr (Q::temperature::den != 1) os << "/" << Q::temperature::den;
         }
         if constexpr (Q::luminosity::num != 0) {
-            os << " kg^" << Q::luminosity::num;
+            os << "*cd^" << Q::luminosity::num;
             if constexpr (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
         }
         if constexpr (Q::moles::num != 0) {
-            os << " cd^" << Q::moles::num;
+            os << "*mol^" << Q::moles::num;
             if constexpr (Q::moles::den != 1) os << "/" << Q::moles::den;
         }
     }
@@ -294,7 +294,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
     }                                                                                                                  \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
-        os << quantity.internal() << "_" << #suffix;                                                                   \
+        os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
     }                                                                                                                  \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
