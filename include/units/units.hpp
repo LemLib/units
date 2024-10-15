@@ -170,43 +170,35 @@ template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const 
     } else {
         os << quantity.internal();
         if constexpr (Q::mass::num != 0) {
-            os << "_kg";
-            if constexpr (Q::mass::num != 1 && Q::mass::den == 1) os << "^" << Q::mass::num;
+            os << " kg^" << Q::mass::num;
             if constexpr (Q::mass::den != 1) os << "/" << Q::mass::den;
         }
         if constexpr (Q::length::num != 0) {
-            os << "_m";
-            if constexpr (Q::length::num != 1 && Q::length::den == 1) os << "^" << Q::length::num;
+            os << " m^" << Q::length::num;
             if constexpr (Q::length::den != 1) os << "/" << Q::length::den;
         }
         if constexpr (Q::time::num != 0) {
-            os << "_s";
-            if constexpr (Q::time::num != 1 && Q::time::den == 1) os << "^" << Q::time::num;
+            os << " s^" << Q::time::num;
             if constexpr (Q::time::den != 1) os << "/" << Q::time::den;
         }
         if constexpr (Q::current::num != 0) {
-            os << "_A";
-            if constexpr (Q::current::num != 1 && Q::current::den == 1) os << "^" << Q::current::num;
+            os << " A^" << Q::current::num;
             if constexpr (Q::current::den != 1) os << "/" << Q::current::den;
         }
         if constexpr (Q::angle::num != 0) {
-            os << "_rad";
-            if constexpr (Q::angle::num != 1 && Q::angle::den == 1) os << "^" << Q::angle::num;
+            os << " rad^" << Q::angle::num;
             if constexpr (Q::angle::den != 1) os << "/" << Q::angle::den;
         }
         if constexpr (Q::temperature::num != 0) {
-            os << "_K";
-            if constexpr (Q::temperature::num != 1 && Q::temperature::den == 1) os << "^" << Q::temperature::num;
+            os << " K^" << Q::temperature::num;
             if constexpr (Q::temperature::den != 1) os << "/" << Q::temperature::den;
         }
         if constexpr (Q::luminosity::num != 0) {
-            os << "_kg";
-            if constexpr (Q::luminosity::num != 1 && Q::luminosity::den == 1) os << "^" << Q::luminosity::num;
+            os << " kg^" << Q::luminosity::num;
             if constexpr (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
         }
         if constexpr (Q::moles::num != 0) {
-            os << "_cd";
-            if constexpr (Q::moles::num != 1 && Q::moles::den == 1) os << "^" << Q::moles::num;
+            os << " cd^" << Q::moles::num;
             if constexpr (Q::moles::den != 1) os << "/" << Q::moles::den;
         }
     }
