@@ -290,15 +290,19 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         os << quantity.internal() << " " << #Full;                                                                     \
         return os;                                                                                                     \
     }                                                                                                                  \
+    namespace units::conversions {                                                                                     \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
-    constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
+    constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }                                 \
+    } // namespace units::conversions
 
 #define NEW_UNIT_LITERAL(Name, Full, suffix, multiple)                                                                 \
     [[maybe_unused]] constexpr Name Full = multiple;                                                                   \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
+    namespace units::conversions {                                                                                     \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
-    constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
+    constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }                          \
+    } // namespace units::conversions
 
 #define NEW_METRIC_PREFIXES(Name, Full, base)                                                                          \
     NEW_UNIT_LITERAL(Name, Tera##Full, T##base, base * 1E12)                                                           \
@@ -333,14 +337,14 @@ NEW_UNIT_LITERAL(Length, Tile, tile, Millimeter * 600)
 
 NEW_UNIT(Area, MeterSquared, m2, 0, 2, 0, 0, 0, 0, 0, 0)
 NEW_UNIT_LITERAL(Area, TerameterSquared, Tm2, Terameter* Terameter);
-NEW_UNIT_LITERAL(Area, GigameterSquared, Gm2, Gigameter * Gigameter);
-NEW_UNIT_LITERAL(Area, MegameterSquared, Mm2, Megameter * Megameter);
-NEW_UNIT_LITERAL(Area, KilometerSquared, km2, Kilometer * Kilometer);
-NEW_UNIT_LITERAL(Area, CentimeterSquared, cm2, Centimeter * Centimeter);
-NEW_UNIT_LITERAL(Area, MillimeterSquared, mm2, Millimeter * Millimeter);
-NEW_UNIT_LITERAL(Area, MicrometerSquared, um2, Micrometer * Micrometer);
-NEW_UNIT_LITERAL(Area, NanometerSquared, nm2, Nanometer * Nanometer);
-NEW_UNIT_LITERAL(Area, InchSquared, in2, Inch * Inch);
+NEW_UNIT_LITERAL(Area, GigameterSquared, Gm2, Gigameter* Gigameter);
+NEW_UNIT_LITERAL(Area, MegameterSquared, Mm2, Megameter* Megameter);
+NEW_UNIT_LITERAL(Area, KilometerSquared, km2, Kilometer* Kilometer);
+NEW_UNIT_LITERAL(Area, CentimeterSquared, cm2, Centimeter* Centimeter);
+NEW_UNIT_LITERAL(Area, MillimeterSquared, mm2, Millimeter* Millimeter);
+NEW_UNIT_LITERAL(Area, MicrometerSquared, um2, Micrometer* Micrometer);
+NEW_UNIT_LITERAL(Area, NanometerSquared, nm2, Nanometer* Nanometer);
+NEW_UNIT_LITERAL(Area, InchSquared, in2, Inch* Inch);
 
 NEW_UNIT(LinearVelocity, MetersPerSecond, mps, 0, 1, -1, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(LinearVelocity, metersPerSecond, MetersPerSecond);

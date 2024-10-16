@@ -99,6 +99,7 @@ static inline Angle constrainAngle180(Angle in) {
 } // namespace units
 
 // Angle to/from operators
+namespace units::conversions {
 // Standard orientation
 constexpr inline Angle from_stRad(double value) { return Angle(value); }
 
@@ -124,3 +125,6 @@ constexpr inline double to_cDeg(Angle quantity) { return (90 * Degree - quantity
 constexpr inline Angle from_cRot(double value) { return (90 - value) * Degree; }
 
 constexpr inline double to_cRot(Angle quantity) { return (90 * Degree - quantity).convert(Rotation); }
+
+
+} // namespace units::conversions

@@ -49,7 +49,7 @@ constexpr Temperature operator""_fahrenheit(unsigned long long value) {
     return Temperature((static_cast<double>(value) - 32) / 1.8 + 273.5);
 }
 
-namespace units {
+namespace units::conversions {
 
 constexpr inline Temperature from_kelvin(double value) { return Temperature(value); }
 
