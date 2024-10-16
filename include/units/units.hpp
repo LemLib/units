@@ -280,6 +280,13 @@ template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const 
     return os;
 }
 
+/** @ingroup operations
+ * @brief adds two isomorphic (equal dimensions) quantities
+ *
+ * @param lhs the left hand minuend
+ * @param rhs the right hand minuend
+ * @return the sum
+ */
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
@@ -475,7 +482,13 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return Name(Quantity<ratio<mass>, ratio<len>, ratio<time>, ratio<cur>, ratio<ang>, ratio<temp>, ratio<lum>,    \
                              ratio<mole>>(static_cast<double>(value)));                                                \
     }                                                                                                                  \
-                                                                                                                       \
+    /**                                                                                                                \
+    @ingroup Name                                                                                                      \
+    @brief writes the value of a Name to an io stream.                                                                 \
+    @param os the out stream.                                                                                          \
+    @param quantity the quantity to write.                                                                             \
+    @return the modified out stream.                                                                                   \
+    */                                                                                                                 \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
