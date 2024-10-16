@@ -1,8 +1,10 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <ratio>
 #include <iostream>
+#include <utility>
 
 // define M_PI if not already defined
 #ifndef M_PI
@@ -239,43 +241,34 @@ template <isQuantity Q, typename R> using Rooted =
  * @param rhs the second addend
  * @return constexpr Q the sum
  */
+inline void unit_printer_helper(std::ostream& os, double quantity,
+                                const std::array<std::pair<intmax_t, intmax_t>, 8>& dims) {
+    static constinit std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
+    os << quantity;
+    for (size_t i = 0; i != 8; i++) {
+        if (dims[i].first != 0) {
+            os << prefixes[i];
+            if (dims[i].first != 1 || dims[i].second != 1) os << '^' << dims[i].first;
+            if (dims[i].second != 1) os << '/' << dims[i].second;
+        }
+    }
+}
+
 template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
     if constexpr (!std::is_same_v<Named<Q>, Q>) {
         os << Named<Q>(quantity);
     } else {
-        os << quantity.internal();
-        if constexpr (Q::mass::num != 0) {
-            os << " kg^" << Q::mass::num;
-            if constexpr (Q::mass::den != 1) os << "/" << Q::mass::den;
-        }
-        if constexpr (Q::length::num != 0) {
-            os << "*m^" << Q::length::num;
-            if constexpr (Q::length::den != 1) os << "/" << Q::length::den;
-        }
-        if constexpr (Q::time::num != 0) {
-            os << "*s^" << Q::time::num;
-            if constexpr (Q::time::den != 1) os << "/" << Q::time::den;
-        }
-        if constexpr (Q::current::num != 0) {
-            os << "*A^" << Q::current::num;
-            if constexpr (Q::current::den != 1) os << "/" << Q::current::den;
-        }
-        if constexpr (Q::angle::num != 0) {
-            os << "*rad^" << Q::angle::num;
-            if constexpr (Q::angle::den != 1) os << "/" << Q::angle::den;
-        }
-        if constexpr (Q::temperature::num != 0) {
-            os << "*K^" << Q::temperature::num;
-            if constexpr (Q::temperature::den != 1) os << "/" << Q::temperature::den;
-        }
-        if constexpr (Q::luminosity::num != 0) {
-            os << "*cd^" << Q::luminosity::num;
-            if constexpr (Q::luminosity::den != 1) os << "/" << Q::luminosity::den;
-        }
-        if constexpr (Q::moles::num != 0) {
-            os << "*mol^" << Q::moles::num;
-            if constexpr (Q::moles::den != 1) os << "/" << Q::moles::den;
-        }
+        constinit static std::array<std::pair<intmax_t, intmax_t>, 8> dims {{
+            {Q::mass::num, Q::mass::den},
+            {Q::length::num, Q::length::den},
+            {Q::time::num, Q::time::den},
+            {Q::current::num, Q::current::den},
+            {Q::angle::num, Q::angle::den},
+            {Q::temperature::num, Q::temperature::den},
+            {Q::luminosity::num, Q::luminosity::den},
+            {Q::moles::num, Q::moles::den},
+        }};
+        unit_printer_helper(os, quantity.internal(), dims);
     }
     return os;
 }
