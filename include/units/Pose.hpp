@@ -83,10 +83,10 @@ template <typename derivatives> class AbstractPose
 };
 
 // Position Pose (Length, Angle)
-using Pose = AbstractPose<std::ratio<0>>;
+using Pose = AbstractPose<ratio<0>>;
 // Velocity Pose (Length / Time, Angle / Time)
-using VelocityPose = AbstractPose<std::ratio<1>>;
+using VelocityPose = AbstractPose<ratio<1>>;
 // AccelerationPose (Length / Time^2, Angle / Time^2)
-using AccelerationPose = AbstractPose<std::ratio<2>>;
+using AccelerationPose = AbstractPose<ratio<2>>;
 
 } // namespace units
