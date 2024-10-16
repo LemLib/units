@@ -170,7 +170,7 @@ inline void unit_printer_helper(std::ostream& os, double quantity,
                                 const std::array<std::pair<intmax_t, intmax_t>, 8>& dims) {
     static constinit std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
     os << quantity;
-    for(size_t i = 0; i != 8; i++) {
+    for (size_t i = 0; i != 8; i++) {
         if (dims[i].first != 0) {
             os << prefixes[i];
             if (dims[i].first != 1 || dims[i].second != 1) os << '^' << dims[i].first;
