@@ -1,8 +1,10 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <ratio>
 #include <iostream>
+#include <utility>
 
 // define M_PI if not already defined
 #ifndef M_PI
@@ -121,7 +123,7 @@ template <typename Q> using Named = typename LookupName<Q>::Named;
 template <typename Mass = std::ratio<0>, typename Length = std::ratio<0>, typename Time = std::ratio<0>,
           typename Current = std::ratio<0>, typename Angle = std::ratio<0>, typename Temperature = std::ratio<0>,
           typename Luminosity = std::ratio<0>, typename Moles = std::ratio<0>>
-void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles> q) {}
+void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, Luminosity, Moles>) {}
 
 // isQuantity concept
 template <typename Q>
@@ -163,6 +165,38 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::time, quotient>, std::ratio_divide<typename Q::current, quotient>,
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
+
+inline void unit_printer_helper(std::ostream& os, double quantity,
+                                const std::array<std::pair<intmax_t, intmax_t>, 8>& dims) {
+    static constinit std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
+    os << quantity;
+    for (size_t i = 0; i != 8; i++) {
+        if (dims[i].first != 0) {
+            os << prefixes[i];
+            if (dims[i].first != 1 || dims[i].second != 1) os << '^' << dims[i].first;
+            if (dims[i].second != 1) os << '/' << dims[i].second;
+        }
+    }
+}
+
+template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const Q& quantity) {
+    if constexpr (!std::is_same_v<Named<Q>, Q>) {
+        os << Named<Q>(quantity);
+    } else {
+        constinit static std::array<std::pair<intmax_t, intmax_t>, 8> dims {{
+            {Q::mass::num, Q::mass::den},
+            {Q::length::num, Q::length::den},
+            {Q::time::num, Q::time::den},
+            {Q::current::num, Q::current::den},
+            {Q::angle::num, Q::angle::den},
+            {Q::temperature::num, Q::temperature::den},
+            {Q::luminosity::num, Q::luminosity::den},
+            {Q::moles::num, Q::moles::den},
+        }};
+        unit_printer_helper(os, quantity.internal(), dims);
+    }
+    return os;
+}
 
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -243,7 +277,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                            std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
             using Named = Name;                                                                                        \
     };                                                                                                                 \
-    constexpr Name Full = Name(1.0);                                                                                   \
+    [[maybe_unused]] constexpr Name Full = Name(1.0);                                                                  \
     constexpr Name operator""_##suffix(long double value) {                                                            \
         return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
@@ -260,7 +294,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, Full, suffix, multiple)                                                                 \
-    constexpr Name Full = multiple;                                                                                    \
+    [[maybe_unused]] constexpr Name Full = multiple;                                                                   \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \

@@ -50,7 +50,7 @@ template <typename derivatives> class AbstractPose
          *
          * @param x x position
          * @param y y position
-         */
+   `      */
         AbstractPose(Len x, Len y) : Vector(x, y), orientation(0.0) {}
 
         /**

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "units.hpp"
-#include "units/units.hpp"
 
 class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                               std::ratio<0>, std::ratio<0>> {
@@ -16,6 +15,16 @@ class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::
             : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                        std::ratio<0>, std::ratio<0>>(value) {};
 };
+
+template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                       std::ratio<0>, std::ratio<0>, std::ratio<0>>> {
+        using Named = Angle;
+};
+
+inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
+    os << quantity.internal() << " rad";
+    return os;
+}
 
 constexpr Angle Radian = Angle(1.0);
 constexpr Angle Degree = Angle(M_PI / 180);
