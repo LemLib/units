@@ -171,7 +171,7 @@ inline void unit_printer_helper(std::ostream& os, double quantity, const std::ar
     os << quantity;
     for(size_t i = 0; i != 8; i++) {
         if (dims[i].first != 0) {
-            os << prefix;
+            os << prefixes[i];
             if (dims[i].first != 1 || dims[i].second != 1) os << '^' << dims[i].first;
             if (dims[i].second != 1) os << '/' << dims[i].second;
         }
