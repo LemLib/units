@@ -2,22 +2,22 @@
 
 #include "units/units.hpp"
 
-class Temperature : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                                    std::ratio<1>, std::ratio<0>, std::ratio<0>> {
+class Temperature : public Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<0>,
+                                    ratio<1>, ratio<0>, ratio<0>> {
     public:
         explicit constexpr Temperature(double value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                       std::ratio<0>, std::ratio<0>>(value) {}
+            : Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>,
+                       ratio<0>, ratio<0>>(value) {}
 
-        constexpr Temperature(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                                       std::ratio<1>, std::ratio<0>, std::ratio<0>>
+        constexpr Temperature(Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<0>,
+                                       ratio<1>, ratio<0>, ratio<0>>
                                   value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                       std::ratio<0>, std::ratio<0>>(value) {};
+            : Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>,
+                       ratio<0>, ratio<0>>(value) {};
 };
 
-template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                                       std::ratio<1>, std::ratio<0>, std::ratio<0>>> {
+template <> struct LookupName<Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<0>,
+                                       ratio<1>, ratio<0>, ratio<0>>> {
         using Named = Temperature;
 };
 

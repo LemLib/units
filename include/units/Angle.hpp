@@ -2,22 +2,22 @@
 
 #include "units/units.hpp"
 
-class Angle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                              std::ratio<0>, std::ratio<0>> {
+class Angle : public Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>, ratio<0>,
+                              ratio<0>, ratio<0>> {
     public:
         explicit constexpr Angle(double value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(value) {}
+            : Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>, ratio<0>,
+                       ratio<0>, ratio<0>>(value) {}
 
-        constexpr Angle(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                 std::ratio<0>, std::ratio<0>, std::ratio<0>>
+        constexpr Angle(Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>,
+                                 ratio<0>, ratio<0>, ratio<0>>
                             value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(value) {};
+            : Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>, ratio<0>,
+                       ratio<0>, ratio<0>>(value) {};
 };
 
-template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                       std::ratio<0>, std::ratio<0>, std::ratio<0>>> {
+template <> struct LookupName<Quantity<ratio<0>, ratio<0>, ratio<0>, ratio<0>, ratio<1>,
+                                       ratio<0>, ratio<0>, ratio<0>>> {
         using Named = Angle;
 };
 
