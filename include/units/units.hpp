@@ -486,7 +486,17 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
     }                                                                                                                  \
+    /**                                                                                                                \
+    @brief function to initialize a new name quantity in units of suffix. Identical in behavior to operator""_suffix   \
+    @param value the value in suffix                                                                                   \
+    @return the quantity                                                                                               \
+    */                                                                                                                 \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
+    /**                                                                                                                \
+    @brief function to convert a unit to units of suffix                                                               \
+    @param value the quantity                                                                                          \
+    @return the value in suffix                                                                                        \
+    */                                                                                                                 \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
@@ -505,7 +515,17 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     @return the quantity                                                                                               \
     */                                                                                                                 \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
+    /**                                                                                                                \
+    @brief function to initialize a new name quantity in units of suffix. Identical in behavior to operator""_suffix   \
+    @param value the value in suffix                                                                                   \
+    @return the quantity                                                                                               \
+    */                                                                                                                 \
     constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
+    /**                                                                                                                \
+    @brief function to convert a unit to units of suffix                                                               \
+    @param value the quantity                                                                                          \
+    @return the value in suffix                                                                                        \
+    */                                                                                                                 \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
 
 #define NEW_METRIC_PREFIXES(Name, base)                                                                                \
@@ -519,60 +539,85 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
 
 NEW_UNIT(Number, num, 0, 0, 0, 0, 0, 0, 0, 0)
-
-/**
- * @brief The numbers mason, what do they mean
- */
+/// Equal to one percent, or 0.01
 NEW_UNIT_LITERAL(Number, percent, num / 100.0);
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
+/// Equal to one gram, or 0.001 of a kg
 NEW_UNIT_LITERAL(Mass, g, kg / 1000)
+/// Equal to one gram, or 0.4536 of a kg
 NEW_UNIT_LITERAL(Mass, lb, g * 453.6)
 
 NEW_UNIT(Time, sec, 0, 0, 1, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(Time, sec)
+/// Equal to one minute, or 60 seconds
 NEW_UNIT_LITERAL(Time, min, sec * 60)
+/// Equal to one hour, or 60 minutes or 3,600 seconds
 NEW_UNIT_LITERAL(Time, hr, min * 60)
+/// Equal to one day, or 24 hours or 1440 minutes or 86,400 seconds
 NEW_UNIT_LITERAL(Time, day, hr * 24)
 
 NEW_UNIT(Length, m, 0, 1, 0, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(Length, m)
+/// Equal to one inch, or 0.0254 meters
 NEW_UNIT_LITERAL(Length, in, cm * 2.54)
+/// Equal to one foot, or 12 inches, or 0.3048 meters
 NEW_UNIT_LITERAL(Length, ft, in * 12)
+/// Equal to one yard, or 3 feet, or 0.9144 meters
 NEW_UNIT_LITERAL(Length, yd, ft * 3)
+/// Equal to one mile, or 5,280 feet, or 1,609.344 meters.
 NEW_UNIT_LITERAL(Length, mi, ft * 5280)
+/// Equal to one VEX field tile, or 0.6 meters 
 NEW_UNIT_LITERAL(Length, tile, 600 * mm)
 
 NEW_UNIT(Area, m2, 0, 2, 0, 0, 0, 0, 0, 0)
+/// Equal to one Terrameter squared, or 10^24 m^2
 NEW_UNIT_LITERAL(Area, Tm2, Tm* Tm);
+/// Equal to one Gigameter squared, or 10^18 m^2
 NEW_UNIT_LITERAL(Area, Gm2, Gm* Gm);
+/// Equal to one Megameter squared, or 10^12 m^2
 NEW_UNIT_LITERAL(Area, Mm2, Mm* Mm);
+/// Equal to one kilometer squared, or 10^6 m^2
 NEW_UNIT_LITERAL(Area, km2, km* km);
+/// Equal to one centimeter squared, or 10^-4 m^2
 NEW_UNIT_LITERAL(Area, cm2, cm* cm);
+/// Equal to one millimeter squared, or 10^-6 m^2
 NEW_UNIT_LITERAL(Area, mm2, mm* mm);
+/// Equal to one micrometer squared, or 10^-12 m^2
 NEW_UNIT_LITERAL(Area, um2, um* um);
+/// Equal to one nanometer squared, or 10^-18 m^2
 NEW_UNIT_LITERAL(Area, nm2, nm* nm);
+/// Equal to one inch squared, or 6.4516*10^-4 m^2
 NEW_UNIT_LITERAL(Area, in2, in* in)
 
 NEW_UNIT(LinearVelocity, mps, 0, 1, -1, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(LinearVelocity, mps);
+/// Equal to one meter per hour, or 1/3,6000 m/s
 NEW_UNIT_LITERAL(LinearVelocity, mph, m / hr)
 NEW_METRIC_PREFIXES(LinearVelocity, mph)
+/// Equal to one inch per second, or 0.0254 m/s
 NEW_UNIT_LITERAL(LinearVelocity, inps, in / sec)
+/// Equal to one mile per hour, or 0.44704 m/s
 NEW_UNIT_LITERAL(LinearVelocity, miph, mi / hr)
 
 NEW_UNIT(LinearAcceleration, mps2, 0, 1, -2, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(LinearAcceleration, mps2)
+/// Equal to one meter per hour squared, or 1/3600 m/s^2
 NEW_UNIT_LITERAL(LinearAcceleration, mph2, m / hr / hr)
 NEW_METRIC_PREFIXES(LinearAcceleration, mph2)
+/// Equal to one inch per second squared, or 0.0254 m/s^2
 NEW_UNIT_LITERAL(LinearAcceleration, inps2, in / sec / sec)
+/// Equal to one mile per hour squared, or 0.44704 m/s^2
 NEW_UNIT_LITERAL(LinearAcceleration, miph2, mi / hr / hr)
 
 NEW_UNIT(LinearJerk, mps3, 0, 1, -3, 0, 0, 0, 0, 0)
 NEW_METRIC_PREFIXES(LinearJerk, mps3)
+/// Equal to one meter per hour cubed, or 1/3600 m/s^3
 NEW_UNIT_LITERAL(LinearJerk, mph3, m / (hr * hr * hr))
 NEW_METRIC_PREFIXES(LinearJerk, mph3)
+/// Equal to one inch per second cubed, or 0.0254 m/s^3
 NEW_UNIT_LITERAL(LinearJerk, inps3, in / (sec * sec * sec))
+/// Equal to one mile per hour cubed, or 0.44704 m/s^3
 NEW_UNIT_LITERAL(LinearJerk, miph3, mi / (hr * hr * hr))
 
 NEW_UNIT(Curvature, radpm, 0, -1, 0, 0, 0, 0, 0, 0);
