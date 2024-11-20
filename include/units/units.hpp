@@ -448,7 +448,7 @@ template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signb
 template <isQuantity Q, isQuantity R, isQuantity S> constexpr Q clamp(const Q& lhs, const R& lo, const S& hi)
     requires Isomorphic<Q, R, S>
 {
-    return Q(clamp(lhs.internal(), lo.internal(), hi.internal()));
+    return Q(std::clamp(lhs.internal(), lo.internal(), hi.internal()));
 }
 
 template <isQuantity Q, isQuantity R> constexpr Q ceil(const Q& lhs, const R& rhs)
