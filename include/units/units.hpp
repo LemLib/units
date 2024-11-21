@@ -5,6 +5,7 @@
 #include <ratio>
 #include <iostream>
 #include <utility>
+#include <algorithm>
 
 // define M_PI if not already defined
 #ifndef M_PI
