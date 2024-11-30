@@ -68,7 +68,7 @@ class Quantity {
         constexpr double internal() const { return value; }
 
         // TODO: document this
-        constexpr double convert(Self quantity) { return value / quantity.value; }
+        constexpr double convert(Self quantity) const { return value / quantity.value; }
 
         /**
          * @brief set the value of this quantity to its current value plus another quantity
