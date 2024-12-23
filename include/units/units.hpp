@@ -211,6 +211,11 @@ template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     return Q(lhs.internal() - rhs.internal());
 }
 
+template <isQuantity Q> constexpr Q operator-(Q quantity)
+{
+    return Q(-quantity.internal());
+}
+
 template <isQuantity Q> constexpr Q operator*(Q quantity, double multiple) { return Q(quantity.internal() * multiple); }
 
 template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { return Q(quantity.internal() * multiple); }
