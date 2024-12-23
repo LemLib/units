@@ -1,5 +1,6 @@
 #pragma once
 
+#include "units/units.hpp"
 #include "units/Angle.hpp"
 
 namespace units {
@@ -42,7 +43,7 @@ template <isQuantity T> class Vector2D {
          * @param m magnitude
          */
         static Vector2D fromPolar(Angle t, T m) {
-            m = m.abs();
+            m = abs(m);
             t = constrainAngle360(t);
             return Vector2D<T>(m * cos(t), m * sin(t));
         }
