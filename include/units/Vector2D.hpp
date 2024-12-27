@@ -12,10 +12,10 @@ namespace units {
  * @tparam T the type of quantity to use for the vector components
  */
 template <isQuantity T> class Vector2D {
-    protected:
+    public:
         T x; /** x component */
         T y; /** y component */
-    public:
+
         /**
          * @brief Construct a new Vector2D object
          *
@@ -57,34 +57,6 @@ template <isQuantity T> class Vector2D {
         static Vector2D unitVector(Angle t) { return fromPolar(t, (T)1.0); }
 
         /**
-         * @brief get the x component
-         *
-         * @return T x component
-         */
-        T getX() { return x; }
-
-        /**
-         * @brief get the y component
-         *
-         * @return T y component
-         */
-        T getY() { return y; }
-
-        /**
-         * @brief set the x component
-         *
-         * @param nx x component
-         */
-        void setX(T nx) { x = nx; }
-
-        /**
-         * @brief set the y component
-         *
-         * @param ny y component
-         */
-        void setY(T ny) { y = ny; }
-
-        /**
          * @brief + operator overload
          *
          * This operator adds the x and y components of two vectors
@@ -93,7 +65,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to add
          * @return Vector2D<T>
          */
-        Vector2D<T> operator+(Vector2D<T>& other) { return Vector2D<T>(x + other.getX(), y + other.getY()); }
+        Vector2D<T> operator+(Vector2D<T>& other) { return Vector2D<T>(x + other.x, y + other.y); }
 
         /**
          * @brief - operator overload
@@ -104,7 +76,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to subtract
          * @return Vector2D<T>
          */
-        Vector2D<T> operator-(Vector2D<T>& other) { return Vector2D<T>(x - other.getX(), y - other.getY()); }
+        Vector2D<T> operator-(Vector2D<T>& other) { return Vector2D<T>(x - other.x, y - other.y); }
 
         /**
          * @brief * operator overload
@@ -138,8 +110,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         Vector2D<T>& operator+=(Vector2D<T>& other) {
-            x += other.getX();
-            y += other.getY();
+            x += other.x;
+            y += other.y;
             return (*this);
         }
 
@@ -153,8 +125,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         Vector2D<T>& operator-=(Vector2D<T>& other) {
-            x -= other.getX();
-            y -= other.getY();
+            x -= other.x;
+            y -= other.y;
             return (*this);
         }
 
@@ -202,7 +174,7 @@ template <isQuantity T> class Vector2D {
          * @return R the dot product
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R dot(Vector2D<Q>& other) {
-            return (x * other.getX()) + (y * other.getY());
+            return (x * other.x) + (y * other.y);
         }
 
         /**
@@ -217,7 +189,7 @@ template <isQuantity T> class Vector2D {
          * @return R the cross product
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R cross(Vector2D<Q>& other) {
-            return (x * other.getY()) - (y * other.getX());
+            return (x * other.y) - (y * other.x);
         }
 
         /**
@@ -243,7 +215,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Vector2D<T>
          */
-        Vector2D<T> vectorTo(Vector2D<T>& other) { return Vector2D<T>(other.getX() - x, other.getY() - y); }
+        Vector2D<T> vectorTo(Vector2D<T>& other) { return Vector2D<T>(other.x - x, other.y - y); }
 
         /**
          * @brief the angle between two vectors
@@ -251,7 +223,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Angle
          */
-        Angle angleTo(Vector2D<T>& other) { return atan2(other.getY() - y, other.getX() - x); }
+        Angle angleTo(Vector2D<T>& other) { return atan2(other.y - y, other.x - x); }
 
         /**
          * @brief get the distance between two vectors
@@ -259,7 +231,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return T
          */
-        T distanceTo(Vector2D<T>& other) { return sqrt(square(x - other.getX(), 2) + square(y - other.getY(), 2)); }
+        T distanceTo(Vector2D<T>& other) { return sqrt(square(x - other.x, 2) + square(y - other.y, 2)); }
 
         /**
          * @brief normalize the vector
