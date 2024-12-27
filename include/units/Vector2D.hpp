@@ -65,7 +65,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to add
          * @return Vector2D<T>
          */
-        Vector2D<T> operator+(Vector2D<T>& other) const { return Vector2D<T>(x + other.x, y + other.y); }
+        Vector2D<T> operator+(const Vector2D<T>& other) const { return Vector2D<T>(x + other.x, y + other.y); }
 
         /**
          * @brief - operator overload
@@ -76,7 +76,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to subtract
          * @return Vector2D<T>
          */
-        Vector2D<T> operator-(Vector2D<T>& other) const { return Vector2D<T>(x - other.x, y - other.y); }
+        Vector2D<T> operator-(const Vector2D<T>& other) const { return Vector2D<T>(x - other.x, y - other.y); }
 
         /**
          * @brief * operator overload
@@ -109,7 +109,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to add
          * @return Vector2D<T>&
          */
-        Vector2D<T>& operator+=(Vector2D<T>& other) {
+        Vector2D<T>& operator+=(const Vector2D<T>& other) {
             x += other.x;
             y += other.y;
             return (*this);
@@ -124,7 +124,7 @@ template <isQuantity T> class Vector2D {
          * @param other vector to subtract
          * @return Vector2D<T>&
          */
-        Vector2D<T>& operator-=(Vector2D<T>& other) {
+        Vector2D<T>& operator-=(const Vector2D<T>& other) {
             x -= other.x;
             y -= other.y;
             return (*this);
@@ -173,7 +173,7 @@ template <isQuantity T> class Vector2D {
          * @param other the vector to calculate the dot product with
          * @return R the dot product
          */
-        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R dot(Vector2D<Q>& other) const {
+        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R dot(const Vector2D<Q>& other) const {
             return (x * other.x) + (y * other.y);
         }
 
@@ -188,7 +188,7 @@ template <isQuantity T> class Vector2D {
          * @param other the vector to calculate the cross product with
          * @return R the cross product
          */
-        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R cross(Vector2D<Q>& other) const {
+        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> R cross(const Vector2D<Q>& other) const {
             return (x * other.y) - (y * other.x);
         }
 
@@ -215,7 +215,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Vector2D<T>
          */
-        Vector2D<T> vectorTo(Vector2D<T>& other) const { return Vector2D<T>(other.x - x, other.y - y); }
+        Vector2D<T> vectorTo(const Vector2D<T>& other) const { return Vector2D<T>(other.x - x, other.y - y); }
 
         /**
          * @brief the angle between two vectors
@@ -223,7 +223,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Angle
          */
-        Angle angleTo(Vector2D<T>& other) const { return atan2(other.y - y, other.x - x); }
+        Angle angleTo(const Vector2D<T>& other) const { return atan2(other.y - y, other.x - x); }
 
         /**
          * @brief get the distance between two vectors
@@ -231,7 +231,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return T
          */
-        T distanceTo(Vector2D<T>& other) const { return sqrt(square(x - other.x, 2) + square(y - other.y, 2)); }
+        T distanceTo(const Vector2D<T>& other) const { return sqrt(square(x - other.x, 2) + square(y - other.y, 2)); }
 
         /**
          * @brief normalize the vector
