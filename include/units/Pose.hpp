@@ -70,16 +70,7 @@ template <typename derivatives> class AbstractPose
          *
          * @return Angle orientation
          */
-        Divided<Angle, Exponentiated<Time, derivatives>> getOrientation() { return orientation; }
-
-        /**
-         * @brief Set the orientation
-         *
-         * @param orientation orientation
-         */
-        void setOrientation(Divided<Angle, Exponentiated<Time, derivatives>> orientation) {
-            this->orientation = orientation;
-        }
+        Divided<Angle, Exponentiated<Time, derivatives>> getOrientation() const { return orientation; }
 };
 
 // Position Pose (Length, Angle)
