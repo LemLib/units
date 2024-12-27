@@ -261,7 +261,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     return (lhs.internal() > rhs.internal());
 }
 
-#define NEW_UNIT_FULL(Name, suffix, m, l, t, i, a, o, j, n, extra)                                                     \
+#define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n, ...)                                                            \
     class Name : public Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,            \
                                  std::ratio<o>, std::ratio<j>, std::ratio<n>> {                                        \
         public:                                                                                                        \
@@ -273,7 +273,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
                                value)                                                                                  \
                 : Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>,   \
                            std::ratio<j>, std::ratio<n>>(value) {};                                                    \
-            extra                                                                                                      \
+            __VA_ARGS__                                                                                                \
     };                                                                                                                 \
     template <> struct LookupName<Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>,  \
                                            std::ratio<o>, std::ratio<j>, std::ratio<n>>> {                             \
@@ -295,8 +295,6 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
-#define NEW_UNIT(Name, suffix, m, l, t, i, a, o, j, n) NEW_UNIT_FULL(Name, suffix, m, l, t, i, a, o, j, n, )
-
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
     [[maybe_unused]] constexpr Name suffix = multiple;                                                                 \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
@@ -315,7 +313,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     NEW_UNIT_LITERAL(Name, u##base, base / 1E6)                                                                        \
     NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
 
-NEW_UNIT_FULL(Number, num, 0, 0, 0, 0, 0, 0, 0, 0, constexpr operator double() { return this->value; })
+NEW_UNIT(Number, num, 0, 0, 0, 0, 0, 0, 0, 0, constexpr operator double() { return this->value; })
 NEW_UNIT_LITERAL(Number, percent, num / 100.0);
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
