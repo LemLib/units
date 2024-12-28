@@ -47,10 +47,11 @@ void initialize() {
     Length z = toLinear<Angle>(y, 2_cm);
     static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
                                          std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    units::clamp(2_cDeg, a.theta(), Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                         std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                              std::ratio<0>, std::ratio<0>>(1.0));
+    units::clamp(2_cDeg, a.theta(),
+                 Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                          std::ratio<0>, std::ratio<0>>(5.0));
+    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                    std::ratio<1>, std::ratio<0>, std::ratio<0>>(1.0));
 }
 
 /**
