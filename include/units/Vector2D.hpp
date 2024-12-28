@@ -80,6 +80,16 @@ template <isQuantity T> class Vector2D {
         }
 
         /**
+         * @brief * operator overload. Multiplies a vector by a double
+         *
+         * {a, b} * c = {a * c, b * c}
+         *
+         * @param factor the double to multiple the vector by
+         * @return Vector2D<T>
+         */
+        constexpr Vector2D<T> operator*(double factor) const { return Vector2D<T>(this->x * factor, this->y * factor); }
+
+        /**
          * @brief * operator overload. Multiplies a vector by a quantity
          *
          * {a, b} * c = {a * c, b * c}
@@ -107,6 +117,16 @@ template <isQuantity T> class Vector2D {
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr R operator*(const Vector2D<Q>& other) const {
             return (this->x * other.x) + (this->y * other.y);
         }
+
+        /**
+         * @brief / operator overload. Divides a vector by a double
+         *
+         * {a, b} / c = {a / c, b / c}
+         *
+         * @param factor the double to multiple the vector by
+         * @return Vector2D<T>
+         */
+        constexpr Vector2D<T> operator/(double factor) const { return Vector2D<T>(this->x / factor, this->y / factor); }
 
         /**
          * @brief / operator overload. Divides a vector by a quantity
@@ -261,7 +281,7 @@ template <isQuantity T> class Vector2D {
 };
 
 /**
- * @brief * operator overload. Multiplies a scalar and a vector
+ * @brief * operator overload. Multiplies a quantity and a vector
  *
  * a * {b, c} = {a * b, a * c}
  *
@@ -271,12 +291,25 @@ template <isQuantity T> class Vector2D {
  *
  * @param lhs the scalar on the left hand side
  * @param rhs the vector on the right hand side
- * @return Q3 the product
+ * @return Vector2D<Q3> the product
  */
 template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>>
 constexpr Vector2D<Q3> operator*(Q1 lhs, const Vector2D<Q2>& rhs) {
     return rhs * lhs;
 }
+
+/**
+ * @brief * operator overload. Multiplies a double and a vector
+ *
+ * a * {b, c} = {a * b, a * c}
+ *
+ * @tparam Q the quantity type of the vector
+ *
+ * @param lhs the scalar on the left hand side
+ * @param rhs the vector on the right hand side
+ * @return Vector2D<Q> the product
+ */
+template <isQuantity Q> constexpr Vector2D<Q> operator*(double lhs, const Vector2D<Q>& rhs) { return rhs * lhs; }
 
 // define some common vector types
 typedef Vector2D<Length> V2Position;

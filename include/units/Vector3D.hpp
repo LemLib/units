@@ -80,6 +80,18 @@ template <isQuantity T> class Vector3D {
         }
 
         /**
+         * @brief * operator overload. Multiplies a vector by a double
+         *
+         * {a, b} * c = {a * c, b * c}
+         *
+         * @param factor the double to multiple the vector by
+         * @return Vector2D<T>
+         */
+        constexpr Vector3D<T> operator*(double factor) const {
+            return Vector3D<T>(this->x * factor, this->y * factor, this->z * factor);
+        }
+
+        /**
          * @brief * operator overload. Multiplies a vector by a quantity
          *
          * {a, b, c} * d = {a * d, b * d, c * d}
@@ -92,6 +104,18 @@ template <isQuantity T> class Vector3D {
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr Vector3D<R> operator*(Q factor) const {
             return Vector3D<R>(this->x * factor, this->y * factor, this->z * factor);
+        }
+
+        /**
+         * @brief / operator overload. Multiplies a vector by a double
+         *
+         * {a, b, c} / d = {a / d, b / d, c / d}
+         *
+         * @param factor the double to multiple the vector by
+         * @return Vector3D<T>
+         */
+        constexpr Vector3D<T> operator/(double factor) const {
+            return Vector3D<T>(this->x / factor, this->y / factor, this->z / factor);
         }
 
         /**
@@ -308,6 +332,19 @@ template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>>
 constexpr Vector3D<Q3> operator*(Q1 lhs, const Vector3D<Q2>& rhs) {
     return rhs * lhs;
 }
+
+/**
+ * @brief * operator overload. Multiplies a double and a vector
+ *
+ * a * {b, c, d} = {a * b, a * c, a * d}
+ *
+ * @tparam Q the quantity type of the vector
+ *
+ * @param lhs the scalar on the left hand side
+ * @param rhs the vector on the right hand side
+ * @return Vector3D<Q> the product
+ */
+template <isQuantity Q> constexpr Vector3D<Q> operator*(double lhs, const Vector3D<Q>& rhs) { return rhs * lhs; }
 
 // define some common vector types
 typedef Vector3D<Length> V3Position;
