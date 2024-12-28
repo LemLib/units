@@ -1,6 +1,8 @@
 #include "main.h"
 #include "units/Pose.hpp"
 #include "units/Temperature.hpp"
+#include "units/Vector2D.hpp"
+#include "units/Vector3D.hpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -32,10 +34,10 @@ void initialize() {
     Number num = Number(1.0);
     num = Number(0.0);
     a.theta().convert(deg);
-    a.setOrientation(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<-2>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                              std::ratio<0>, std::ratio<0>>(1.0));
-    a.getOrientation() += 2_rpm2;
-    2_rpm2 -= a.getOrientation();
+    a.orientation = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<-2>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                             std::ratio<0>, std::ratio<0>>(1.0);
+    a.orientation += 2_rpm2;
+    2_rpm2 -= a.orientation;
     to_cDeg(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                      std::ratio<0>, std::ratio<0>>(5.0) -
             a.theta() + 5_cDeg);
@@ -47,10 +49,23 @@ void initialize() {
     Length z = toLinear<Angle>(y, 2_cm);
     static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
                                          std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    units::clamp(2_cDeg, a.theta(), Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                         std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                              std::ratio<0>, std::ratio<0>>(1.0));
+    units::clamp(2_cDeg, a.theta(),
+                 Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                          std::ratio<0>, std::ratio<0>>(5.0));
+    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                    std::ratio<1>, std::ratio<0>, std::ratio<0>>(1.0));
+    // check Vector3D overloads
+    units::Vector3D<Length> v3a = 2 * units::V3Position(2_in, 2_in, 2_in) * 2;
+    units::Vector3D<Length> v3b = units::V3Position(2_in, 2_in, 2_in) / 2.0;
+    units::Vector3D<Area> v3c = 2_in * units::V3Position(2_in, 2_in, 2_in);
+    units::Vector3D<Area> v3d = units::V3Position(2_in, 2_in, 2_in) * 2_in;
+    units::Vector3D<Number> v3e = units::V3Position(2_in, 2_in, 2_in) / 2_in;
+    // check Vector2D overloads
+    units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
+    units::Vector2D<Length> v2b = 2 * units::V2Position(2_in, 2_in) * 2;
+    units::Vector2D<Area> v2c = 2_in * units::V2Position(2_in, 2_in);
+    units::Vector2D<Area> v2d = units::V2Position(2_in, 2_in) * 2_in;
+    units::Vector2D<Number> v2e = units::V2Position(2_in, 2_in) / 2_in;
 }
 
 /**
