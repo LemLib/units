@@ -194,19 +194,6 @@ template <isQuantity T> class Vector2D {
         constexpr T magnitude() const { return sqrt(square(this->x) + square(this->y)); }
 
         /**
-         * @brief difference between two vectors
-         *
-         * This function calculates the difference between two vectors
-         * a.vectorTo(b) = {b.x - a.x, b.y - a.y}
-         *
-         * @param other the other vector
-         * @return Vector2D<T>
-         */
-        constexpr Vector2D<T> vectorTo(const Vector2D<T>& other) const {
-            return Vector2D<T>(other.x - this->x, other.y - this->y);
-        }
-
-        /**
          * @brief the angle between two vectors
          *
          * @param other the other vector
