@@ -1,6 +1,5 @@
 #pragma once
 
-#include "units/units.hpp"
 #include "units/Angle.hpp"
 
 namespace units {
