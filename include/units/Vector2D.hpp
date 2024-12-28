@@ -182,21 +182,6 @@ template <isQuantity T> class Vector2D {
         }
 
         /**
-         * @brief cross product of 2 Vector2D objects
-         *
-         * This function calculates the cross product of two vectors
-         * a.cross(b) = (a.x * b.y) - (a.y * b.x)
-         *
-         * @tparam Q the type of quantity to use for the other vector
-         * @tparam R the type of quantity to use for the result
-         * @param other the vector to calculate the cross product with
-         * @return R the cross product
-         */
-        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr R cross(const Vector2D<Q>& other) const {
-            return (x * other.y) - (y * other.x);
-        }
-
-        /**
          * @brief angle of the vector
          *
          * @return Angle
