@@ -65,7 +65,9 @@ template <isQuantity T> class Vector2D {
          * @param other vector to add
          * @return Vector2D<T>
          */
-        constexpr Vector2D<T> operator+(const Vector2D<T>& other) const { return Vector2D<T>(x + other.x, y + other.y); }
+        constexpr Vector2D<T> operator+(const Vector2D<T>& other) const {
+            return Vector2D<T>(x + other.x, y + other.y);
+        }
 
         /**
          * @brief - operator overload
@@ -76,7 +78,9 @@ template <isQuantity T> class Vector2D {
          * @param other vector to subtract
          * @return Vector2D<T>
          */
-        constexpr Vector2D<T> operator-(const Vector2D<T>& other) const { return Vector2D<T>(x - other.x, y - other.y); }
+        constexpr Vector2D<T> operator-(const Vector2D<T>& other) const {
+            return Vector2D<T>(x - other.x, y - other.y);
+        }
 
         /**
          * @brief * operator overload
@@ -231,7 +235,9 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return T
          */
-        constexpr T distanceTo(const Vector2D<T>& other) const { return sqrt(square(x - other.x, 2) + square(y - other.y, 2)); }
+        constexpr T distanceTo(const Vector2D<T>& other) const {
+            return sqrt(square(x - other.x, 2) + square(y - other.y, 2));
+        }
 
         /**
          * @brief normalize the vector
