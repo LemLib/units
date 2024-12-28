@@ -65,7 +65,7 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>
          */
         constexpr Vector3D<T> operator+(const Vector3D<T>& other) const {
-            return Vector3D<T>(x + other.x, y + other.y, z + other.z);
+            return Vector3D<T>(this->x + other.x, this->y + other.y, this->z + other.z);
         }
 
         /**
@@ -78,7 +78,7 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>
          */
         constexpr Vector3D<T> operator-(const Vector3D<T>& other) const {
-            return Vector3D<T>(x - other.x, y - other.y, z - other.z);
+            return Vector3D<T>(this->x - other.x, this->y - other.y, this->z - other.z);
         }
 
         /**
@@ -90,7 +90,9 @@ template <isQuantity T> class Vector3D {
          * @param factor scalar to multiply by
          * @return Vector3D<T>
          */
-        constexpr Vector3D<T> operator*(double factor) const { return Vector3D<T>(x * factor, y * factor, z * factor); }
+        constexpr Vector3D<T> operator*(double factor) const {
+            return Vector3D<T>(this->x * factor, this->y * factor, this->z * factor);
+        }
 
         /**
          * @brief / operator overload
@@ -101,7 +103,9 @@ template <isQuantity T> class Vector3D {
          * @param factor scalar to divide by
          * @return Vector3D<T>
          */
-        constexpr Vector3D<T> operator/(double factor) const { return Vector3D<T>(x / factor, y / factor, z / factor); }
+        constexpr Vector3D<T> operator/(double factor) const {
+            return Vector3D<T>(this->x / factor, this->y / factor, this->z / factor);
+        }
 
         /**
          * @brief += operator overload
@@ -113,9 +117,9 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>&
          */
         constexpr Vector3D<T>& operator+=(const Vector3D<T>& other) {
-            x += other.x;
-            y += other.y;
-            z += other.z;
+            this->x += other.x;
+            this->y += other.y;
+            this->z += other.z;
             return (*this);
         }
 
@@ -129,9 +133,9 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>&
          */
         constexpr Vector3D<T>& operator-=(const Vector3D<T>& other) {
-            x -= other.x;
-            y -= other.y;
-            z -= other.z;
+            this->x -= other.x;
+            this->y -= other.y;
+            this->z -= other.z;
             return (*this);
         }
 
@@ -146,9 +150,9 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>&
          */
         constexpr Vector3D<T>& operator*=(double factor) {
-            x *= factor;
-            y *= factor;
-            z *= factor;
+            this->x *= factor;
+            this->y *= factor;
+            this->z *= factor;
             return (*this);
         }
 
@@ -163,9 +167,9 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>&
          */
         constexpr Vector3D<T>& operator/=(double factor) {
-            x /= factor;
-            y /= factor;
-            z /= factor;
+            this->x /= factor;
+            this->y /= factor;
+            this->z /= factor;
             return (*this);
         }
 
@@ -181,7 +185,7 @@ template <isQuantity T> class Vector3D {
          * @return R the dot product
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr R dot(const Vector3D<Q>& other) const {
-            return (x * other.x) + (y * other.y) + (z * other.z);
+            return (this->x * other.x) + (this->y * other.y) + (this->z * other.z);
         }
 
         /**
@@ -197,8 +201,10 @@ template <isQuantity T> class Vector3D {
          * @param other the vector to calculate the cross product with
          * @return Vector3D<R> the cross product
          */
-        template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr Vector3D<R> cross(const Vector3D<Q>& other) const {
-            return Vector3D<R>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+        template <isQuantity Q, isQuantity R = Multiplied<T, Q>>
+        constexpr Vector3D<R> cross(const Vector3D<Q>& other) const {
+            return Vector3D<R>(this->y * other.z - this->z * other.y, this->z * other.x - this->x * other.z,
+                               this->x * other.y - this->y * other.x);
         }
 
         /**
@@ -208,7 +214,7 @@ template <isQuantity T> class Vector3D {
          */
         constexpr Vector3D<Angle> theta() const {
             const T mag = magnitude();
-            return Vector3D<Angle>(acos(x / mag), acos(y / mag), acos(z / mag));
+            return Vector3D<Angle>(acos(this->x / mag), acos(this->y / mag), acos(this->z / mag));
         }
 
         /**
@@ -216,7 +222,7 @@ template <isQuantity T> class Vector3D {
          *
          * @return T
          */
-        constexpr T magnitude() const { return sqrt(square(x) + square(y) + square(z)); }
+        constexpr T magnitude() const { return sqrt(square(this->x) + square(this->y) + square(this->z)); }
 
         /**
          * @brief difference between two vectors
@@ -230,7 +236,7 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>
          */
         constexpr Vector3D<T> vectorTo(const Vector3D<T>& other) const {
-            return Vector2D<T>(other.x - x, other.y - y, other.z - z);
+            return Vector2D<T>(other.x - this->x, other.y - this->y, other.z - this->z);
         }
 
         /**
@@ -240,7 +246,7 @@ template <isQuantity T> class Vector3D {
          * @return Angle
          */
         constexpr Angle angleTo(const Vector3D<T>& other) const {
-            return units::acos(dot(other) / (magnitude() * other.magnitude()));
+            return acos(dot(other) / (magnitude() * other.magnitude()));
         }
 
         /**
@@ -258,10 +264,7 @@ template <isQuantity T> class Vector3D {
          *
          * @return Vector3D<T>
          */
-        constexpr Vector3D<T> normalize() {
-            T m = magnitude();
-            return Vector2D<T>(x / m, y / m, z / m);
-        }
+        constexpr Vector3D<T> normalize() { return *(this) / magnitude(); }
 
         /**
          * @brief rotate the vector by an angle
@@ -271,9 +274,9 @@ template <isQuantity T> class Vector3D {
         constexpr void rotateBy(const Vector3D<Angle>& angle) {
             const T m = magnitude();
             const Vector3D<Angle> t = theta() + angle;
-            x = m * cos(t.x);
-            y = m * cos(t.y);
-            z = m * cos(t.z);
+            this->x = m * cos(t.x);
+            this->y = m * cos(t.y);
+            this->z = m * cos(t.z);
         }
 
         /**
@@ -283,9 +286,9 @@ template <isQuantity T> class Vector3D {
          */
         constexpr void rotateTo(const Vector3D<Angle>& angle) {
             const T m = magnitude();
-            x = m * cos(angle.x);
-            y = m * cos(angle.y);
-            z = m * cos(angle.z);
+            this->x = m * cos(angle.x);
+            this->y = m * cos(angle.y);
+            this->z = m * cos(angle.z);
         }
 
         /**
@@ -295,8 +298,8 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>
          */
         constexpr Vector3D<T> rotatedBy(const Vector3D<Angle>& angle) const {
-            T m = magnitude();
-            Angle t = theta() + angle;
+            const T m = magnitude();
+            const Angle t = theta() + angle;
             return fromPolar(t, m);
         }
 
@@ -307,7 +310,7 @@ template <isQuantity T> class Vector3D {
          * @return Vector3D<T>
          */
         constexpr Vector3D<T> rotatedTo(Angle angle) const {
-            T m = magnitude();
+            const T m = magnitude();
             return fromPolar(angle, m);
         }
 };

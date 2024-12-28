@@ -66,7 +66,7 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>
          */
         constexpr Vector2D<T> operator+(const Vector2D<T>& other) const {
-            return Vector2D<T>(x + other.x, y + other.y);
+            return Vector2D<T>(this->x + other.x, this->y + other.y);
         }
 
         /**
@@ -79,7 +79,7 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>
          */
         constexpr Vector2D<T> operator-(const Vector2D<T>& other) const {
-            return Vector2D<T>(x - other.x, y - other.y);
+            return Vector2D<T>(this->x - other.x, this->y - other.y);
         }
 
         /**
@@ -91,7 +91,7 @@ template <isQuantity T> class Vector2D {
          * @param factor scalar to multiply by
          * @return Vector2D<T>
          */
-        constexpr Vector2D<T> operator*(double factor) const { return Vector2D<T>(x * factor, y * factor); }
+        constexpr Vector2D<T> operator*(double factor) const { return Vector2D<T>(this->x * factor, this->y * factor); }
 
         /**
          * @brief / operator overload
@@ -102,7 +102,7 @@ template <isQuantity T> class Vector2D {
          * @param factor scalar to divide by
          * @return Vector2D<T>
          */
-        constexpr Vector2D<T> operator/(double factor) const { return Vector2D<T>(x / factor, y / factor); }
+        constexpr Vector2D<T> operator/(double factor) const { return Vector2D<T>(this->x / factor, this->y / factor); }
 
         /**
          * @brief += operator overload
@@ -114,8 +114,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         constexpr Vector2D<T>& operator+=(const Vector2D<T>& other) {
-            x += other.x;
-            y += other.y;
+            this->x += other.x;
+            this->y += other.y;
             return (*this);
         }
 
@@ -129,8 +129,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         constexpr Vector2D<T>& operator-=(const Vector2D<T>& other) {
-            x -= other.x;
-            y -= other.y;
+            this->x -= other.x;
+            this->y -= other.y;
             return (*this);
         }
 
@@ -145,8 +145,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         constexpr Vector2D<T>& operator*=(double factor) {
-            x *= factor;
-            y *= factor;
+            this->x *= factor;
+            this->y *= factor;
             return (*this);
         }
 
@@ -161,8 +161,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>&
          */
         constexpr Vector2D<T>& operator/=(double factor) {
-            x /= factor;
-            y /= factor;
+            this->x /= factor;
+            this->y /= factor;
             return (*this);
         }
 
@@ -178,7 +178,7 @@ template <isQuantity T> class Vector2D {
          * @return R the dot product
          */
         template <isQuantity Q, isQuantity R = Multiplied<T, Q>> constexpr R dot(const Vector2D<Q>& other) const {
-            return (x * other.x) + (y * other.y);
+            return (this->x * other.x) + (this->y * other.y);
         }
 
         /**
@@ -186,14 +186,14 @@ template <isQuantity T> class Vector2D {
          *
          * @return Angle
          */
-        constexpr Angle theta() const { return atan2(y, x); }
+        constexpr Angle theta() const { return atan2(this->y, this->x); }
 
         /**
          * @brief magnitude of the vector
          *
          * @return T
          */
-        constexpr T magnitude() const { return sqrt(square(x) + square(y)); }
+        constexpr T magnitude() const { return sqrt(square(this->x) + square(this->y)); }
 
         /**
          * @brief difference between two vectors
@@ -204,7 +204,9 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Vector2D<T>
          */
-        constexpr Vector2D<T> vectorTo(const Vector2D<T>& other) const { return Vector2D<T>(other.x - x, other.y - y); }
+        constexpr Vector2D<T> vectorTo(const Vector2D<T>& other) const {
+            return Vector2D<T>(other.x - this->x, other.y - this->y);
+        }
 
         /**
          * @brief the angle between two vectors
@@ -212,7 +214,7 @@ template <isQuantity T> class Vector2D {
          * @param other the other vector
          * @return Angle
          */
-        constexpr Angle angleTo(const Vector2D<T>& other) const { return atan2(other.y - y, other.x - x); }
+        constexpr Angle angleTo(const Vector2D<T>& other) const { return atan2(other.y - this->y, other.x - this->x); }
 
         /**
          * @brief get the distance between two vectors
@@ -221,7 +223,7 @@ template <isQuantity T> class Vector2D {
          * @return T
          */
         constexpr T distanceTo(const Vector2D<T>& other) const {
-            return sqrt(square(x - other.x, 2) + square(y - other.y, 2));
+            return sqrt(square(this->x - other.x, 2) + square(this->y - other.y, 2));
         }
 
         /**
@@ -232,8 +234,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>
          */
         constexpr Vector2D<T> normalize() const {
-            T m = magnitude();
-            return Vector2D<T>(x / m, y / m);
+            const T m = magnitude();
+            return Vector2D<T>(this->x / m, this->y / m);
         }
 
         /**
@@ -242,10 +244,10 @@ template <isQuantity T> class Vector2D {
          * @param angle
          */
         constexpr void rotateBy(Angle angle) {
-            T m = magnitude();
-            Angle t = theta() + angle;
-            x = m * cos(t);
-            y = m * sin(t);
+            const T m = magnitude();
+            const Angle t = theta() + angle;
+            this->x = m * cos(t);
+            this->y = m * sin(t);
         }
 
         /**
@@ -254,9 +256,9 @@ template <isQuantity T> class Vector2D {
          * @param angle
          */
         constexpr void rotateTo(Angle angle) {
-            T m = magnitude();
-            x = m * cos(angle);
-            y = m * sin(angle);
+            const T m = magnitude();
+            this->x = m * cos(angle);
+            this->y = m * sin(angle);
         }
 
         /**
@@ -266,8 +268,8 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>
          */
         constexpr Vector2D<T> rotatedBy(Angle angle) const {
-            T m = magnitude();
-            Angle t = theta() + angle;
+            const T m = magnitude();
+            const Angle t = theta() + angle;
             return fromPolar(t, m);
         }
 
@@ -278,7 +280,7 @@ template <isQuantity T> class Vector2D {
          * @return Vector2D<T>
          */
         constexpr Vector2D<T> rotatedTo(Angle angle) const {
-            T m = magnitude();
+            const T m = magnitude();
             return fromPolar(angle, m);
         }
 };
