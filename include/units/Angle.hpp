@@ -50,6 +50,10 @@ class CAngle {
         friend constexpr CAngle operator""_cRot(long double value);
         friend constexpr CAngle operator""_cRot(unsigned long long value);
     public:
+        // we don't want CAngle to have move, copy, or assignment operators
+        CAngle& operator=(const CAngle&) = delete;
+        CAngle(const CAngle&) = delete;
+
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
 
@@ -61,8 +65,6 @@ class CAngle {
 
         constexpr CAngle(double value) : value(value) {}
 };
-
-constexpr bool operator==(Angle lhs, CAngle rhs) { return lhs == Angle(rhs); }
 
 inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
     os << quantity.internal() << " rad";
