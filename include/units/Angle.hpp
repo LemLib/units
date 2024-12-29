@@ -59,14 +59,16 @@ class CAngle {
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
 
-        constexpr Angle operator-() const { return CAngle(-this->value); }
+        constexpr CAngle operator-() const { return CAngle(-this->value); }
 
-        constexpr Angle operator+() const { return CAngle(this->value); }
+        constexpr CAngle operator+() const { return CAngle(this->value); }
     private:
         const double value;
 
         constexpr CAngle(double value) : value(value) {}
 };
+
+constexpr bool operator==(Angle lhs, CAngle rhs) { return lhs == Angle(rhs); }
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
