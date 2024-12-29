@@ -51,8 +51,8 @@ class CAngle {
         friend constexpr CAngle operator""_cRot(unsigned long long value);
     public:
         // we don't want CAngle to have move, copy, or assignment operators
-        CAngle& operator=(const CAngle&) = delete;
-        CAngle(const CAngle&) = delete;
+        constexpr CAngle& operator=(const CAngle&) = delete;
+        constexpr CAngle(const CAngle&) = delete;
 
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
