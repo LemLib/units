@@ -41,8 +41,7 @@ template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<
  * because the constructor is private. However, you can do
  * Angle angle = 2_cDeg
  */
-class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                               std::ratio<0>, std::ratio<0>> {
+class CAngle {
         // make string literals friends, so they have access to the constructor
         friend constexpr CAngle operator""_cRad(long double value);
         friend constexpr CAngle operator""_cRad(unsigned long long value);
@@ -50,30 +49,17 @@ class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std:
         friend constexpr CAngle operator""_cDeg(unsigned long long value);
         friend constexpr CAngle operator""_cRot(long double value);
         friend constexpr CAngle operator""_cRot(unsigned long long value);
-        friend constexpr CAngle operator*(double multiple, CAngle quantity);
-        friend constexpr CAngle operator*(CAngle quantity, double multiple);
-        friend constexpr CAngle operator/(double multiple, CAngle quantity);
-        friend constexpr CAngle operator/(CAngle quantity, double multiple);
     public:
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
 
-        constexpr Angle operator-(Angle other) const { return Angle(*this) - other; }
+        constexpr Angle operator-() const { return CAngle(-this->value); }
 
-        constexpr CAngle operator-() const { return CAngle(-this->value); }
-
-        constexpr Angle operator+(Angle other) const { return Angle(*this) + other; }
-
-        constexpr CAngle operator+() const { return CAngle(this->value); }
+        constexpr Angle operator+() const { return CAngle(this->value); }
     private:
-        // only allow construction through literals
-        constexpr CAngle(double value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(value) {}
+        const double value;
 
-        constexpr CAngle(Angle value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(value) {}
+        constexpr CAngle(double value) : value(value) {}
 };
 
 constexpr bool operator==(Angle lhs, CAngle rhs) { return lhs == Angle(rhs); }
@@ -82,27 +68,6 @@ inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
     os << quantity.internal() << " rad";
     return os;
 }
-
-constexpr Angle operator+(Angle lhs, CAngle rhs) { return lhs + Angle(rhs); }
-
-constexpr Angle operator-(Angle lhs, CAngle rhs) { return lhs - Angle(rhs); }
-
-constexpr CAngle operator*(double multiple, CAngle quantity) { return CAngle(multiple * quantity.internal()); }
-
-constexpr CAngle operator*(CAngle quantity, double multiple) { return CAngle(multiple * quantity.internal()); }
-
-constexpr CAngle operator/(CAngle quantity, double multiple) { return CAngle(quantity.internal() / multiple); }
-
-namespace units {
-template <typename T>
-concept isAngle = std::same_as<T, CAngle> || std::same_as<T, Angle> ||
-                  std::same_as<T, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                           std::ratio<0>, std::ratio<0>, std::ratio<0>>>;
-
-template <isAngle Q, isAngle R, isAngle S> constexpr Angle clamp(Q lhs, R lo, S hi) {
-    return Angle(std::clamp(lhs.internal(), lo.internal(), hi.internal()));
-}
-} // namespace units
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
