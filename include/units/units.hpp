@@ -325,8 +325,6 @@ class Number : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std:
                              value)
             : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                        std::ratio<0>, std::ratio<0>>(value) {};
-
-        template <typename T> constexpr operator T() const { return T(value); }
 };
 
 template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
@@ -355,17 +353,7 @@ constexpr inline Number from_num(double value) { return Number(value); }
 
 constexpr inline double to_num(Number quantity) { return quantity.internal(); }
 
-[[maybe_unused]] constexpr Number percent = num / 100.0;
-
-constexpr Number operator""_percent(long double value) { return value / 100.0; }
-
-constexpr Number operator""_percent(unsigned long long value) { return value / 100.0; }
-
-constexpr inline Number from_percent(double value) { return value / 100.0; }
-
-constexpr inline Number from_percent(Number value) { return value / 100.0; }
-
-constexpr inline double to_percent(Number quantity) { return quantity.internal() * 100.0; }
+NEW_UNIT_LITERAL(Number, percent, num / 100)
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
 NEW_UNIT_LITERAL(Mass, g, kg / 1000)
