@@ -43,7 +43,9 @@ class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std:
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
 
-        constexpr Angle operator-() const { return Angle(M_PI_2 - this->value); }
+        constexpr CAngle operator-() const { return CAngle(-this->value); }
+
+        constexpr CAngle operator+() const { return CAngle(this->value); }
     private:
         // only allow construction through literals
         constexpr CAngle(double value)

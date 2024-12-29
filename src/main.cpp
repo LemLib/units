@@ -56,7 +56,9 @@ void initialize() {
 }
 
 void angleTests() {
-    static_assert(15_cDeg == 75_stDeg);
-    static_assert(-15_cDeg == 75_stDeg);
+    static_assert(+15_cDeg == 75_stDeg);
+    static_assert(to_stDeg(-15_cDeg) == to_stDeg(105_stDeg));
     static_assert(r2i(to_stDeg(2 * 15_cDeg)) == r2i(to_stDeg(60_stDeg)));
+    static_assert(r2i(to_stDeg(+0_cDeg)) == r2i(to_stDeg(90_stDeg)));
+    static_assert(90_stDeg == +0_cDeg);
 }
