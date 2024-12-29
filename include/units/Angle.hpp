@@ -37,9 +37,9 @@ template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<
  * This class solves this problem by introducing the CAngle type. You can do things like
  * negate it, multiply it, etc. without messing up the angle. However, this class can
  * only be created through string literals, you can't do something like
- * CAngle angle = 2_cDeg
+ * CAngle angle = 2_cDeg;
  * because the constructor is private. However, you can do
- * Angle angle = 2_cDeg
+ * Angle angle = 2_cDeg;
  */
 class CAngle {
         // make string literals friends, so they have access to the constructor
