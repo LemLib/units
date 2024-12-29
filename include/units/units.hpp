@@ -292,6 +292,7 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return os;                                                                                                     \
     }                                                                                                                  \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
+    constexpr inline Name from_##suffix(Number value) { return Name(value.internal()); }                               \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
