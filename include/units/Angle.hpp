@@ -21,8 +21,10 @@ template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<
         using Named = Angle;
 };
 
-// -15_cDeg == 105_stDeg
-// 15_cDeg == 75_stDeg
+inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
+    os << quantity.internal() << " rad";
+    return os;
+}
 
 /**
  * @brief DO NOT USE
@@ -65,11 +67,6 @@ class CAngle {
 
         constexpr CAngle(double value) : value(value) {}
 };
-
-inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
-    os << quantity.internal() << " rad";
-    return os;
-}
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
