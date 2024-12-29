@@ -21,10 +21,52 @@ template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<
         using Named = Angle;
 };
 
+// -15_cDeg == 105_stDeg
+// 15_cDeg == 75_stDeg
+
+// in order to do conversions properly between angles in standard position and compass angles, we need this helper class
+// it can only be constructed through string literals
+class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                               std::ratio<0>, std::ratio<0>> {
+        // make string literals friends, so they have access to the constructor
+        friend constexpr CAngle operator""_cRad(long double value);
+        friend constexpr CAngle operator""_cRad(unsigned long long value);
+        friend constexpr CAngle operator""_cDeg(long double value);
+        friend constexpr CAngle operator""_cDeg(unsigned long long value);
+        friend constexpr CAngle operator""_cRot(long double value);
+        friend constexpr CAngle operator""_cRot(unsigned long long value);
+        friend constexpr CAngle operator*(double multiple, CAngle quantity);
+        friend constexpr CAngle operator*(CAngle quantity, double multiple);
+        friend constexpr CAngle operator/(double multiple, CAngle quantity);
+        friend constexpr CAngle operator/(CAngle quantity, double multiple);
+    public:
+        // make CAngle able to be implicitly converted to Angle
+        constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
+
+        constexpr Angle operator-() const { return Angle(M_PI_2 - this->value); }
+    private:
+        // only allow construction through literals
+        constexpr CAngle(double value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {}
+
+        constexpr CAngle(Angle value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {}
+};
+
+constexpr bool operator==(Angle lhs, CAngle rhs) { return lhs == Angle(rhs); }
+
 inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
     os << quantity.internal() << " rad";
     return os;
 }
+
+constexpr CAngle operator*(double multiple, CAngle quantity) { return CAngle(multiple * quantity.internal()); }
+
+constexpr CAngle operator*(CAngle quantity, double multiple) { return CAngle(multiple * quantity.internal()); }
+
+constexpr CAngle operator/(CAngle quantity, double multiple) { return CAngle(quantity.internal() / multiple); }
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);
@@ -59,17 +101,21 @@ constexpr Angle operator""_stRot(long double value) { return static_cast<double>
 constexpr Angle operator""_stRot(unsigned long long value) { return static_cast<double>(value) * rot; }
 
 // Compass orientation
-constexpr Angle operator""_cRad(long double value) { return 90_stDeg - Angle(static_cast<double>(value)); }
+constexpr CAngle operator""_cRad(long double value) { return CAngle(static_cast<double>(value)); }
 
-constexpr Angle operator""_cRad(unsigned long long value) { return 90_stDeg - Angle(static_cast<double>(value)); }
+constexpr CAngle operator""_cRad(unsigned long long value) { return CAngle(static_cast<double>(value)); }
 
-constexpr Angle operator""_cDeg(long double value) { return 90_stDeg - static_cast<double>(value) * deg; }
+constexpr CAngle operator""_cDeg(long double value) { return CAngle(static_cast<double>(value) * deg.internal()); }
 
-constexpr Angle operator""_cDeg(unsigned long long value) { return 90_stDeg - static_cast<double>(value) * deg; }
+constexpr CAngle operator""_cDeg(unsigned long long value) {
+    return CAngle(static_cast<double>(value) * deg.internal());
+}
 
-constexpr Angle operator""_cRot(long double value) { return 90_stDeg - static_cast<double>(value) * rot; }
+constexpr CAngle operator""_cRot(long double value) { return CAngle(static_cast<double>(value) * rot.internal()); }
 
-constexpr Angle operator""_cRot(unsigned long long value) { return 90_stDeg - static_cast<double>(value) * rot; }
+constexpr CAngle operator""_cRot(unsigned long long value) {
+    return CAngle(static_cast<double>(value) * rot.internal());
+}
 
 // Angle functions
 namespace units {
