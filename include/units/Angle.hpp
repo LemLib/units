@@ -24,8 +24,23 @@ template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<
 // -15_cDeg == 105_stDeg
 // 15_cDeg == 75_stDeg
 
-// in order to do conversions properly between angles in standard position and compass angles, we need this helper class
-// it can only be constructed through string literals
+/**
+ * @brief DO NOT USE
+ *
+ * this class prevents conversion errors from compass angles to angles in standard position.
+ *
+ * consider the following:
+ * 0_cDeg gets converted to standard position angles internally, so it's converted to 90
+ * -0_cDeg is converted to standard position angles internally, and only afterwards is the
+ * negative applied, so now it equals -90 internally
+ *
+ * This class solves this problem by introducing the CAngle type. You can do things like
+ * negate it, multiply it, etc. without messing up the angle. However, this class can
+ * only be created through string literals, you can't do something like
+ * CAngle angle = 2_cDeg
+ * because the constructor is private. However, you can do
+ * Angle angle = 2_cDeg
+ */
 class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                                std::ratio<0>, std::ratio<0>> {
         // make string literals friends, so they have access to the constructor
@@ -43,7 +58,11 @@ class CAngle : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std:
         // make CAngle able to be implicitly converted to Angle
         constexpr operator Angle() const { return Angle(M_PI_2 - this->value); }
 
+        constexpr Angle operator-(Angle other) const { return Angle(*this) - other; }
+
         constexpr CAngle operator-() const { return CAngle(-this->value); }
+
+        constexpr Angle operator+(Angle other) const { return Angle(*this) + other; }
 
         constexpr CAngle operator+() const { return CAngle(this->value); }
     private:
@@ -64,11 +83,26 @@ inline std::ostream& operator<<(std::ostream& os, const Angle& quantity) {
     return os;
 }
 
+constexpr Angle operator+(Angle lhs, CAngle rhs) { return lhs + Angle(rhs); }
+
+constexpr Angle operator-(Angle lhs, CAngle rhs) { return lhs - Angle(rhs); }
+
 constexpr CAngle operator*(double multiple, CAngle quantity) { return CAngle(multiple * quantity.internal()); }
 
 constexpr CAngle operator*(CAngle quantity, double multiple) { return CAngle(multiple * quantity.internal()); }
 
 constexpr CAngle operator/(CAngle quantity, double multiple) { return CAngle(quantity.internal() / multiple); }
+
+namespace units {
+template <typename T>
+concept isAngle = std::same_as<T, CAngle> || std::same_as<T, Angle> ||
+                  std::same_as<T, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                           std::ratio<0>, std::ratio<0>, std::ratio<0>>>;
+
+template <isAngle Q, isAngle R, isAngle S> constexpr Angle clamp(Q lhs, R lo, S hi) {
+    return Angle(std::clamp(lhs.internal(), lo.internal(), hi.internal()));
+}
+} // namespace units
 
 constexpr Angle rad = Angle(1.0);
 constexpr Angle deg = Angle(M_PI / 180);

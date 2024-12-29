@@ -21,11 +21,9 @@ void initialize() {
                              std::ratio<0>, std::ratio<0>>(1.0);
     a.orientation += 2_rpm2;
     2_rpm2 -= a.orientation;
-    /*
     to_cDeg(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                      std::ratio<0>, std::ratio<0>>(5.0) -
             a.theta() + 5_cDeg);
-    */
     Quantity<std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<0>,
              std::ratio<0>>
         c = Multiplied<Angle, Time>();
@@ -34,11 +32,9 @@ void initialize() {
     Length z = toLinear<Angle>(y, 2_cm);
     static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
                                          std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    /*
     units::clamp(2_cDeg, a.theta(),
                  Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                           std::ratio<0>, std::ratio<0>>(5.0));
-    */
     units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                                     std::ratio<1>, std::ratio<0>, std::ratio<0>>(1.0));
     // check Vector3D overloads
@@ -61,4 +57,15 @@ void angleTests() {
     static_assert(r2i(to_stDeg(2 * 15_cDeg)) == r2i(to_stDeg(60_stDeg)));
     static_assert(r2i(to_stDeg(+0_cDeg)) == r2i(to_stDeg(90_stDeg)));
     static_assert(90_stDeg == +0_cDeg);
+    Angle a = 2_cDeg;
+    Angle b = 2_cDeg + 2_stDeg;
+    Angle c = 2_stDeg - 2_cDeg;
+    Angle d = 2_cDeg + Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
+                                std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0);
+    Angle e = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(5.0) +
+              2_cDeg;
+    units::clamp(2_cDeg, 2_stDeg,
+                 Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
+                          std::ratio<0>, std::ratio<0>>(5.0));
 }
