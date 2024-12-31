@@ -357,6 +357,56 @@ constexpr inline Number from_num(double value) { return Number(value); }
 
 constexpr inline double to_num(Number quantity) { return quantity.internal(); }
 
+constexpr bool operator<=(const Number& lhs, double rhs)
+{
+    return (lhs.internal() <= rhs);
+}
+
+constexpr bool operator>=(const Number& lhs, double rhs)
+{
+    return (lhs.internal() >= rhs);
+}
+
+constexpr bool operator<(const Number& lhs, double rhs)
+{
+    return (lhs.internal() < rhs);
+}
+
+constexpr bool operator>(const Number& lhs, double rhs)
+{
+    return (lhs.internal() > rhs);
+}
+
+constexpr bool operator==(const Number& lhs, double rhs)
+{
+    return (lhs.internal() == rhs);
+}
+
+constexpr bool operator<=(double lhs, const Number& rhs)
+{
+    return (lhs <= rhs.internal());
+}
+
+constexpr bool operator>=(double lhs, const Number& rhs)
+{
+    return (lhs >= rhs.internal());
+}
+
+constexpr bool operator<(double lhs, const Number& rhs)
+{
+    return (lhs < rhs.internal());
+}
+
+constexpr bool operator>(double lhs, const Number& rhs)
+{
+    return (lhs > rhs.internal());
+}
+
+constexpr bool operator==(double lhs, const Number& rhs)
+{
+    return (lhs == rhs.internal());
+}
+
 NEW_UNIT_LITERAL(Number, percent, num / 100)
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
