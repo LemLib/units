@@ -53,32 +53,14 @@ void angleTests() {
     Angle a = 2_cDeg;
 }
 
-void numberComparisonTests() {
-    // ==
-    static_assert(1_num == 1);
-    static_assert(1 == 1_num);
+void numberOperatorTests() {
+    static_assert(1_num + 2 == 3);
+    static_assert(1 + 2_num <= 3);
+    static_assert(1 / 2_num >= 0);
 
-    // !=
-    static_assert(1_num != 2);
-    static_assert(2 != 1_num);
+    Number n = 1_num;
+    n += 2;
 
-    // <
-    static_assert(1_num < 2);
-    static_assert(0 < 1_num);
-
-    // <=
-    static_assert(1_num <= 2);
-    static_assert(1_num <= 1);
-    static_assert(0 <= 1_num);
-    static_assert(1 <= 1_num);
-
-    // >
-    static_assert(2_num > 1);
-    static_assert(2 > 1_num);
-    
-    // >=
-    static_assert(1_num >= 0);
-    static_assert(1_num >= 1);
-    static_assert(2 >= 1_num);
-    static_assert(1 >= 1_num);
+    double d = 1;
+    d *= 2_num;
 }
