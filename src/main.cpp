@@ -52,3 +52,33 @@ void angleTests() {
     static_assert(r2i(to_stDeg(+0_cDeg)) == r2i(to_stDeg(90_stDeg)));
     Angle a = 2_cDeg;
 }
+
+void numberComparisonTests() {
+    // ==
+    static_assert(1_num == 1);
+    static_assert(1 == 1_num);
+
+    // !=
+    static_assert(1_num != 2);
+    static_assert(2 != 1_num);
+
+    // <
+    static_assert(1_num < 2);
+    static_assert(0 < 1_num);
+
+    // <=
+    static_assert(1_num <= 2);
+    static_assert(1_num <= 1);
+    static_assert(0 <= 1_num);
+    static_assert(1 <= 1_num);
+
+    // >
+    static_assert(2_num > 1);
+    static_assert(2 > 1_num);
+    
+    // >=
+    static_assert(1_num >= 0);
+    static_assert(1_num >= 1);
+    static_assert(2 >= 1_num);
+    static_assert(1 >= 1_num);
+}

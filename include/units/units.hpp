@@ -382,6 +382,11 @@ constexpr bool operator==(const Number& lhs, double rhs)
     return (lhs.internal() == rhs);
 }
 
+constexpr bool operator!=(const Number& lhs, double rhs)
+{
+    return (lhs.internal() != rhs);
+}
+
 constexpr bool operator<=(double lhs, const Number& rhs)
 {
     return (lhs <= rhs.internal());
@@ -405,6 +410,11 @@ constexpr bool operator>(double lhs, const Number& rhs)
 constexpr bool operator==(double lhs, const Number& rhs)
 {
     return (lhs == rhs.internal());
+}
+
+constexpr bool operator!=(double lhs, const Number& rhs)
+{
+    return (lhs != rhs.internal());
 }
 
 NEW_UNIT_LITERAL(Number, percent, num / 100)
