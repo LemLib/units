@@ -357,65 +357,25 @@ constexpr inline Number from_num(double value) { return Number(value); }
 
 constexpr inline double to_num(Number quantity) { return quantity.internal(); }
 
-constexpr bool operator<=(const Number& lhs, double rhs)
-{
-    return (lhs.internal() <= rhs);
-}
+#define NEW_NUM_TO_DOUBLE_COMPARISON(op)                                                                             \
+    constexpr bool operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                     \
+    constexpr bool operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
 
-constexpr bool operator>=(const Number& lhs, double rhs)
-{
-    return (lhs.internal() >= rhs);
-}
+NEW_NUM_TO_DOUBLE_COMPARISON(==)
+NEW_NUM_TO_DOUBLE_COMPARISON(!=)
+NEW_NUM_TO_DOUBLE_COMPARISON(<=)
+NEW_NUM_TO_DOUBLE_COMPARISON(>=)
+NEW_NUM_TO_DOUBLE_COMPARISON(<)
+NEW_NUM_TO_DOUBLE_COMPARISON(>)
 
-constexpr bool operator<(const Number& lhs, double rhs)
-{
-    return (lhs.internal() < rhs);
-}
+#define NEW_NUM_AND_DOUBLE_OPERATION(op)                                                                             \
+    constexpr Number operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                     \
+    constexpr Number operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
 
-constexpr bool operator>(const Number& lhs, double rhs)
-{
-    return (lhs.internal() > rhs);
-}
-
-constexpr bool operator==(const Number& lhs, double rhs)
-{
-    return (lhs.internal() == rhs);
-}
-
-constexpr bool operator!=(const Number& lhs, double rhs)
-{
-    return (lhs.internal() != rhs);
-}
-
-constexpr bool operator<=(double lhs, const Number& rhs)
-{
-    return (lhs <= rhs.internal());
-}
-
-constexpr bool operator>=(double lhs, const Number& rhs)
-{
-    return (lhs >= rhs.internal());
-}
-
-constexpr bool operator<(double lhs, const Number& rhs)
-{
-    return (lhs < rhs.internal());
-}
-
-constexpr bool operator>(double lhs, const Number& rhs)
-{
-    return (lhs > rhs.internal());
-}
-
-constexpr bool operator==(double lhs, const Number& rhs)
-{
-    return (lhs == rhs.internal());
-}
-
-constexpr bool operator!=(double lhs, const Number& rhs)
-{
-    return (lhs != rhs.internal());
-}
+NEW_NUM_AND_DOUBLE_OPERATION(+)
+NEW_NUM_AND_DOUBLE_OPERATION(-)
+NEW_NUM_AND_DOUBLE_OPERATION(*)
+NEW_NUM_AND_DOUBLE_OPERATION(/)
 
 NEW_UNIT_LITERAL(Number, percent, num / 100)
 
