@@ -386,6 +386,28 @@ NEW_NUM_AND_DOUBLE_ASSIGNMENT(-)
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(*)
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(/)
 
+constexpr Number& operator++(Number& lhs, int) {
+    lhs += 1;
+    return lhs;
+}
+
+constexpr Number operator++(Number& lhs) {
+    Number copy = lhs;
+    lhs += 1;
+    return copy;
+}
+
+constexpr Number& operator--(Number& lhs, int) {
+    lhs -= 1;
+    return lhs;
+}
+
+constexpr Number operator--(Number& lhs) {
+    Number copy = lhs;
+    lhs -= 1;
+    return copy;
+}
+
 NEW_UNIT_LITERAL(Number, percent, num / 100)
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)

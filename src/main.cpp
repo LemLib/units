@@ -56,9 +56,11 @@ void angleTests() {
 constexpr Number numAssignmentTests() {
     Number n = 1_num; // 1
     n += 2; // 3
-    n -= 2; // 1
-    n *= 2; // 2
-    n /= 2; // 1
+    n--; // 2
+    n -= 3; // -1
+    n *= 2; // -2
+    n /= 2; // -1
+    n++; // 0
     return n;
 }
 
@@ -77,6 +79,6 @@ void numberOperatorTests() {
     static_assert(1 + 2_num <= 3);
     static_assert(1 / 2_num >= 0);
 
-    static_assert(numAssignmentTests() == 1);
+    static_assert(numAssignmentTests() == 0);
     static_assert(doubleAssignmentTests() == 1);
 }
