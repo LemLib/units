@@ -53,14 +53,30 @@ void angleTests() {
     Angle a = 2_cDeg;
 }
 
+constexpr Number numAssignmentTests() {
+    Number n = 1_num; // 1
+    n += 2; // 3
+    n -= 2; // 1
+    n *= 2; // 2
+    n /= 2; // 1
+    return n;
+}
+
+constexpr double doubleAssignmentTests() {
+    double d = 1; // 1
+    d += 2_num; // 3
+    d -= 2_num; // 1
+    d *= 2_num; // 2
+    d /= 2_num; // 1
+    return d;
+}
+
+
 void numberOperatorTests() {
     static_assert(1_num + 2 == 3);
     static_assert(1 + 2_num <= 3);
     static_assert(1 / 2_num >= 0);
 
-    Number n = 1_num;
-    n += 2;
-
-    double d = 1;
-    d *= 2_num;
+    static_assert(numAssignmentTests() == 1);
+    static_assert(doubleAssignmentTests() == 1);
 }
