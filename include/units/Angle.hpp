@@ -82,13 +82,13 @@ class CAngle {
  * implicitly. So, yet another helper class is necessary (hooray)
  *
  */
-class AngleDistance : public Angle {
+class AngleRange : public Angle {
     public:
-        explicit constexpr AngleDistance(double value) : Angle(fabs(value)) {}
+        explicit constexpr AngleRange(double value) : Angle(fabs(value)) {}
 
-        constexpr AngleDistance(Angle value) : Angle(units::abs(value)) {}
+        constexpr AngleRange(Angle value) : Angle(units::abs(value)) {}
 
-        constexpr AngleDistance(CAngle value) : Angle(units::abs(Angle(value) - Angle(M_PI_2))) {}
+        constexpr AngleRange(CAngle value) : Angle(units::abs(Angle(value) - Angle(M_PI_2))) {}
 };
 
 constexpr bool operator==(Angle lhs, CAngle rhs) { return lhs == Angle(rhs); }
