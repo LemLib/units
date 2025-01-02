@@ -54,7 +54,7 @@ constexpr void angleTests() {
 }
 
 constexpr void angleDistanceTests() {
-    // static_assert(r2i(to_stDeg(AngleDistance(-15_cDeg))) == r2i(to_stDeg(AngleDistance(+15_stDeg))));
+    static_assert(r2i(to_stDeg(AngleDistance(-15_cDeg))) == r2i(to_stDeg(AngleDistance(+15_stDeg))));
     Angle a = 2_stDeg + AngleDistance(15_stDeg);
     Angle b = AngleDistance(15_stDeg) + 2_stDeg;
     Angle c = 2_stDeg + AngleDistance(15_cDeg);
