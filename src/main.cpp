@@ -52,3 +52,33 @@ void angleTests() {
     static_assert(r2i(to_stDeg(+0_cDeg)) == r2i(to_stDeg(90_stDeg)));
     Angle a = 2_cDeg;
 }
+
+constexpr Number numAssignmentTests() {
+    Number n = 1_num; // 1
+    n += 2; // 3
+    n--; // 2
+    n -= 3; // -1
+    n *= 2; // -2
+    n /= 2; // -1
+    n++; // 0
+    return n;
+}
+
+constexpr double doubleAssignmentTests() {
+    double d = 1; // 1
+    d += 2_num; // 3
+    d -= 2_num; // 1
+    d *= 2_num; // 2
+    d /= 2_num; // 1
+    return d;
+}
+
+
+void numberOperatorTests() {
+    static_assert(1_num + 2 == 3);
+    static_assert(1 + 2_num <= 3);
+    static_assert(1 / 2_num >= 0);
+
+    static_assert(numAssignmentTests() == 0);
+    static_assert(doubleAssignmentTests() == 1);
+}
