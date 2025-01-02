@@ -45,12 +45,19 @@ void initialize() {
     units::Vector2D<Number> v2e = units::V2Position(2_in, 2_in) / 2_in;
 }
 
-void angleTests() {
+constexpr void angleTests() {
     static_assert(+15_cDeg == 75_stDeg);
     static_assert(to_stDeg(-+15_cDeg) == to_stDeg(105_stDeg));
     static_assert(r2i(to_stDeg(30_cDeg)) == r2i(to_stDeg(60_stDeg)));
     static_assert(r2i(to_stDeg(+0_cDeg)) == r2i(to_stDeg(90_stDeg)));
     Angle a = 2_cDeg;
+}
+
+constexpr void angleDistanceTests() {
+    // static_assert(r2i(to_stDeg(AngleDistance(-15_cDeg))) == r2i(to_stDeg(AngleDistance(+15_stDeg))));
+    Angle a = 2_stDeg + AngleDistance(15_stDeg);
+    Angle b = AngleDistance(15_stDeg) + 2_stDeg;
+    Angle c = 2_stDeg + AngleDistance(15_cDeg);
 }
 
 constexpr Number numAssignmentTests() {
@@ -72,7 +79,6 @@ constexpr double doubleAssignmentTests() {
     d /= 2_num; // 1
     return d;
 }
-
 
 void numberOperatorTests() {
     static_assert(1_num + 2 == 3);
