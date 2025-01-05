@@ -16,7 +16,6 @@ void initialize() {
     units::AccelerationPose a(1_mps2, 2_mps2);
     Number num = Number(1.0);
     num = Number(0.0);
-    a.theta().convert(deg);
     a.orientation = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<-2>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
                              std::ratio<0>, std::ratio<0>>(1.0);
     a.orientation += 2_rpm2;
