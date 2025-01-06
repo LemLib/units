@@ -540,6 +540,10 @@ template <isQuantity Q, isQuantity R> constexpr Q mod(const Q& lhs, const R& rhs
     return Q(std::fmod(lhs.internal(), rhs.internal()));
 }
 
+template <isQuantity Q, isQuantity R> constexpr Q remainder(const Q& lhs, const R& rhs) {
+    return Q(std::remainder(lhs.internal(), rhs.internal()));
+}
+
 template <isQuantity Q1, isQuantity Q2> constexpr Q1 copysign(const Q1& lhs, const Q2& rhs) {
     return Q1(std::copysign(lhs.internal(), rhs.internal()));
 }
