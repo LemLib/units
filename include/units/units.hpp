@@ -324,6 +324,8 @@ class Number : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std:
             : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                        std::ratio<0>, std::ratio<0>>(double(value)) {}
 
+        template <typename T> constexpr explicit operator T() { return T(value); }
+
         constexpr Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                                   std::ratio<0>, std::ratio<0>, std::ratio<0>>
                              value)
