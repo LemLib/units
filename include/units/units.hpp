@@ -130,7 +130,7 @@ void quantityChecker(Quantity<Mass, Length, Time, Current, Angle, Temperature, L
 template <typename Q>
 concept isQuantity = requires(Q q) { quantityChecker(q); };
 
-// Isomorphic concept - used to ensure unit equivalecy
+// Isomorphic concept - used to ensure unit equivalency
 template <typename Q, typename... Quantities>
 concept Isomorphic = ((std::convertible_to<Q, Quantities> && std::convertible_to<Quantities, Q>) && ...);
 
@@ -199,11 +199,15 @@ template <isQuantity Q> inline std::ostream& operator<<(std::ostream& os, const 
     return os;
 }
 
+template <isQuantity Q> constexpr Q operator+(Q rhs) { return rhs; }
+
 template <isQuantity Q, isQuantity R> constexpr Q operator+(Q lhs, R rhs)
     requires Isomorphic<Q, R>
 {
     return Q(lhs.internal() + rhs.internal());
 }
+
+template <isQuantity Q> constexpr Q operator-(Q rhs) { return Q(-rhs.internal()); }
 
 template <isQuantity Q, isQuantity R> constexpr Q operator-(Q lhs, R rhs)
     requires Isomorphic<Q, R>
@@ -292,13 +296,13 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return os;                                                                                                     \
     }                                                                                                                  \
     constexpr inline Name from_##suffix(double value) { return Name(value); }                                          \
+    constexpr inline Name from_##suffix(Number value) { return Name(value.internal()); }                               \
     constexpr inline double to_##suffix(Name quantity) { return quantity.internal(); }
 
 #define NEW_UNIT_LITERAL(Name, suffix, multiple)                                                                       \
     [[maybe_unused]] constexpr Name suffix = multiple;                                                                 \
     constexpr Name operator""_##suffix(long double value) { return static_cast<double>(value) * multiple; }            \
     constexpr Name operator""_##suffix(unsigned long long value) { return static_cast<double>(value) * multiple; }     \
-    constexpr inline Name from_##suffix(double value) { return value * multiple; }                                     \
     constexpr inline Name from_##suffix(Number value) { return value.internal() * multiple; }                          \
     constexpr inline double to_##suffix(Name quantity) { return quantity.convert(multiple); }
 
@@ -312,8 +316,109 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     NEW_UNIT_LITERAL(Name, u##base, base / 1E6)                                                                        \
     NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
 
-NEW_UNIT(Number, num, 0, 0, 0, 0, 0, 0, 0, 0)
-NEW_UNIT_LITERAL(Number, percent, num / 100.0);
+/* Number is a special type, because it can be implicitly converted to and from any arithmetic type */
+class Number : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                               std::ratio<0>, std::ratio<0>> {
+    public:
+        template <typename T> constexpr Number(T value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(double(value)) {}
+
+        template <typename T> constexpr explicit operator T() { return T(value); }
+
+        constexpr Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                  std::ratio<0>, std::ratio<0>, std::ratio<0>>
+                             value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {};
+};
+
+template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                       std::ratio<0>, std::ratio<0>, std::ratio<0>>> {
+        using Named = Number;
+};
+
+[[maybe_unused]] constexpr Number num = Number(1.0);
+
+constexpr Number operator""_num(long double value) {
+    return Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                           std::ratio<0>, std::ratio<0>>(static_cast<double>(value)));
+}
+
+constexpr Number operator""_num(unsigned long long value) {
+    return Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                           std::ratio<0>, std::ratio<0>>(static_cast<double>(value)));
+}
+
+inline std::ostream& operator<<(std::ostream& os, const Number& quantity) {
+    os << quantity.internal() << " " << num;
+    return os;
+}
+
+constexpr inline Number from_num(double value) { return Number(value); }
+
+constexpr inline double to_num(Number quantity) { return quantity.internal(); }
+
+#define NEW_NUM_TO_DOUBLE_COMPARISON(op)                                                                               \
+    constexpr bool operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                             \
+    constexpr bool operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
+
+namespace units_double_ops {
+NEW_NUM_TO_DOUBLE_COMPARISON(==)
+NEW_NUM_TO_DOUBLE_COMPARISON(!=)
+NEW_NUM_TO_DOUBLE_COMPARISON(<=)
+NEW_NUM_TO_DOUBLE_COMPARISON(>=)
+NEW_NUM_TO_DOUBLE_COMPARISON(<)
+NEW_NUM_TO_DOUBLE_COMPARISON(>)
+} // namespace units_double_ops
+
+#define NEW_NUM_AND_DOUBLE_OPERATION(op)                                                                               \
+    constexpr Number operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                           \
+    constexpr Number operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
+
+namespace units_double_ops {
+NEW_NUM_AND_DOUBLE_OPERATION(+)
+NEW_NUM_AND_DOUBLE_OPERATION(-)
+NEW_NUM_AND_DOUBLE_OPERATION(*)
+NEW_NUM_AND_DOUBLE_OPERATION(/)
+} // namespace units_double_ops
+
+#define NEW_NUM_AND_DOUBLE_ASSIGNMENT(op)                                                                              \
+    constexpr void operator op##=(Number& lhs, double rhs) { lhs = lhs.internal() op rhs; }                            \
+    constexpr void operator op##=(double& lhs, Number rhs) { lhs = lhs op rhs.internal(); }
+
+namespace units_double_ops {
+NEW_NUM_AND_DOUBLE_ASSIGNMENT(+)
+NEW_NUM_AND_DOUBLE_ASSIGNMENT(-)
+NEW_NUM_AND_DOUBLE_ASSIGNMENT(*)
+NEW_NUM_AND_DOUBLE_ASSIGNMENT(/)
+} // namespace units_double_ops
+
+namespace units_double_ops {
+constexpr Number& operator++(Number& lhs, int) {
+    lhs += 1;
+    return lhs;
+}
+
+constexpr Number operator++(Number& lhs) {
+    Number copy = lhs;
+    lhs += 1;
+    return copy;
+}
+
+constexpr Number& operator--(Number& lhs, int) {
+    lhs -= 1;
+    return lhs;
+}
+
+constexpr Number operator--(Number& lhs) {
+    Number copy = lhs;
+    lhs -= 1;
+    return copy;
+}
+} // namespace units_double_ops
+
+NEW_UNIT_LITERAL(Number, percent, num / 100)
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
 NEW_UNIT_LITERAL(Mass, g, kg / 1000)
@@ -407,6 +512,12 @@ template <isQuantity Q, isQuantity R> constexpr Q min(const Q& lhs, const R& rhs
     return (lhs < rhs ? lhs : rhs);
 }
 
+template <isQuantity Q> constexpr Number sgn(const Q& lhs) {
+    if (lhs.internal() > 0) return 1;
+    if (lhs.internal() < 0) return -1;
+    return 0;
+}
+
 template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> constexpr S pow(const Q& lhs) {
     return S(std::pow(lhs.internal(), R));
 }
@@ -439,11 +550,13 @@ template <isQuantity Q, isQuantity R> constexpr Q mod(const Q& lhs, const R& rhs
     return Q(std::fmod(lhs.internal(), rhs.internal()));
 }
 
+template <isQuantity Q, isQuantity R> constexpr Q remainder(const Q& lhs, const R& rhs) {
+    return Q(std::remainder(lhs.internal(), rhs.internal()));
+}
+
 template <isQuantity Q1, isQuantity Q2> constexpr Q1 copysign(const Q1& lhs, const Q2& rhs) {
     return Q1(std::copysign(lhs.internal(), rhs.internal()));
 }
-
-template <isQuantity Q> constexpr int sgn(const Q& lhs) { return lhs.internal() < 0 ? -1 : 1; }
 
 template <isQuantity Q> constexpr bool signbit(const Q& lhs) { return std::signbit(lhs.internal()); }
 
