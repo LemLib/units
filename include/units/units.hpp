@@ -4,6 +4,7 @@
 #include <cmath>
 #include <ratio>
 #include <iostream>
+#include <type_traits>
 #include <utility>
 #include <algorithm>
 
@@ -114,6 +115,21 @@ class Quantity {
         }
 };
 
+/* Number is a special type, because it can be implicitly converted to and from any arithmetic type */
+class Number : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                               std::ratio<0>, std::ratio<0>> {
+    public:
+        template <typename T> constexpr Number(T value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(double(value)) {}
+
+        constexpr Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                                  std::ratio<0>, std::ratio<0>, std::ratio<0>>
+                             value)
+            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
+                       std::ratio<0>, std::ratio<0>>(value) {};
+};
+
 template <typename Q> struct LookupName {
         using Named = Q;
 };
@@ -221,12 +237,18 @@ template <isQuantity Q> constexpr Q operator*(double multiple, Q quantity) { ret
 
 template <isQuantity Q> constexpr Q operator/(Q quantity, double divisor) { return Q(quantity.internal() / divisor); }
 
-template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Multiplied<Q1, Q2>> Q3 constexpr operator*(Q1 lhs, Q2 rhs) {
-    return Q3(lhs.internal() * rhs.internal());
+template <isQuantity Q1, isQuantity Q2>
+std::conditional_t<std::is_same_v<Number, Multiplied<Q1, Q2>>, double, Multiplied<Q1, Q2>> constexpr operator*(Q1 lhs,
+                                                                                                               Q2 rhs) {
+    return std::conditional_t<std::is_same_v<Number, Multiplied<Q1, Q2>>, double, Multiplied<Q1, Q2>>(lhs.internal() *
+                                                                                                      rhs.internal());
 }
 
-template <isQuantity Q1, isQuantity Q2, isQuantity Q3 = Divided<Q1, Q2>> Q3 constexpr operator/(Q1 lhs, Q2 rhs) {
-    return Q3(lhs.internal() / rhs.internal());
+template <isQuantity Q1, isQuantity Q2>
+std::conditional_t<std::is_same_v<Number, Multiplied<Q1, Q2>>, double, Divided<Q1, Q2>> constexpr operator/(Q1 lhs,
+                                                                                                            Q2 rhs) {
+    return std::conditional_t<std::is_same_v<Number, Multiplied<Q1, Q2>>, double, Divided<Q1, Q2>>(lhs.internal() /
+                                                                                                   rhs.internal());
 }
 
 template <isQuantity Q, isQuantity R> constexpr bool operator==(const Q& lhs, const R& rhs)
@@ -315,23 +337,6 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
     NEW_UNIT_LITERAL(Name, m##base, base / 1E3)                                                                        \
     NEW_UNIT_LITERAL(Name, u##base, base / 1E6)                                                                        \
     NEW_UNIT_LITERAL(Name, n##base, base / 1E9)
-
-/* Number is a special type, because it can be implicitly converted to and from any arithmetic type */
-class Number : public Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                               std::ratio<0>, std::ratio<0>> {
-    public:
-        template <typename T> constexpr Number(T value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(double(value)) {}
-
-        template <typename T> constexpr explicit operator T() { return T(value); }
-
-        constexpr Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                                  std::ratio<0>, std::ratio<0>, std::ratio<0>>
-                             value)
-            : Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                       std::ratio<0>, std::ratio<0>>(value) {};
-};
 
 template <> struct LookupName<Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                                        std::ratio<0>, std::ratio<0>, std::ratio<0>>> {
