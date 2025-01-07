@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <utility>
 #include <algorithm>
+#include <format>
 
 // define M_PI if not already defined
 #ifndef M_PI
@@ -313,6 +314,11 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
     }                                                                                                                  \
+    template <> struct std::formatter<Name> : std::formatter<double> {                                                 \
+            auto format(const Name& quantity, std::format_context& ctx) const {                                        \
+                return std::format_to(ctx.out(), "{}_##suffix", quantity.internal());                                  \
+            }                                                                                                          \
+    };                                                                                                                 \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
@@ -354,6 +360,12 @@ constexpr Number operator""_num(unsigned long long value) {
     return Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                            std::ratio<0>, std::ratio<0>>(static_cast<double>(value)));
 }
+
+template <> struct std::formatter<Number> : std::formatter<double> {
+        auto format(const Number& quantity, std::format_context& ctx) const {
+            return std::format_to(ctx.out(), "{}", quantity.internal());
+        }
+};
 
 inline std::ostream& operator<<(std::ostream& os, const Number& quantity) {
     os << quantity.internal() << " " << num;
