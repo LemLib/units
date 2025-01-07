@@ -60,6 +60,7 @@ constexpr void angleRangeTests() {
 }
 
 constexpr Number numAssignmentTests() {
+    using namespace units_double_ops;
     Number n = 1_num; // 1
     n += 2; // 3
     n--; // 2
@@ -71,6 +72,7 @@ constexpr Number numAssignmentTests() {
 }
 
 constexpr double doubleAssignmentTests() {
+    using namespace units_double_ops;
     double d = 1; // 1
     d += 2_num; // 3
     d -= 2_num; // 1
@@ -80,6 +82,7 @@ constexpr double doubleAssignmentTests() {
 }
 
 void numberOperatorTests() {
+    using namespace units_double_ops;
     static_assert(1_num + 2 == 3);
     static_assert(1 + 2_num <= 3);
     static_assert(1 / 2_num >= 0);

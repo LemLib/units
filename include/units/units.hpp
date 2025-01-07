@@ -363,31 +363,38 @@ constexpr inline double to_num(Number quantity) { return quantity.internal(); }
     constexpr bool operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                             \
     constexpr bool operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
 
+namespace units_double_ops {
 NEW_NUM_TO_DOUBLE_COMPARISON(==)
 NEW_NUM_TO_DOUBLE_COMPARISON(!=)
 NEW_NUM_TO_DOUBLE_COMPARISON(<=)
 NEW_NUM_TO_DOUBLE_COMPARISON(>=)
 NEW_NUM_TO_DOUBLE_COMPARISON(<)
 NEW_NUM_TO_DOUBLE_COMPARISON(>)
+} // namespace units_double_ops
 
 #define NEW_NUM_AND_DOUBLE_OPERATION(op)                                                                               \
     constexpr Number operator op(Number lhs, double rhs) { return (lhs.internal() op rhs); }                           \
     constexpr Number operator op(double lhs, Number rhs) { return (lhs op rhs.internal()); }
 
+namespace units_double_ops {
 NEW_NUM_AND_DOUBLE_OPERATION(+)
 NEW_NUM_AND_DOUBLE_OPERATION(-)
 NEW_NUM_AND_DOUBLE_OPERATION(*)
 NEW_NUM_AND_DOUBLE_OPERATION(/)
+} // namespace units_double_ops
 
 #define NEW_NUM_AND_DOUBLE_ASSIGNMENT(op)                                                                              \
     constexpr void operator op##=(Number& lhs, double rhs) { lhs = lhs.internal() op rhs; }                            \
     constexpr void operator op##=(double& lhs, Number rhs) { lhs = lhs op rhs.internal(); }
 
+namespace units_double_ops {
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(+)
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(-)
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(*)
 NEW_NUM_AND_DOUBLE_ASSIGNMENT(/)
+} // namespace units_double_ops
 
+namespace units_double_ops {
 constexpr Number& operator++(Number& lhs, int) {
     lhs += 1;
     return lhs;
@@ -409,6 +416,7 @@ constexpr Number operator--(Number& lhs) {
     lhs -= 1;
     return copy;
 }
+} // namespace units_double_ops
 
 NEW_UNIT_LITERAL(Number, percent, num / 100)
 
