@@ -586,6 +586,8 @@ template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexp
     return lhs * lhs * lhs;
 }
 
+template <int R> constexpr double root(double lhs) { return std::pow(lhs, 1.0 / R); }
+
 template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
     return S(std::pow(lhs.internal(), 1.0 / R));
 }
