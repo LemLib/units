@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <utility>
 #include <algorithm>
+#include <format>
 
 // define M_PI if not already defined
 #ifndef M_PI
@@ -183,6 +184,38 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
+template <isQuantity Q> struct std::formatter<Q> : std::formatter<double> {
+        auto format(const Q& quantity, std::format_context& ctx) const {
+            constinit static std::array<std::pair<intmax_t, intmax_t>, 8> dims {{
+                {Q::mass::num, Q::mass::den},
+                {Q::length::num, Q::length::den},
+                {Q::time::num, Q::time::den},
+                {Q::current::num, Q::current::den},
+                {Q::angle::num, Q::angle::den},
+                {Q::temperature::num, Q::temperature::den},
+                {Q::luminosity::num, Q::luminosity::den},
+                {Q::moles::num, Q::moles::den},
+            }};
+            std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
+
+            auto out = ctx.out();
+
+            // Format the quantity value
+            out = std::formatter<double>::format(quantity.internal(), ctx);
+
+            // Add dimensions and prefixes
+            for (size_t i = 0; i != 8; i++) {
+                if (dims[i].first != 0) {
+                    out = std::format_to(out, "{}", prefixes[i]);
+                    if (dims[i].first != 1 || dims[i].second != 1) { out = std::format_to(out, "^{}", dims[i].first); }
+                    if (dims[i].second != 1) { out = std::format_to(out, "/{}", dims[i].second); }
+                }
+            }
+
+            return out;
+        }
+};
+
 inline void unit_printer_helper(std::ostream& os, double quantity,
                                 const std::array<std::pair<intmax_t, intmax_t>, 8>& dims) {
     static constinit std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
@@ -313,6 +346,12 @@ template <isQuantity Q, isQuantity R> constexpr bool operator>(const Q& lhs, con
         return Name(Quantity<std::ratio<m>, std::ratio<l>, std::ratio<t>, std::ratio<i>, std::ratio<a>, std::ratio<o>, \
                              std::ratio<j>, std::ratio<n>>(static_cast<double>(value)));                               \
     }                                                                                                                  \
+    template <> struct std::formatter<Name> : std::formatter<double> {                                                 \
+            auto format(const Name& number, std::format_context& ctx) const {                                          \
+                auto formatted_double = std::formatter<double>::format(number.internal(), ctx);                        \
+                return std::format_to(formatted_double, "_" #suffix);                                                  \
+            }                                                                                                          \
+    };                                                                                                                 \
     inline std::ostream& operator<<(std::ostream& os, const Name& quantity) {                                          \
         os << quantity.internal() << " " << #suffix;                                                                   \
         return os;                                                                                                     \
@@ -354,6 +393,12 @@ constexpr Number operator""_num(unsigned long long value) {
     return Number(Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
                            std::ratio<0>, std::ratio<0>>(static_cast<double>(value)));
 }
+
+template <> struct std::formatter<Number> : std::formatter<double> {
+        auto format(const Number& number, std::format_context& ctx) const {
+            return std::formatter<double>::format(number.internal(), ctx);
+        }
+};
 
 inline std::ostream& operator<<(std::ostream& os, const Number& quantity) {
     os << quantity.internal() << " " << num;
@@ -598,12 +643,14 @@ template <isQuantity Q, isQuantity R> constexpr Q round(const Q& lhs, const R& r
 
 // Convert an angular unit `Q` to a linear unit correctly;
 // mostly useful for velocities
-template <isQuantity Q> Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
-                                 typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>
-toLinear(Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle,
-                  typename Q::temperature, typename Q::luminosity, typename Q::moles>
-             angular,
-         Length diameter) {
+template <isQuantity Q>
+Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length,
+         typename Q::temperature, typename Q::luminosity,
+         typename Q::moles> constexpr toLinear(Quantity<typename Q::mass, typename Q::length, typename Q::time,
+                                                        typename Q::current, typename Q::angle, typename Q::temperature,
+                                                        typename Q::luminosity, typename Q::moles>
+                                                   angular,
+                                               Length diameter) {
     return unit_cast<Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
                               typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>>(
         angular * (diameter / 2.0));
@@ -611,12 +658,15 @@ toLinear(Quantity<typename Q::mass, typename Q::length, typename Q::time, typena
 
 // Convert an linear unit `Q` to a angular unit correctly;
 // mostly useful for velocities
-template <isQuantity Q> Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
-                                 typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>
-toAngular(Quantity<typename Q::mass, typename Q::length, typename Q::time, typename Q::current, typename Q::angle,
-                   typename Q::temperature, typename Q::luminosity, typename Q::moles>
-              linear,
-          Length diameter) {
+template <isQuantity Q>
+Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current, typename Q::length,
+         typename Q::temperature, typename Q::luminosity,
+         typename Q::moles> constexpr toAngular(Quantity<typename Q::mass, typename Q::length, typename Q::time,
+                                                         typename Q::current, typename Q::angle,
+                                                         typename Q::temperature, typename Q::luminosity,
+                                                         typename Q::moles>
+                                                    linear,
+                                                Length diameter) {
     return unit_cast<Quantity<typename Q::mass, typename Q::angle, typename Q::time, typename Q::current,
                               typename Q::length, typename Q::temperature, typename Q::luminosity, typename Q::moles>>(
         linear / (diameter / 2.0));
