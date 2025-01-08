@@ -594,9 +594,7 @@ template <isQuantity Q, isQuantity R> constexpr Q hypot(const Q& lhs, const R& r
     return Q(std::hypot(lhs.internal(), rhs.internal()));
 }
 
-template <isQuantity Q, isQuantity R> constexpr Q mod(const Q& lhs, const R& rhs)
-    requires Isomorphic<Q, R>
-{
+template <isQuantity Q, isQuantity R> constexpr Q mod(const Q& lhs, const R& rhs) {
     return Q(std::fmod(lhs.internal(), rhs.internal()));
 }
 
