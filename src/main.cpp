@@ -13,6 +13,8 @@ void initialize() {
     std::cout << std::format("{:.2f}", 1.2345) << std::endl;
     std::cout << units::pow<5>(505_cm) * 15_celsius << std::endl;
     std::cout << std::format("{:.2f}", units::pow<5>(505_cm) * 15_celsius) << std::endl;
+    Number a(2.123);
+    std::cout << std::format("{:.2f}", a) << std::endl;
 }
 
 constexpr void miscTests() {

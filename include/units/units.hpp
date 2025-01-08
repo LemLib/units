@@ -184,18 +184,7 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
-template <isQuantity Q>
-    requires(!std::is_same_v<Named<Q>, Q>)
-struct std::formatter<Q> : std::formatter<double> {
-        auto format(const Q& quantity, std::format_context& ctx) const {
-            // return std::format_to(ctx.out(), "{}", quantity.internal());
-            return std::formatter<Named<Q>>::format(quantity, ctx);
-        }
-};
-
-template <isQuantity Q>
-    requires std::is_same_v<Named<Q>, Q>
-struct std::formatter<Q> : std::formatter<double> {
+template <isQuantity Q> struct std::formatter<Q> : std::formatter<double> {
         auto format(const Q& quantity, std::format_context& ctx) const {
             constinit static std::array<std::pair<intmax_t, intmax_t>, 8> dims {{
                 {Q::mass::num, Q::mass::den},
@@ -406,8 +395,8 @@ constexpr Number operator""_num(unsigned long long value) {
 }
 
 template <> struct std::formatter<Number> : std::formatter<double> {
-        auto format(const Number& quantity, std::format_context& ctx) const {
-            return std::format_to(ctx.out(), "{}", quantity.internal());
+        auto format(const Number& number, std::format_context& ctx) const {
+            return std::formatter<double>::format(number.internal(), ctx);
         }
 };
 
