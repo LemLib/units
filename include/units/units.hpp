@@ -592,6 +592,8 @@ template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexp
     return S(std::pow(lhs.internal(), 1.0 / R));
 }
 
+constexpr double sqrt(double lhs) { return std::sqrt(lhs); }
+
 template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<2>>> constexpr S sqrt(const Q& lhs) { return root<2>(lhs); }
 
 template <isQuantity Q, isQuantity S = Rooted<Q, std::ratio<3>>> constexpr S cbrt(const Q& lhs) { return root<3>(lhs); }
