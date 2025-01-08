@@ -574,8 +574,10 @@ template <int R, isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<R>>> c
     return S(std::pow(lhs.internal(), R));
 }
 
+constexpr double square(double lhs) { return lhs * lhs; }
+
 template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexpr S square(const Q& lhs) {
-    return pow<2>(lhs);
+    return lhs * lhs;
 }
 
 template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
