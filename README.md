@@ -17,6 +17,7 @@ This project is licensed under the MIT license. Check [LICENSE](https://github.c
  - [X] Adjustments for using temperatures in Kelvin, Rankine, Celsius, or Fahrenheit
  - [X] 2D QUnit vectors & poses
  - [X] 3D vectors
+ - [X] `std::format` support
  - [ ] N-dimensional vectors (potentially)
  - [ ] QUnit Matrices (potentially)
  
