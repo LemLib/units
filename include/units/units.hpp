@@ -580,8 +580,10 @@ template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<2>>> constexp
     return lhs * lhs;
 }
 
+constexpr double cube(double lhs) { return lhs * lhs * lhs; }
+
 template <isQuantity Q, isQuantity S = Exponentiated<Q, std::ratio<3>>> constexpr S cube(const Q& lhs) {
-    return pow<3>(lhs);
+    return lhs * lhs * lhs;
 }
 
 template <int R, isQuantity Q, isQuantity S = Rooted<Q, std::ratio<R>>> constexpr S root(const Q& lhs) {
