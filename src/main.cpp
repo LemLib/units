@@ -11,6 +11,8 @@ void initialize() {
     std::cout << std::format("{:.2f}", 180_stDeg) << std::endl; // should output 3.14_stRad
     std::cout << std::format("{:.2f}", 0_celsius) << std::endl; // should output 273.15
     std::cout << std::format("{:.2f}", 1.2345) << std::endl;
+    std::cout << units::pow<5>(505_cm) * 15_celsius << std::endl;
+    std::cout << std::format("{:.2f}", units::pow<5>(505_cm) * 15_celsius) << std::endl;
 }
 
 constexpr void miscTests() {

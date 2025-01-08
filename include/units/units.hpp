@@ -184,6 +184,49 @@ template <isQuantity Q, typename quotient> using Rooted = Named<
              std::ratio_divide<typename Q::angle, quotient>, std::ratio_divide<typename Q::temperature, quotient>,
              std::ratio_divide<typename Q::luminosity, quotient>, std::ratio_divide<typename Q::moles, quotient>>>;
 
+template <isQuantity Q>
+    requires(!std::is_same_v<Named<Q>, Q>)
+struct std::formatter<Q> : std::formatter<double> {
+        auto format(const Q& quantity, std::format_context& ctx) const {
+            // return std::format_to(ctx.out(), "{}", quantity.internal());
+            return std::formatter<Named<Q>>::format(quantity, ctx);
+        }
+};
+
+template <isQuantity Q>
+    requires std::is_same_v<Named<Q>, Q>
+struct std::formatter<Q> : std::formatter<double> {
+        auto format(const Q& quantity, std::format_context& ctx) const {
+            constinit static std::array<std::pair<intmax_t, intmax_t>, 8> dims {{
+                {Q::mass::num, Q::mass::den},
+                {Q::length::num, Q::length::den},
+                {Q::time::num, Q::time::den},
+                {Q::current::num, Q::current::den},
+                {Q::angle::num, Q::angle::den},
+                {Q::temperature::num, Q::temperature::den},
+                {Q::luminosity::num, Q::luminosity::den},
+                {Q::moles::num, Q::moles::den},
+            }};
+            std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
+
+            auto out = ctx.out();
+
+            // Format the quantity value
+            out = std::formatter<double>::format(quantity.internal(), ctx);
+
+            // Add dimensions and prefixes
+            for (size_t i = 0; i != 8; i++) {
+                if (dims[i].first != 0) {
+                    out = std::format_to(out, "{}", prefixes[i]);
+                    if (dims[i].first != 1 || dims[i].second != 1) { out = std::format_to(out, "^{}", dims[i].first); }
+                    if (dims[i].second != 1) { out = std::format_to(out, "/{}", dims[i].second); }
+                }
+            }
+
+            return out;
+        }
+};
+
 inline void unit_printer_helper(std::ostream& os, double quantity,
                                 const std::array<std::pair<intmax_t, intmax_t>, 8>& dims) {
     static constinit std::array<const char*, 8> prefixes {"_kg", "_m", "_s", "_A", "_rad", "_K", "_cd", "_mol"};
