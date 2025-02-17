@@ -2,7 +2,6 @@
 
 #include "units/Angle.hpp"
 
-namespace units {
 /**
  * @class Vector2D
  *
@@ -43,8 +42,8 @@ template <isQuantity T> class Vector2D {
          */
         constexpr static Vector2D fromPolar(Angle t, T m) {
             m = abs(m);
-            t = constrainAngle360(t);
-            return Vector2D<T>(m * cos(t), m * sin(t));
+            t = units::constrainAngle360(t);
+            return Vector2D<T>(m * units::cos(t), m * units::sin(t));
         }
 
         /**
@@ -277,9 +276,30 @@ constexpr Vector2D<Q3> operator*(Q1 lhs, const Vector2D<Q2>& rhs) {
  */
 template <isQuantity Q> constexpr Vector2D<Q> operator*(double lhs, const Vector2D<Q>& rhs) { return rhs * lhs; }
 
+namespace std {
+template <typename T> struct formatter<Vector2D<T>> : formatter<T> {
+        // Optionally parse format specifiers for T
+        constexpr auto parse(auto& ctx) { return formatter<T>::parse(ctx); }
+
+        auto format(const Vector2D<T>& vector, format_context& ctx) const {
+            auto it = ctx.out();
+            it = format_to(it, "(");
+
+            // Format vector.x using the base formatter<T>
+            it = static_cast<const formatter<T>*>(this)->format(vector.x, ctx);
+            it = format_to(it, ", ");
+
+            // Format vector.y using the base formatter<T>
+            it = static_cast<const formatter<T>*>(this)->format(vector.y, ctx);
+            it = format_to(it, ")");
+
+            return it;
+        }
+};
+} // namespace std
+
 // define some common vector types
 typedef Vector2D<Length> V2Position;
 typedef Vector2D<LinearVelocity> V2Velocity;
 typedef Vector2D<LinearAcceleration> V2Acceleration;
 typedef Vector2D<Force> V2Force;
-} // namespace units
