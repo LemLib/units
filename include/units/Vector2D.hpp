@@ -2,6 +2,8 @@
 
 #include "units/Angle.hpp"
 
+namespace units {
+
 /**
  * @class Vector2D
  *
@@ -276,12 +278,19 @@ constexpr Vector2D<Q3> operator*(Q1 lhs, const Vector2D<Q2>& rhs) {
  */
 template <isQuantity Q> constexpr Vector2D<Q> operator*(double lhs, const Vector2D<Q>& rhs) { return rhs * lhs; }
 
-namespace std {
-template <typename T> struct formatter<Vector2D<T>> : formatter<T> {
+// define some common vector types
+typedef Vector2D<Length> V2Position;
+typedef Vector2D<LinearVelocity> V2Velocity;
+typedef Vector2D<LinearAcceleration> V2Acceleration;
+typedef Vector2D<Force> V2Force;
+
+} // namespace units
+
+template <typename T> struct std::formatter<units::Vector2D<T>> : std::formatter<T> {
         // Optionally parse format specifiers for T
         constexpr auto parse(auto& ctx) { return formatter<T>::parse(ctx); }
 
-        auto format(const Vector2D<T>& vector, format_context& ctx) const {
+        auto format(const units::Vector2D<T>& vector, format_context& ctx) const {
             auto it = ctx.out();
             it = format_to(it, "(");
 
@@ -296,10 +305,3 @@ template <typename T> struct formatter<Vector2D<T>> : formatter<T> {
             return it;
         }
 };
-} // namespace std
-
-// define some common vector types
-typedef Vector2D<Length> V2Position;
-typedef Vector2D<LinearVelocity> V2Velocity;
-typedef Vector2D<LinearAcceleration> V2Acceleration;
-typedef Vector2D<Force> V2Force;

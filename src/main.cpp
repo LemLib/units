@@ -15,7 +15,7 @@ void initialize() {
     std::cout << std::format("{:.2f}", units::pow<5>(505_cm) * 15_celsius) << std::endl;
     Number a(2.123);
     std::cout << std::format("{:.2f}", a) << std::endl;
-    Vector2D<Length> v2a = V2Position(2_in, 2_in) / 2;
+    units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
     std::cout << std::format("{}", v2a) << std::endl;
 }
 
@@ -50,11 +50,11 @@ constexpr void v3dTests() {
 
 constexpr void v2dTests() {
     // check Vector2D overloads
-    Vector2D<Length> v2a = V2Position(2_in, 2_in) / 2;
-    Vector2D<Length> v2b = 2 * V2Position(2_in, 2_in) * 2;
-    Vector2D<Area> v2c = 2_in * V2Position(2_in, 2_in);
-    Vector2D<Area> v2d = V2Position(2_in, 2_in) * 2_in;
-    Vector2D<Number> v2e = V2Position(2_in, 2_in) / 2_in;
+    units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
+    units::Vector2D<Length> v2b = 2 * units::V2Position(2_in, 2_in) * 2;
+    units::Vector2D<Area> v2c = 2_in * units::V2Position(2_in, 2_in);
+    units::Vector2D<Area> v2d = units::V2Position(2_in, 2_in) * 2_in;
+    units::Vector2D<Number> v2e = units::V2Position(2_in, 2_in) / 2_in;
 }
 
 constexpr void angleTests() {
