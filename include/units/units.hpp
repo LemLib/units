@@ -9,7 +9,6 @@
 #include <type_traits>
 #include <utility>
 
-
 // define M_PI if not already defined
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -56,6 +55,15 @@ class Quantity {
                           Luminosity,
                           Moles>;
 
+    using Dimensionless = Quantity<std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>,
+                                   std::ratio<0>>;
+
     /**
      * @brief construct a new Quantity object
      *
@@ -70,7 +78,18 @@ class Quantity {
      * @param value the value to initialize the quantity with
      */
     explicit constexpr Quantity(double value)
+        requires(!std::is_same_v<Self, Dimensionless>)
         : value(value) {}
+
+    constexpr Quantity(double value)
+        requires std::is_same_v<Self, Dimensionless>
+        : value(value) {}
+
+    constexpr operator double()
+        requires std::is_same_v<Self, Dimensionless>
+    {
+        return value;
+    }
 
     /**
      * @brief construct a new Quantity object
@@ -104,6 +123,12 @@ class Quantity {
         value += other.value;
     }
 
+    constexpr void operator+=(double other)
+        requires std::is_same_v<Self, Dimensionless>
+    {
+        value += other;
+    }
+
     /**
      * @brief set the value of this quantity to its current value minus another
      * quantity
@@ -112,6 +137,12 @@ class Quantity {
      */
     constexpr void operator-=(Self other) {
         value -= other.value;
+    }
+
+    constexpr void operator-=(double other)
+        requires std::is_same_v<Self, Dimensionless>
+    {
+        value -= other;
     }
 
     /**
@@ -123,6 +154,12 @@ class Quantity {
         value *= multiple;
     }
 
+    constexpr void operator*=(double other)
+        requires std::is_same_v<Self, Dimensionless>
+    {
+        value *= other;
+    }
+
     /**
      * @brief set the value of this quantity to its current value divided by a
      * double
@@ -131,6 +168,12 @@ class Quantity {
      */
     constexpr void operator/=(double dividend) {
         value /= dividend;
+    }
+
+    constexpr void operator/=(double other)
+        requires std::is_same_v<Self, Dimensionless>
+    {
+        value /= other;
     }
 
     /**
@@ -165,8 +208,7 @@ class Number : public Quantity<std::ratio<0>,
                                std::ratio<0>,
                                std::ratio<0>> {
   public:
-    template<typename T>
-    constexpr Number(T value)
+    constexpr Number(double number)
         : Quantity<std::ratio<0>,
                    std::ratio<0>,
                    std::ratio<0>,
@@ -174,24 +216,7 @@ class Number : public Quantity<std::ratio<0>,
                    std::ratio<0>,
                    std::ratio<0>,
                    std::ratio<0>,
-                   std::ratio<0>>(double(value)) {}
-
-    constexpr Number(Quantity<std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>,
-                              std::ratio<0>> value)
-        : Quantity<std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>,
-                   std::ratio<0>>(value) {};
+                   std::ratio<0>>(number) {}
 };
 
 template<typename Q>
@@ -590,124 +615,6 @@ struct LookupName<Quantity<std::ratio<0>,
                            std::ratio<0>>> {
     using Named = Number;
 };
-
-[[maybe_unused]]
-constexpr Number num = Number(1.0);
-
-constexpr Number operator""_num(long double value) {
-    return Number(Quantity<std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>>(static_cast<double>(value)));
-}
-
-constexpr Number operator""_num(unsigned long long value) {
-    return Number(Quantity<std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>,
-                           std::ratio<0>>(static_cast<double>(value)));
-}
-
-template<>
-struct std::formatter<Number> : std::formatter<double> {
-    auto format(const Number& number, std::format_context& ctx) const {
-        return std::formatter<double>::format(number.internal(), ctx);
-    }
-};
-
-inline std::ostream& operator<<(std::ostream& os, const Number& quantity) {
-    os << quantity.internal() << " " << num;
-    return os;
-}
-
-inline constexpr Number from_num(double value) {
-    return Number(value);
-}
-
-inline constexpr double to_num(Number quantity) {
-    return quantity.internal();
-}
-
-#define NEW_NUM_TO_DOUBLE_COMPARISON(op)                 \
-    constexpr bool operator op(Number lhs, double rhs) { \
-        return (lhs.internal() op rhs);                  \
-    }                                                    \
-    constexpr bool operator op(double lhs, Number rhs) { \
-        return (lhs op rhs.internal());                  \
-    }
-
-namespace units_double_ops {
-NEW_NUM_TO_DOUBLE_COMPARISON(==)
-NEW_NUM_TO_DOUBLE_COMPARISON(!=)
-NEW_NUM_TO_DOUBLE_COMPARISON(<=)
-NEW_NUM_TO_DOUBLE_COMPARISON(>=)
-NEW_NUM_TO_DOUBLE_COMPARISON(<)
-NEW_NUM_TO_DOUBLE_COMPARISON(>)
-} // namespace units_double_ops
-
-#define NEW_NUM_AND_DOUBLE_OPERATION(op)                   \
-    constexpr Number operator op(Number lhs, double rhs) { \
-        return (lhs.internal() op rhs);                    \
-    }                                                      \
-    constexpr Number operator op(double lhs, Number rhs) { \
-        return (lhs op rhs.internal());                    \
-    }
-
-namespace units_double_ops {
-NEW_NUM_AND_DOUBLE_OPERATION(+)
-NEW_NUM_AND_DOUBLE_OPERATION(-)
-NEW_NUM_AND_DOUBLE_OPERATION(*)
-NEW_NUM_AND_DOUBLE_OPERATION(/)
-} // namespace units_double_ops
-
-#define NEW_NUM_AND_DOUBLE_ASSIGNMENT(op)                    \
-    constexpr void operator op##=(Number& lhs, double rhs) { \
-        lhs = lhs.internal() op rhs;                         \
-    }                                                        \
-    constexpr void operator op##=(double& lhs, Number rhs) { \
-        lhs = lhs op rhs.internal();                         \
-    }
-
-namespace units_double_ops {
-NEW_NUM_AND_DOUBLE_ASSIGNMENT(+)
-NEW_NUM_AND_DOUBLE_ASSIGNMENT(-)
-NEW_NUM_AND_DOUBLE_ASSIGNMENT(*)
-NEW_NUM_AND_DOUBLE_ASSIGNMENT(/)
-} // namespace units_double_ops
-
-namespace units_double_ops {
-constexpr Number& operator++(Number& lhs, int) {
-    lhs += 1;
-    return lhs;
-}
-
-constexpr Number operator++(Number& lhs) {
-    Number copy = lhs;
-    lhs += 1;
-    return copy;
-}
-
-constexpr Number& operator--(Number& lhs, int) {
-    lhs -= 1;
-    return lhs;
-}
-
-constexpr Number operator--(Number& lhs) {
-    Number copy = lhs;
-    lhs -= 1;
-    return copy;
-}
-} // namespace units_double_ops
-
-NEW_UNIT_LITERAL(Number, percent, num / 100)
 
 NEW_UNIT(Mass, kg, 1, 0, 0, 0, 0, 0, 0, 0)
 NEW_UNIT_LITERAL(Mass, g, kg / 1000)

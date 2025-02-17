@@ -23,9 +23,9 @@ void initialize() {
     std::cout << std::format("{:.2f}", a) << std::endl;
     units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
     std::cout << std::format("{}", v2a) << std::endl;
-    units::max(2, 2_num);
-    auto ab = 2_in;
-    ab *= 2_num;
+    units::max(2, 2);
+    Length ab = 2_in;
+    ab *= a;
 }
 
 constexpr void miscTests() {
@@ -108,35 +108,10 @@ constexpr void angleRangeTests() {
 }
 
 constexpr Number numAssignmentTests() {
-    using namespace units_double_ops;
-    Number n = 1_num; // 1
+    Number n = 1; // 1
     n += 2; // 3
-    n--; // 2
     n -= 3; // -1
     n *= 2; // -2
     n /= 2; // -1
-    n++; // 0
     return n;
 }
-
-constexpr double doubleAssignmentTests() {
-    using namespace units_double_ops;
-    double d = 1; // 1
-    d += 2_num; // 3
-    d -= 2_num; // 1
-    d *= 2_num; // 2
-    d /= 2_num; // 1
-    return d;
-}
-
-constexpr void numberOperatorTests() {
-    using namespace units_double_ops;
-    static_assert(1_num + 2 == 3);
-    static_assert(1 + 2_num <= 3);
-    static_assert(1 / 2_num >= 0);
-
-    static_assert(numAssignmentTests() == 0);
-    static_assert(doubleAssignmentTests() == 1);
-}
-
-constexpr void formatTests() {}
