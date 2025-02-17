@@ -17,6 +17,7 @@ void initialize() {
     std::cout << std::format("{:.2f}", a) << std::endl;
     units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
     std::cout << std::format("{}", v2a) << std::endl;
+    units::max(2, 2_num);
 }
 
 constexpr void miscTests() {
