@@ -4,40 +4,73 @@
 #include "units/Vector2D.hpp"
 #include "units/Vector3D.hpp"
 
-constexpr int r2i(double value) { return static_cast<int>(value >= 0.0 ? value + 0.5 : value - 0.5); }
+constexpr int r2i(double value) {
+    return static_cast<int>(value >= 0.0 ? value + 0.5 : value - 0.5);
+}
 
 void initialize() {
-    std::cout << std::format("{:.2f}", 15.2_cm) << std::endl; // should output 0.15_m
-    std::cout << std::format("{:.2f}", 180_stDeg) << std::endl; // should output 3.14_stRad
-    std::cout << std::format("{:.2f}", 0_celsius) << std::endl; // should output 273.15
+    std::cout << std::format("{:.2f}", 15.2_cm)
+              << std::endl; // should output 0.15_m
+    std::cout << std::format("{:.2f}", 180_stDeg)
+              << std::endl; // should output 3.14_stRad
+    std::cout << std::format("{:.2f}", 0_celsius)
+              << std::endl; // should output 273.15
     std::cout << std::format("{:.2f}", 1.2345) << std::endl;
     std::cout << units::pow<5>(505_cm) * 15_celsius << std::endl;
-    std::cout << std::format("{:.2f}", units::pow<5>(505_cm) * 15_celsius) << std::endl;
+    std::cout << std::format("{:.2f}", units::pow<5>(505_cm) * 15_celsius)
+              << std::endl;
     Number a(2.123);
     std::cout << std::format("{:.2f}", a) << std::endl;
     units::Vector2D<Length> v2a = units::V2Position(2_in, 2_in) / 2;
     std::cout << std::format("{}", v2a) << std::endl;
     units::max(2, 2_num);
+    auto ab = 2_in;
+    ab *= 2_num;
 }
 
 constexpr void miscTests() {
     units::AccelerationPose a(1_mps2, 2_mps2);
     Number num = Number(1.0);
     num = Number(0.0);
-    a.orientation = Quantity<std::ratio<0>, std::ratio<0>, std::ratio<-2>, std::ratio<0>, std::ratio<1>, std::ratio<0>,
-                             std::ratio<0>, std::ratio<0>>(1.0);
+    a.orientation = Quantity<std::ratio<0>,
+                             std::ratio<0>,
+                             std::ratio<-2>,
+                             std::ratio<0>,
+                             std::ratio<1>,
+                             std::ratio<0>,
+                             std::ratio<0>,
+                             std::ratio<0>>(1.0);
     a.orientation += 2_rpm2;
     2_rpm2 -= a.orientation;
-    Quantity<std::ratio<0>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<1>, std::ratio<0>, std::ratio<0>,
+    Quantity<std::ratio<0>,
+             std::ratio<0>,
+             std::ratio<1>,
+             std::ratio<0>,
+             std::ratio<1>,
+             std::ratio<0>,
+             std::ratio<0>,
              std::ratio<0>>
-        c = Multiplied<Angle, Time>();
+      c = Multiplied<Angle, Time>();
     Length x = unit_cast<Length>(num);
     Angle y = toAngular<Length>(x, 2_cm);
     Length z = toLinear<Angle>(y, 2_cm);
-    static_assert(Angle(5.1) >= Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<1>,
-                                         std::ratio<0>, std::ratio<0>, std::ratio<0>>(5.0));
-    units::max(10_celsius, Quantity<std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>, std::ratio<0>,
-                                    std::ratio<1>, std::ratio<0>, std::ratio<0>>(1.0));
+    static_assert(Angle(5.1) >= Quantity<std::ratio<0>,
+                                         std::ratio<0>,
+                                         std::ratio<0>,
+                                         std::ratio<0>,
+                                         std::ratio<1>,
+                                         std::ratio<0>,
+                                         std::ratio<0>,
+                                         std::ratio<0>>(5.0));
+    units::max(10_celsius,
+               Quantity<std::ratio<0>,
+                        std::ratio<0>,
+                        std::ratio<0>,
+                        std::ratio<0>,
+                        std::ratio<0>,
+                        std::ratio<1>,
+                        std::ratio<0>,
+                        std::ratio<0>>(1.0));
 }
 
 constexpr void v3dTests() {
@@ -67,7 +100,8 @@ constexpr void angleTests() {
 }
 
 constexpr void angleRangeTests() {
-    static_assert(r2i(to_stDeg(AngleRange(-15_cDeg))) == r2i(to_stDeg(AngleRange(+15_stDeg))));
+    static_assert(r2i(to_stDeg(AngleRange(-15_cDeg))) ==
+                  r2i(to_stDeg(AngleRange(+15_stDeg))));
     Angle a = 2_stDeg + AngleRange(15_stDeg);
     Angle b = AngleRange(15_stDeg) + 2_stDeg;
     Angle c = 2_stDeg + AngleRange(15_cDeg);
