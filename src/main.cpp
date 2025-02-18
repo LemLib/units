@@ -28,6 +28,14 @@ void initialize() {
     ab *= a;
 }
 
+constexpr void numberOperatorTests() {
+    Number a = Number(2) * 2;
+    Number b = 2 * Number(2);
+    Number c = 1 / Number(2);
+    Number d = Number(2) / 2;
+    auto e = Number(1) / 2_in;
+}
+
 constexpr void miscTests() {
     units::AccelerationPose a(1_mps2, 2_mps2);
     Number num = Number(1.0);

@@ -410,18 +410,21 @@ constexpr Q operator-(Q lhs, R rhs)
 }
 
 template<isQuantity Q>
-constexpr Q operator*(Q quantity, double multiple) {
-    return Q(quantity.internal() * multiple);
+    requires(!std::is_same_v<Q, Number>)
+constexpr Q operator*(Q quantity, Number multiple) {
+    return Q(quantity.internal() * multiple.internal());
 }
 
 template<isQuantity Q>
-constexpr Q operator*(double multiple, Q quantity) {
-    return Q(quantity.internal() * multiple);
+    requires(!std::is_same_v<Q, Number>)
+constexpr Q operator*(Number multiple, Q quantity) {
+    return Q(quantity.internal() * multiple.internal());
 }
 
 template<isQuantity Q>
-constexpr Q operator/(Q quantity, double divisor) {
-    return Q(quantity.internal() / divisor);
+    requires(!std::is_same_v<Q, Number>)
+constexpr Q operator/(Q quantity, Number divisor) {
+    return Q(quantity.internal() / divisor.internal());
 }
 
 template<isQuantity Q1, isQuantity Q2>
