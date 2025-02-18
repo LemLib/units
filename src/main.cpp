@@ -34,6 +34,9 @@ constexpr void numberOperatorTests() {
     Number c = 1 / Number(2);
     Number d = Number(2) / 2;
     auto e = 1 / 1_in;
+    auto f = 0 == Number(2);
+    auto g = 0 != Number(2);
+    auto h = Number(2) != 0;
 }
 
 constexpr void miscTests() {

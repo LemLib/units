@@ -85,7 +85,7 @@ class Quantity {
         requires std::is_same_v<Self, Dimensionless>
         : value(value) {}
 
-    constexpr operator double()
+    constexpr operator double() const
         requires std::is_same_v<Self, Dimensionless>
     {
         return value;
