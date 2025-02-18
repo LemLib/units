@@ -33,7 +33,7 @@ constexpr void numberOperatorTests() {
     Number b = 2 * Number(2);
     Number c = 1 / Number(2);
     Number d = Number(2) / 2;
-    Curvature e = 1 / 1_in;
+    auto e = 1 / 1_in;
 }
 
 constexpr void miscTests() {

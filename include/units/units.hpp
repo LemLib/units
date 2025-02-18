@@ -430,7 +430,8 @@ constexpr Q operator/(Q quantity, Number divisor) {
 template<isQuantity Q>
     requires(!std::is_same_v<Q, Number>)
 constexpr auto operator/(Number enumerator, Q divisor) {
-    return Divided<Number, Q>(enumerator.internal() / divisor.internal());
+    return Named<Divided<Number, Q>>(enumerator.internal() /
+                                     divisor.internal());
 }
 
 template<isQuantity Q1, isQuantity Q2>
