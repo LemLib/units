@@ -427,6 +427,12 @@ constexpr Q operator/(Q quantity, Number divisor) {
     return Q(quantity.internal() / divisor.internal());
 }
 
+template<isQuantity Q>
+    requires(!std::is_same_v<Q, Number>)
+constexpr auto operator/(Number enumerator, Q divisor) {
+    return Divided<Number, Q>(enumerator.internal() / divisor.internal());
+}
+
 template<isQuantity Q1, isQuantity Q2>
 constexpr std::conditional_t<std::is_same_v<Number, Multiplied<Q1, Q2>>,
                              double,
