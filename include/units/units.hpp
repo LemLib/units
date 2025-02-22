@@ -682,6 +682,7 @@ NEW_UNIT(Torque, Nm, 1, 2, -2, 0, 0, 0, 0, 0)
 NEW_UNIT(Power, watt, 1, 2, -3, 0, 0, 0, 0, 0)
 
 NEW_UNIT(Current, amp, 0, 0, 0, 1, 0, 0, 0, 0)
+NEW_METRIC_PREFIXES(Current, amp)
 
 NEW_UNIT(Charge, coulomb, 0, 0, 1, 1, 0, 0, 0, 0)
 
