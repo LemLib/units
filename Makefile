@@ -39,9 +39,20 @@ EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/main,$(foreach cext,$(CEXTS),$(f
 # that are in the directory include/LIBNAME
 TEMPLATE_FILES=$(INCDIR)/$(LIBNAME)/*.h $(INCDIR)/$(LIBNAME)/*.hpp 
 
-.DEFAULT_GOAL=quick
+# Automatically create bin dir when building (this causes issues otherwise idk)
+.DEFAULT_GOAL=quick_and_bin
+.PHONY: quick_and_bin
+quick_and_bin: quick $(BINDIR)
 
 ################################################################################
 ################################################################################
 ########## Nothing below this line should be edited by typical users ###########
 -include ./common.mk
+
+# Do not include the .a file in the template zip as the template doesn't have any
+# source code to put in there.
+ifneq ($(filter template,$(MAKECMDGOALS)),)
+$(shell rm $(LIBAR))
+$(LIBAR):
+	@echo Not making $@ as it is unnecessary
+endif
